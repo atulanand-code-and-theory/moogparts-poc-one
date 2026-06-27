@@ -1,0 +1,38 @@
+{
+  "variantName": "columns-split",
+  "baseBlock": "columns",
+  "version": "1.0.0",
+  "created": "2026-06-27T00:00:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://www.moogparts.com/",
+    "originPage": "homepage",
+    "blockPosition": "middle"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "accent",
+    "density": "spacious",
+    "purpose": "feature",
+    "imagePattern": "large"
+  },
+  "contentPattern": {
+    "structure": "text-column (heading + paragraph + button) + image-column",
+    "buttonCount": 1,
+    "imageCount": 1
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "side-by-side text + image promo rows",
+      "alternating image/text content bands",
+      "feature callouts with a supporting image"
+    ],
+    "notSuitableFor": [
+      "repeating uniform item grids (use cards)",
+      "full-bleed background hero banners (use hero-overlay)"
+    ]
+  },
+  "usage": {
+    "pagesUsing": ["/index"],
+    "reuseCount": 2,
+    "lastUsed": "2026-06-27T00:00:00.000Z"
+  }
+}

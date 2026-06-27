@@ -4,107 +4,210 @@ import { loadFragment } from '../fragment/fragment.js';
 // media query match that indicates mobile/tablet width
 const isDesktop = window.matchMedia('(min-width: 900px)');
 
+const SOCIAL_ICONS = {
+  facebook: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.51 1.49-3.9 3.78-3.9 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.78-1.63 1.57v1.88h2.78l-.44 2.91h-2.34V22c4.78-.79 8.44-4.94 8.44-9.94Z"/></svg>',
+  youtube: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.5a3 3 0 0 0-2.12-2.12C19.5 3.86 12 3.86 12 3.86s-7.5 0-9.38.52A3 3 0 0 0 .5 6.5C0 8.38 0 12 0 12s0 3.62.5 5.5a3 3 0 0 0 2.12 2.12c1.88.52 9.38.52 9.38.52s7.5 0 9.38-.52a3 3 0 0 0 2.12-2.12C24 15.62 24 12 24 12s0-3.62-.5-5.5ZM9.6 15.6V8.4l6.2 3.6-6.2 3.6Z"/></svg>',
+  instagram: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 0 1-1.38-.9 3.7 3.7 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16Zm0 3.68A6.16 6.16 0 1 0 18.16 12 6.16 6.16 0 0 0 12 5.84Zm0 10.16A4 4 0 1 1 16 12a4 4 0 0 1-4 4Zm6.41-10.4a1.44 1.44 0 1 0 1.44 1.44 1.44 1.44 0 0 0-1.44-1.44Z"/></svg>',
+};
+
+function closeAllMegamenus(nav) {
+  nav.querySelectorAll('.nav-drop[aria-expanded="true"]').forEach((d) => d.setAttribute('aria-expanded', 'false'));
+}
+
+/**
+ * Collapse every open mobile accordion (top-level + nested) and reset chevrons.
+ */
+function collapseAllAccordions(nav) {
+  nav.querySelectorAll('[aria-expanded="true"].nav-drop, .nav-accordion[aria-expanded="true"]').forEach((el) => {
+    el.setAttribute('aria-expanded', 'false');
+  });
+}
+
 function closeOnEscape(e) {
   if (e.code === 'Escape') {
     const nav = document.getElementById('nav');
-    const navSections = nav.querySelector('.nav-sections');
-    if (!navSections) return;
-    const navSectionExpanded = navSections.querySelector('[aria-expanded="true"]');
-    if (navSectionExpanded && isDesktop.matches) {
-      // eslint-disable-next-line no-use-before-define
-      toggleAllNavSections(navSections);
-      navSectionExpanded.focus();
-    } else if (!isDesktop.matches) {
-      // eslint-disable-next-line no-use-before-define
-      toggleMenu(nav, navSections);
-      nav.querySelector('button').focus();
-    }
-  }
-}
-
-function closeOnFocusLost(e) {
-  const nav = e.currentTarget;
-  if (!nav.contains(e.relatedTarget)) {
-    const navSections = nav.querySelector('.nav-sections');
-    if (!navSections) return;
-    const navSectionExpanded = navSections.querySelector('[aria-expanded="true"]');
-    if (navSectionExpanded && isDesktop.matches) {
-      // eslint-disable-next-line no-use-before-define
-      toggleAllNavSections(navSections, false);
-    } else if (!isDesktop.matches) {
+    if (!nav) return;
+    closeAllMegamenus(nav);
+    const localeOpen = nav.querySelector('.nav-locale[aria-expanded="true"]');
+    if (localeOpen) localeOpen.setAttribute('aria-expanded', 'false');
+    if (!isDesktop.matches) {
+      const navSections = nav.querySelector('.nav-sections');
       // eslint-disable-next-line no-use-before-define
       toggleMenu(nav, navSections, false);
     }
   }
 }
 
-function openOnKeydown(e) {
-  const focused = document.activeElement;
-  const isNavDrop = focused.className === 'nav-drop';
-  if (isNavDrop && (e.code === 'Enter' || e.code === 'Space')) {
-    const dropExpanded = focused.getAttribute('aria-expanded') === 'true';
-    // eslint-disable-next-line no-use-before-define
-    toggleAllNavSections(focused.closest('.nav-sections'));
-    focused.setAttribute('aria-expanded', dropExpanded ? 'false' : 'true');
-  }
-}
-
-function focusNavSection() {
-  document.activeElement.addEventListener('keydown', openOnKeydown);
-}
-
 /**
- * Toggles all nav sections
- * @param {Element} sections The container element
- * @param {Boolean} expanded Whether the element should be expanded or collapsed
- */
-function toggleAllNavSections(sections, expanded = false) {
-  if (!sections) return;
-  sections.querySelectorAll('.nav-sections .default-content-wrapper > ul > li').forEach((section) => {
-    section.setAttribute('aria-expanded', expanded);
-  });
-}
-
-/**
- * Toggles the entire nav
- * @param {Element} nav The container element
- * @param {Element} navSections The nav sections within the container element
- * @param {*} forceExpanded Optional param to force nav expand behavior when not null
+ * Toggles the entire nav (mobile hamburger)
  */
 function toggleMenu(nav, navSections, forceExpanded = null) {
   const expanded = forceExpanded !== null ? !forceExpanded : nav.getAttribute('aria-expanded') === 'true';
   const button = nav.querySelector('.nav-hamburger button');
   document.body.style.overflowY = (expanded || isDesktop.matches) ? '' : 'hidden';
   nav.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-  toggleAllNavSections(navSections, expanded || isDesktop.matches ? 'false' : 'true');
-  button.setAttribute('aria-label', expanded ? 'Open navigation' : 'Close navigation');
-  // enable nav dropdown keyboard accessibility
-  if (navSections) {
-    const navDrops = navSections.querySelectorAll('.nav-drop');
-    if (isDesktop.matches) {
-      navDrops.forEach((drop) => {
-        if (!drop.hasAttribute('tabindex')) {
-          drop.setAttribute('tabindex', 0);
-          drop.addEventListener('focus', focusNavSection);
-        }
-      });
+  if (button) button.setAttribute('aria-label', expanded ? 'Open navigation' : 'Close navigation');
+  if (!expanded || isDesktop.matches) {
+    window.addEventListener('keydown', closeOnEscape);
+  } else {
+    window.removeEventListener('keydown', closeOnEscape);
+  }
+}
+
+/**
+ * Build social icon links from text labels (Facebook/YouTube/Instagram).
+ * Reads link text from the nav DOM; never hardcodes destinations.
+ */
+function decorateSocialLink(link) {
+  const label = link.textContent.trim().toLowerCase();
+  const key = Object.keys(SOCIAL_ICONS).find((k) => label.includes(k));
+  if (key) {
+    link.classList.add('nav-social-icon');
+    link.setAttribute('aria-label', link.textContent.trim());
+    link.setAttribute('title', link.textContent.trim());
+    link.innerHTML = SOCIAL_ICONS[key];
+  }
+}
+
+/**
+ * Decorate the utility (tools) row: social icons, text links, locale dropdown.
+ */
+function decorateTools(navTools) {
+  if (!navTools) return;
+  // social + text links live in <p> wrappers
+  navTools.querySelectorAll('p > a').forEach((a) => {
+    const wrapper = a.closest('p');
+    const label = a.textContent.trim().toLowerCase();
+    if (/instagram|youtube|facebook/.test(label)) {
+      wrapper.classList.add('nav-social');
+      decorateSocialLink(a);
+    } else if (label.includes('light commercial')) {
+      wrapper.classList.add('nav-lcv');
+      a.classList.add('nav-lcv-button');
     } else {
-      navDrops.forEach((drop) => {
-        drop.removeAttribute('tabindex');
-        drop.removeEventListener('focus', focusNavSection);
+      wrapper.classList.add('nav-utility-link');
+    }
+  });
+
+  // locale selector: the <ul> at the end of the tools section
+  const localeList = navTools.querySelector(':scope > ul');
+  if (localeList) {
+    localeList.classList.add('nav-locale-list');
+    const trigger = localeList.querySelector(':scope > li');
+    const triggerLink = trigger.querySelector(':scope > a');
+    const panel = trigger.querySelector(':scope > ul');
+    if (triggerLink && panel) {
+      trigger.classList.add('nav-locale');
+      triggerLink.classList.add('nav-locale-trigger');
+      triggerLink.setAttribute('role', 'button');
+      panel.classList.add('nav-locale-panel');
+      trigger.setAttribute('aria-expanded', 'false');
+      triggerLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        const open = trigger.getAttribute('aria-expanded') === 'true';
+        trigger.setAttribute('aria-expanded', open ? 'false' : 'true');
       });
     }
   }
+}
 
-  // enable menu collapse on escape keypress
-  if (!expanded || isDesktop.matches) {
-    // collapse menu on escape press
-    window.addEventListener('keydown', closeOnEscape);
-    // collapse menu on focus lost
-    nav.addEventListener('focusout', closeOnFocusLost);
-  } else {
-    window.removeEventListener('keydown', closeOnEscape);
-    nav.removeEventListener('focusout', closeOnFocusLost);
+/**
+ * Add a separate chevron button to a list item so the text link navigates while
+ * the chevron toggles the accordion (split-link pattern). Returns the button.
+ */
+function addChevron(item, expandTarget, extraClass) {
+  const chevron = document.createElement('button');
+  chevron.type = 'button';
+  chevron.className = `nav-chevron${extraClass ? ` ${extraClass}` : ''}`;
+  chevron.setAttribute('aria-label', 'Expand');
+  chevron.setAttribute('tabindex', '-1');
+  chevron.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const open = expandTarget.getAttribute('aria-expanded') === 'true';
+    expandTarget.setAttribute('aria-expanded', open ? 'false' : 'true');
+  });
+  // place chevron right after the item's own anchor/header
+  const anchor = item.querySelector(':scope > a') || item.firstElementChild;
+  if (anchor && anchor.nextSibling) item.insertBefore(chevron, anchor.nextSibling);
+  else item.append(chevron);
+  return chevron;
+}
+
+/**
+ * Turn a category list item (with a nested <ul> of leaf links) into a mobile
+ * accordion: text link navigates, chevron expands the nested list in place.
+ */
+function decorateCategoryAccordion(li) {
+  const sub = li.querySelector(':scope > ul');
+  if (!sub) return;
+  li.classList.add('nav-accordion');
+  li.setAttribute('aria-expanded', 'false');
+  sub.classList.add('nav-accordion-panel');
+  addChevron(li, li, 'nav-accordion-chevron');
+}
+
+/**
+ * Decorate the main nav menu: top-level links, megamenu triggers (items with nested <ul>).
+ */
+function decorateSections(navSections, nav, mobileExtras) {
+  if (!navSections) return;
+  const topUl = navSections.querySelector(':scope > ul');
+  if (topUl) topUl.classList.add('nav-menu');
+
+  // Find My Part CTA (<p> wrapper) — relocate to its own grid area (single instance, no clone)
+  navSections.querySelectorAll(':scope > p > a').forEach((a) => {
+    a.classList.add('nav-cta-button');
+    const ctaHolder = document.createElement('div');
+    ctaHolder.className = 'nav-cta-desktop';
+    ctaHolder.append(a);
+    nav.append(ctaHolder);
+  });
+
+  // Mobile-only "Home" link prepended to the menu (hidden on desktop via CSS)
+  if (topUl && mobileExtras && mobileExtras.home) {
+    const homeLi = document.createElement('li');
+    homeLi.className = 'nav-mobile-only nav-mobile-home';
+    homeLi.append(mobileExtras.home);
+    topUl.prepend(homeLi);
+  }
+
+  navSections.querySelectorAll(':scope .nav-menu > li').forEach((item) => {
+    if (item.classList.contains('nav-mobile-only')) return;
+    const panel = item.querySelector(':scope > ul');
+    if (panel) {
+      item.classList.add('nav-drop');
+      item.setAttribute('aria-expanded', 'false');
+      panel.classList.add('nav-megamenu');
+      panel.querySelectorAll(':scope > li').forEach((col) => {
+        col.classList.add('nav-megamenu-col');
+        // nested category -> mobile accordion (e.g. Steering, Suspension...)
+        decorateCategoryAccordion(col);
+      });
+
+      // chevron toggles the megamenu/accordion; text link navigates (split-link)
+      addChevron(item, item, 'nav-drop-chevron');
+
+      // Pointer hover opens the panel. On desktop only one is open at a time and
+      // it closes on mouseleave. On mobile (touch) mouseenter does not fire, so the
+      // chevron click remains the primary affordance and the accordion stays open;
+      // fine-pointer/hybrid devices still get a hover affordance.
+      item.addEventListener('mouseenter', () => {
+        if (isDesktop.matches) closeAllMegamenus(nav);
+        item.setAttribute('aria-expanded', 'true');
+      });
+      item.addEventListener('mouseleave', () => {
+        if (isDesktop.matches) item.setAttribute('aria-expanded', 'false');
+      });
+    }
+  });
+
+  // Mobile-only "Light Commercial Vehicle" appended to the menu (hidden on desktop)
+  if (topUl && mobileExtras && mobileExtras.lcv) {
+    const lcvLi = document.createElement('li');
+    lcvLi.className = 'nav-mobile-only nav-mobile-lcv';
+    lcvLi.append(mobileExtras.lcv);
+    topUl.append(lcvLi);
   }
 }
 
@@ -113,10 +216,22 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
-  // load nav as fragment
+  // load nav as fragment — prefer the portable /content/nav.plain.html, fall back to navMeta
   const navMeta = getMetadata('nav');
   const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
-  const fragment = await loadFragment(navPath);
+  let fragment;
+  try {
+    const resp = await fetch('/content/nav.plain.html');
+    if (resp.ok) {
+      const html = await resp.text();
+      const tmp = document.createElement('div');
+      tmp.innerHTML = html;
+      fragment = tmp;
+    }
+  } catch (e) {
+    fragment = null;
+  }
+  if (!fragment) fragment = await loadFragment(navPath);
 
   // decorate nav DOM
   block.textContent = '';
@@ -130,26 +245,36 @@ export default async function decorate(block) {
     if (section) section.classList.add(`nav-${c}`);
   });
 
+  // the optional 4th section is mobile-only content (e.g. Home)
+  const mobileSection = nav.children[3];
+  const mobileExtras = {};
+  if (mobileSection) {
+    mobileSection.classList.add('nav-mobile-source');
+    const homeLink = mobileSection.querySelector('a');
+    if (homeLink) mobileExtras.home = homeLink;
+    mobileSection.remove();
+  }
+
   const navBrand = nav.querySelector('.nav-brand');
-  const brandLink = navBrand.querySelector('.button');
-  if (brandLink) {
-    brandLink.className = '';
-    brandLink.closest('.button-container').className = '';
+  if (navBrand) {
+    const brandLink = navBrand.querySelector('a');
+    if (brandLink) brandLink.classList.add('nav-brand-link');
+  }
+
+  const navTools = nav.querySelector('.nav-tools');
+  decorateTools(navTools);
+
+  // Light Commercial Vehicle is a utility-bar link on desktop but also a
+  // top-level item in the mobile menu — clone it for the mobile menu list.
+  const lcvLink = navTools ? navTools.querySelector('.nav-lcv a') : null;
+  if (lcvLink) {
+    const lcvClone = lcvLink.cloneNode(true);
+    lcvClone.className = '';
+    mobileExtras.lcv = lcvClone;
   }
 
   const navSections = nav.querySelector('.nav-sections');
-  if (navSections) {
-    navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
-      if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
-      navSection.addEventListener('click', () => {
-        if (isDesktop.matches) {
-          const expanded = navSection.getAttribute('aria-expanded') === 'true';
-          toggleAllNavSections(navSections);
-          navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-        }
-      });
-    });
-  }
+  decorateSections(navSections, nav, mobileExtras);
 
   // hamburger for mobile
   const hamburger = document.createElement('div');
@@ -160,9 +285,26 @@ export default async function decorate(block) {
   hamburger.addEventListener('click', () => toggleMenu(nav, navSections));
   nav.prepend(hamburger);
   nav.setAttribute('aria-expanded', 'false');
-  // prevent mobile nav behavior on window resize
   toggleMenu(nav, navSections, isDesktop.matches);
-  isDesktop.addEventListener('change', () => toggleMenu(nav, navSections, isDesktop.matches));
+
+  // viewport resize handling: keep layout clean when crossing the breakpoint
+  isDesktop.addEventListener('change', () => {
+    // close mobile menu + reset hamburger, collapse any open accordions
+    collapseAllAccordions(nav);
+    closeAllMegamenus(nav);
+    const localeOpen = nav.querySelector('.nav-locale[aria-expanded="true"]');
+    if (localeOpen) localeOpen.setAttribute('aria-expanded', 'false');
+    toggleMenu(nav, navSections, isDesktop.matches);
+  });
+
+  // close open panels when clicking outside the nav
+  document.addEventListener('click', (e) => {
+    if (!nav.contains(e.target)) {
+      closeAllMegamenus(nav);
+      const localeOpen = nav.querySelector('.nav-locale[aria-expanded="true"]');
+      if (localeOpen) localeOpen.setAttribute('aria-expanded', 'false');
+    }
+  });
 
   const navWrapper = document.createElement('div');
   navWrapper.className = 'nav-wrapper';

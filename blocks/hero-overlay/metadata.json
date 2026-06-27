@@ -1,0 +1,38 @@
+{
+  "variantName": "hero-overlay",
+  "baseBlock": "hero",
+  "version": "1.0.0",
+  "created": "2026-06-27T00:00:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://www.moogparts.com/",
+    "originPage": "homepage",
+    "blockPosition": "top"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "dark",
+    "density": "spacious",
+    "purpose": "hero",
+    "imagePattern": "background"
+  },
+  "contentPattern": {
+    "structure": "background-image + heading + paragraph + CTA",
+    "buttonCount": 1,
+    "imageCount": 1
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "full-width hero banners with a background photo",
+      "campaign or landing page intros with overlaid white text",
+      "video-series promo banners"
+    ],
+    "notSuitableFor": [
+      "heroes with no background image (use hero no-image)",
+      "side-by-side text/image layouts (use columns-split)"
+    ]
+  },
+  "usage": {
+    "pagesUsing": ["/index"],
+    "reuseCount": 2,
+    "lastUsed": "2026-06-27T00:00:00.000Z"
+  }
+}

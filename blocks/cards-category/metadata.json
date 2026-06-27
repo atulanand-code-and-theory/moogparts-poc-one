@@ -1,0 +1,39 @@
+{
+  "variantName": "cards-category",
+  "baseBlock": "cards",
+  "version": "1.0.0",
+  "created": "2026-06-27T00:00:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://www.moogparts.com/",
+    "originPage": "homepage",
+    "blockPosition": "bottom"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "image",
+    "density": "compact",
+    "purpose": "category-nav",
+    "imagePattern": "background"
+  },
+  "contentPattern": {
+    "structure": "background-image tile + centered overlay title + CTA button",
+    "buttonCount": 1,
+    "imageCount": 1,
+    "cardCount": 4
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "product/category navigation tiles with overlaid titles",
+      "image-tile grids that link to landing pages",
+      "visual category browsers (Steering, Suspension, etc.)"
+    ],
+    "notSuitableFor": [
+      "article teaser cards with body text (use cards-article)",
+      "plain text feature cards"
+    ]
+  },
+  "usage": {
+    "pagesUsing": ["/index"],
+    "reuseCount": 1,
+    "lastUsed": "2026-06-27T00:00:00.000Z"
+  }
+}
