@@ -1,0 +1,10 @@
+{
+  "type": "da",
+  "sites": {
+    "moogparts-poc-one": {
+      "contentHostUrl": "https://content.da.live/atulanand-code-and-theory/moogparts-poc-one/",
+      "previewOrg": "atulanand-code-and-theory",
+      "previewSite": "moogparts-poc-one"
+    }
+  }
+}
