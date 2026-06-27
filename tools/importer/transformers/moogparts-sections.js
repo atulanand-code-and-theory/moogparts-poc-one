@@ -1,0 +1,79 @@
+/* eslint-disable */
+/* global WebImporter */
+
+/**
+ * Transformer: moogparts section boundaries + section metadata.
+ *
+ * Driven entirely by payload.template.sections (from page-templates.json).
+ * For the homepage template there are 7 sections; each section's `selector`
+ * was verified against migration-work/cleaned.html / page-templates.json:
+ *   1 .header-hero:nth-of-type(1) .header-hero-container          (style: null)
+ *   2 .driv-part-finder-main                                      (style: light)
+ *   3 .header-hero:nth-of-type(2) .header-hero-container          (style: null)
+ *   4 #page-content .responsivegrid .aem-Grid--12 > .responsivegrid:has(.text-content) (style: blue)
+ *   5 .ledes .ledes-container                                     (style: grey)
+ *   6 .hover-tout                                                 (style: null)
+ *   7 .social-feed .mailing-list                                  (style: yellow)
+ *
+ * For each section (processed in reverse document order to keep insertion
+ * points stable):
+ *   - if section.style is set, insert a "Section Metadata" block after the
+ *     section's first matched element.
+ *   - if the section is not the first, insert an <hr> before it.
+ *
+ * Runs in beforeTransform: block parsers replaceWith() the matched section
+ * elements between the hooks, so section selectors no longer resolve in
+ * afterTransform. Inserting the <hr> / Section Metadata siblings before
+ * parsing keeps them in place after the parser swaps the element.
+ */
+
+const TransformHook = { beforeTransform: 'beforeTransform', afterTransform: 'afterTransform' };
+
+export default function transform(hookName, element, payload) {
+  if (hookName !== TransformHook.beforeTransform) return;
+
+  const sections = payload && payload.template && payload.template.sections;
+  if (!Array.isArray(sections) || sections.length < 2) return;
+
+  const doc = element.ownerDocument;
+
+  // Resolve each section to its first matched DOM element up front, so that
+  // DOM mutations during insertion don't shift later lookups.
+  const resolved = sections.map((section) => {
+    let el = null;
+    if (section.selector) {
+      try {
+        el = element.querySelector(section.selector);
+      } catch (e) {
+        el = null;
+      }
+    }
+    return { section, el };
+  });
+
+  // Process in reverse so inserted <hr> / metadata blocks don't disturb the
+  // positions of sections we haven't handled yet.
+  for (let i = resolved.length - 1; i >= 0; i -= 1) {
+    const { section, el } = resolved[i];
+    if (!el) continue;
+
+    // Section Metadata block (only when a style is defined for the section).
+    if (section.style) {
+      const block = WebImporter.Blocks.createBlock(doc, {
+        name: 'Section Metadata',
+        cells: { style: section.style },
+      });
+      if (el.parentNode) {
+        el.parentNode.insertBefore(block, el.nextSibling);
+      }
+    }
+
+    // Section break before every section except the first.
+    if (i > 0) {
+      const hr = doc.createElement('hr');
+      if (el.parentNode) {
+        el.parentNode.insertBefore(hr, el);
+      }
+    }
+  }
+}

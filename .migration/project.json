@@ -1,0 +1,11 @@
+{
+  "sites": {
+    "moogparts-poc-one": {
+      "previewOrg": "atulanand-code-and-theory",
+      "previewSite": "moogparts-poc-one",
+      "contentHostUrl": "https://content.da.live/atulanand-code-and-theory/moogparts-poc-one/",
+      "libraryUrl": "https://main--sta-boilerplate--aemdemos.aem.page/tools/sidekick/library.json"
+    }
+  },
+  "type": "da"
+}

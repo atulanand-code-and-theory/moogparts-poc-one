@@ -1,0 +1,39 @@
+{
+  "variantName": "cards-article",
+  "baseBlock": "cards",
+  "version": "1.0.0",
+  "created": "2026-06-27T00:00:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://www.moogparts.com/",
+    "originPage": "homepage",
+    "blockPosition": "middle"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "grey",
+    "density": "spacious",
+    "purpose": "article",
+    "imagePattern": "large"
+  },
+  "contentPattern": {
+    "structure": "image + title-link + teaser-paragraph + read-more-cta",
+    "buttonCount": 1,
+    "imageCount": 1,
+    "cardCount": 3
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "article or blog teaser grids",
+      "news/resource listings with image + title + excerpt + Read More",
+      "bordered content cards on a light/grey section"
+    ],
+    "notSuitableFor": [
+      "image-tile navigation with overlaid titles (use cards-category)",
+      "side-by-side single feature rows (use columns-split)"
+    ]
+  },
+  "usage": {
+    "pagesUsing": ["/index"],
+    "reuseCount": 1,
+    "lastUsed": "2026-06-27T00:00:00.000Z"
+  }
+}

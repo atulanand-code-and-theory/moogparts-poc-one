@@ -1,0 +1,22 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/",
+  "path": "index",
+  "timestamp": "2026-06-27T05:16:33.545Z",
+  "title": "MOOG Parts | Steering, Suspension & Drivetrain Parts",
+  "template": "homepage",
+  "blocks": [
+    "hero-overlay",
+    "hero-overlay",
+    "widget",
+    "widget",
+    "columns-split",
+    "columns-split",
+    "columns-split",
+    "cards-article",
+    "cards-category",
+    "cards-category",
+    "cards-category",
+    "cards-category"
+  ]
+}
