@@ -257,6 +257,248 @@
           "defaultContent": []
         }
       ]
+    },
+    {
+      "name": "technical-landing",
+      "representativeUrl": "https://www.moogparts.com/technical.html",
+      "urls": [
+        "https://www.moogparts.com/technical.html",
+        "https://www.moogparts.com/technical/training.html",
+        "https://www.moogparts.com/technical/bulletins.html",
+        "https://www.moogparts.com/technical/diagnostic-center.html"
+      ],
+      "coverageGaps": [
+        {
+          "url": "https://www.moogparts.com/technical/diagnostic-center.html",
+          "sections": [
+            { "sectionSignature": "header-hero+fmmp-title+touts", "nodeMapId": "rc1" }
+          ]
+        }
+      ],
+      "description": "Support/technical overview landing pages: a page-title header followed by a stack of image+text feature rows (touts), used by the Support landing, Training, Technical Content (bulletins) and Diagnostic Center intro pages.",
+      "blocks": [
+        {
+          "name": "hero-overlay",
+          "instances": [
+            ".header-hero",
+            ".header-simple"
+          ]
+        },
+        {
+          "name": "columns-split",
+          "instances": [
+            ".tout"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1",
+          "name": "Page title / hero header",
+          "selector": [".header-hero", ".header-simple"],
+          "style": null,
+          "blocks": [
+            "hero-overlay"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2",
+          "name": "Tout feature-row stack",
+          "selector": ".tout",
+          "style": null,
+          "blocks": [
+            "columns-split"
+          ],
+          "defaultContent": []
+        }
+      ]
+    },
+    {
+      "name": "technical-tool",
+      "representativeUrl": "https://www.moogparts.com/technical/bulletins/did-you-know-bulletins.html",
+      "urls": [
+        "https://www.moogparts.com/technical/bulletins/problem-solver-bulletins.html",
+        "https://www.moogparts.com/technical/bulletins/did-you-know-bulletins.html",
+        "https://www.moogparts.com/technical/diagnostic-center/car-crossover.html",
+        "https://www.moogparts.com/technical/diagnostic-center/light-truck-suv.html",
+        "https://www.moogparts.com/technical/bulletins/installation-instructions.html"
+      ],
+      "coverageGaps": [
+        {
+          "url": "https://www.moogparts.com/technical/diagnostic-center/car-crossover.html",
+          "sections": [
+            { "sectionSignature": "diagnostic-center-widget", "nodeMapId": "rc1" }
+          ]
+        },
+        {
+          "url": "https://www.moogparts.com/installation-guide-search.html",
+          "sections": [
+            { "sectionSignature": "documents-autocomplete-widget", "nodeMapId": "rc1" }
+          ]
+        }
+      ],
+      "description": "Interactive tool pages backed by a widget app: bulletin PDF search/listing (problem-solver, did-you-know), the interactive diagnostic-center symptom selector (car-crossover, light-truck-suv), and the installation-guide part-number search. Each hosts a named interactive widget plus an optional cross-sell cards band.",
+      "blocks": [
+        {
+          "name": "widget",
+          "instances": [
+            ".search-files",
+            ".diagnostic-center",
+            ".documents-autocomplete"
+          ]
+        },
+        {
+          "name": "cards-article",
+          "instances": [
+            ".cross-sell"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1",
+          "name": "Interactive widget tool",
+          "selector": [".search-files", ".diagnostic-center", ".documents-autocomplete"],
+          "style": null,
+          "blocks": [
+            "widget"
+          ],
+          "defaultContent": [".header-simple"]
+        },
+        {
+          "id": "section-2",
+          "name": "Cross-sell product cards",
+          "selector": ".cross-sell",
+          "style": null,
+          "blocks": [
+            "cards-article"
+          ],
+          "defaultContent": []
+        }
+      ]
+    },
+    {
+      "name": "tech-tips",
+      "representativeUrl": "https://www.moogparts.com/technical/bulletins/tech-tips.html",
+      "urls": [
+        "https://www.moogparts.com/technical/bulletins/tech-tips.html"
+      ],
+      "coverageGaps": [],
+      "description": "Tech Tips listing page: a page title followed by an article-teaser card grid (image + title + excerpt + Read More) with a View More button.",
+      "blocks": [
+        {
+          "name": "hero-overlay",
+          "instances": [
+            ".header-hero"
+          ]
+        },
+        {
+          "name": "cards-article",
+          "instances": [
+            ".ledes"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1",
+          "name": "Tech Tips hero header",
+          "selector": ".header-hero",
+          "style": null,
+          "blocks": [
+            "hero-overlay"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2",
+          "name": "Tech Tips article grid",
+          "selector": ".ledes",
+          "style": "grey",
+          "blocks": [
+            "cards-article"
+          ],
+          "defaultContent": []
+        }
+      ]
+    },
+    {
+      "name": "content-article",
+      "representativeUrl": "https://www.moogparts.com/technical/something-big-moog-app.html",
+      "urls": [
+        "https://www.moogparts.com/technical/training/know-your-parts.html",
+        "https://www.moogparts.com/technical/something-big-moog-app.html"
+      ],
+      "coverageGaps": [
+        {
+          "url": "https://www.moogparts.com/technical/training/know-your-parts.html",
+          "sections": [
+            { "sectionSignature": "tout-intro+article-with-video", "nodeMapId": "rc1" }
+          ]
+        }
+      ],
+      "description": "Long-form content/article pages: headings, body copy, comparison images, embedded video/category tables and a closing Where-to-Buy locator. Used by Know Your Parts and the Independent Testing Results page.",
+      "blocks": [
+        {
+          "name": "hero-overlay",
+          "instances": [
+            ".header-hero .header-hero-container"
+          ]
+        },
+        {
+          "name": "columns-split",
+          "instances": [
+            ".tout"
+          ]
+        },
+        {
+          "name": "widget",
+          "instances": [
+            ".where-to-buy-link"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1",
+          "name": "Article hero header",
+          "selector": ".header-hero .header-hero-container",
+          "style": null,
+          "blocks": [
+            "hero-overlay"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2",
+          "name": "Article body content",
+          "selector": ".fmmp-title",
+          "style": null,
+          "blocks": [],
+          "defaultContent": [".fmmp-title", ".article"]
+        },
+        {
+          "id": "section-3",
+          "name": "Quality Parts Matter intro (gap)",
+          "selector": ".tout",
+          "style": null,
+          "blocks": [
+            "columns-split"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-4",
+          "name": "Where to Buy locator",
+          "selector": ".where-to-buy-link",
+          "style": null,
+          "blocks": [
+            "widget"
+          ],
+          "defaultContent": []
+        }
+      ]
     }
   ]
 }

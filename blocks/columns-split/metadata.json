@@ -31,8 +31,13 @@
     ]
   },
   "usage": {
-    "pagesUsing": ["/index", "/technologies"],
-    "reuseCount": 3,
-    "lastUsed": "2026-06-28T00:00:00.000Z"
+    "pagesUsing": [
+      "/index",
+      "/technologies",
+      "/technical",
+      "/technical/training/know-your-parts"
+    ],
+    "reuseCount": 5,
+    "lastUsed": "2026-06-28T15:23:58.000Z"
   }
 }

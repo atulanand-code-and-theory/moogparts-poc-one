@@ -31,8 +31,15 @@
     ]
   },
   "usage": {
-    "pagesUsing": ["/index", "/parts", "/technologies"],
-    "reuseCount": 4,
-    "lastUsed": "2026-06-28T00:00:00.000Z"
+    "pagesUsing": [
+      "/index",
+      "/parts",
+      "/technologies",
+      "/technical",
+      "/technical/bulletins/tech-tips",
+      "/technical/something-big-moog-app"
+    ],
+    "reuseCount": 7,
+    "lastUsed": "2026-06-28T15:23:58.000Z"
   }
 }

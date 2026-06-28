@@ -1,0 +1,13 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/technical/training.html",
+  "path": "technical/training",
+  "timestamp": "2026-06-28T15:33:51.916Z",
+  "title": "Auto Repair & Wheel Alignment Training Courses | MOOG Parts",
+  "template": "technical-landing",
+  "blocks": [
+    "hero-overlay",
+    "columns-split",
+    "columns-split"
+  ]
+}

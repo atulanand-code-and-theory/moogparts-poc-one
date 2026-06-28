@@ -8,7 +8,17 @@
  *   - https://www.moogparts.com/technologies.html (.tout)
  *     — 4 side-by-side image+text promo rows; the selector matches each `.tout`
  *       individually, so siblings are consolidated into ONE block.
- * Generated: 2026-06-27. Extended: 2026-06-28 (technologies `.tout` support).
+ *   - https://www.moogparts.com/technical.html etc. (.tout) — technical-landing
+ *     pages stack up to 5 sibling `.tout` feature rows that may be INTERLEAVED
+ *     with `.block-separator` divider divs. We consolidate all sibling `.tout`s
+ *     into one columns block; `.block-separator` siblings are ignored here (the
+ *     cleanup transformer removes them) because we only ever query `> .tout`.
+ *   - https://www.moogparts.com/technical/training/know-your-parts.html (.tout)
+ *     — a SINGLE `.tout` intro on the content-article gap page. The same
+ *       consolidation logic handles the 1-tout case (group of one).
+ * Generated: 2026-06-27. Extended: 2026-06-28 (technologies `.tout` support;
+ *   technical-landing 1..N touts with interleaved `.block-separator` dividers;
+ *   content-article single `.tout` intro).
  *
  * Columns library convention: first row = block name; each subsequent row has
  * the same number of columns. Here every content row is a 2-column split

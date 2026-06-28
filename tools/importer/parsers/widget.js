@@ -5,7 +5,12 @@
  * Sources:
  *   - https://www.moogparts.com/ and .../technologies.html  (.driv-part-finder-main → "part-finder")
  *   - https://www.moogparts.com/parts.html                  (.where-to-buy-link    → "where-to-buy")
- * Generated: 2026-06-27. Extended: 2026-06-28 (parts/technologies support).
+ *   - technical-tool pages (interactive tool apps):
+ *       .search-files            → "search-files"            (bulletin PDF search/listing)
+ *       .diagnostic-center       → "diagnostic-center"       (symptom selector)
+ *       .documents-autocomplete  → "documents-autocomplete"  (install-guide part-# search)
+ * Generated: 2026-06-27. Extended: 2026-06-28 (parts/technologies support;
+ *   technical-tool search-files / diagnostic-center / documents-autocomplete).
  *
  * The local `blocks/widget` block embeds an interactive widget/app and
  * self-resolves its sub-name + CSS/JS from a single <a href> that points
@@ -31,6 +36,9 @@
 const WIDGET_NAME_BY_CLASS = [
   { className: 'driv-part-finder-main', name: 'part-finder' },
   { className: 'where-to-buy-link', name: 'where-to-buy' },
+  { className: 'search-files', name: 'search-files' },
+  { className: 'diagnostic-center', name: 'diagnostic-center' },
+  { className: 'documents-autocomplete', name: 'documents-autocomplete' },
 ];
 
 function resolveWidgetName(element) {

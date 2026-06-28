@@ -31,6 +31,14 @@
  *   4 .driv-part-finder-main                                      (style: light)
  *   -> 3 <hr>, 2 Section Metadata (grey + light)
  *
+ * Section selectors may be either a single CSS string or an ARRAY of candidate
+ * strings (the newer templates use arrays where one of several markup variants
+ * may appear, e.g. technical-landing section-1 [".header-hero", ".header-simple"]
+ * and technical-tool section-1 [".search-files", ".diagnostic-center",
+ * ".documents-autocomplete"]). resolveSelector() handles both: for an array it
+ * returns the first matching element, so per-page markup variants resolve to the
+ * correct section anchor without per-template branching.
+ *
  * For each section (processed in reverse document order to keep insertion
  * points stable):
  *   - if section.style is set, insert a "Section Metadata" block after the
@@ -45,6 +53,29 @@
 
 const TransformHook = { beforeTransform: 'beforeTransform', afterTransform: 'afterTransform' };
 
+/**
+ * Resolve a section's selector to its first matched element. Accepts either a
+ * single CSS selector string or an array of candidate selectors (returns the
+ * first one that matches). Returns null when nothing matches or the selector is
+ * absent/invalid, so callers can skip the section safely.
+ */
+function resolveSelector(root, selector) {
+  if (!selector) return null;
+  const candidates = Array.isArray(selector) ? selector : [selector];
+  for (let c = 0; c < candidates.length; c += 1) {
+    const sel = candidates[c];
+    if (typeof sel === 'string' && sel) {
+      try {
+        const found = root.querySelector(sel);
+        if (found) return found;
+      } catch (e) {
+        // invalid selector string - skip this candidate
+      }
+    }
+  }
+  return null;
+}
+
 export default function transform(hookName, element, payload) {
   if (hookName !== TransformHook.beforeTransform) return;
 
@@ -55,17 +86,10 @@ export default function transform(hookName, element, payload) {
 
   // Resolve each section to its first matched DOM element up front, so that
   // DOM mutations during insertion don't shift later lookups.
-  const resolved = sections.map((section) => {
-    let el = null;
-    if (section.selector) {
-      try {
-        el = element.querySelector(section.selector);
-      } catch (e) {
-        el = null;
-      }
-    }
-    return { section, el };
-  });
+  const resolved = sections.map((section) => ({
+    section,
+    el: resolveSelector(element, section.selector),
+  }));
 
   // Process in reverse so inserted <hr> / metadata blocks don't disturb the
   // positions of sections we haven't handled yet.

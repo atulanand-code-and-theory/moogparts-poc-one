@@ -22,6 +22,16 @@
  *   - #onetrust-consent-sdk         OneTrust cookie consent modal + banner
  *   - #rufous-sandbox               Twitter analytics iframe
  *   - .embed-source                 empty AEM embed placeholders between blocks
+ *                                   (incl. the leading empty placeholder on tech-tips)
+ *   - .block-separator              presentational divider rules between touts
+ *                                   (technical-landing); not authorable content
+ *
+ * YouTube video embeds inside .article (content-article / know-your-parts):
+ *   The global iframe strip below would silently drop authorable video content.
+ *   Before that strip runs, any <iframe> nested inside .article whose src points
+ *   at YouTube is converted to an anchor (href = video URL) so the video link
+ *   round-trips through the import as preserved content rather than vanishing.
+ *   Ad/tracker iframes (outside .article) are still removed.
  *
  * Mailing-list band (.social-feed .mailing-list, "Join our MOOG Mailing List"):
  *   - On the HOMEPAGE this is an authorable section (homepage template
@@ -63,6 +73,26 @@ export default function transform(hookName, element, payload) {
     // Consent modal / overlay can block block-matching; remove before parsing.
     // Verified: <div id="onetrust-consent-sdk"> (cleaned.html line 1457)
     WebImporter.DOMUtils.remove(element, ['#onetrust-consent-sdk']);
+
+    // Preserve authorable YouTube video embeds nested in .article body
+    // (content-article / know-your-parts) before the global iframe strip in
+    // afterTransform removes them. Convert each YouTube <iframe> to an anchor so
+    // the video URL survives the import as a link. Non-article (ad/tracker)
+    // iframes are untouched here and removed later. Watch-URL conversion keeps
+    // the link author-friendly; if the src is not parseable it is left as-is.
+    element.querySelectorAll('.article iframe[src]').forEach((iframe) => {
+      const src = iframe.getAttribute('src') || '';
+      if (!/(?:youtube\.com|youtube-nocookie\.com|youtu\.be)/i.test(src)) return;
+      let href = src;
+      if (href.startsWith('//')) href = `https:${href}`;
+      // youtube.com/embed/<id> -> youtube.com/watch?v=<id>
+      const embedMatch = href.match(/\/embed\/([\w-]+)/);
+      if (embedMatch) href = `https://www.youtube.com/watch?v=${embedMatch[1]}`;
+      const a = element.ownerDocument.createElement('a');
+      a.href = href;
+      a.textContent = href;
+      iframe.replaceWith(a);
+    });
   }
 
   if (hookName === TransformHook.afterTransform) {
@@ -79,8 +109,12 @@ export default function transform(hookName, element, payload) {
       'nav.page-site-nav-container',
       '.footer.section',
       'footer.page-footer-container',
-      // Empty AEM embed placeholders left between hero blocks (no authorable content)
+      // Empty AEM embed placeholders left between hero blocks (no authorable
+      // content); also covers the leading empty placeholder on tech-tips.
       '.embed-source',
+      // Presentational divider rules between touts (technical-landing) - not
+      // authorable content, drop so they don't become stray default content.
+      '.block-separator',
       // Third-party / safe-to-strip elements
       '#rufous-sandbox',
       'iframe',

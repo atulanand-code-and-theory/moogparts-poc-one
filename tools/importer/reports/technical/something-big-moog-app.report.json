@@ -1,0 +1,13 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/technical/something-big-moog-app.html",
+  "path": "technical/something-big-moog-app",
+  "timestamp": "2026-06-28T15:35:14.966Z",
+  "title": "MOOG Parts Quality Testing & Performance | MOOG Parts",
+  "template": "content-article",
+  "blocks": [
+    "hero-overlay",
+    "hero-overlay",
+    "widget"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/technical/bulletins/installation-instructions.html",
+  "path": "technical/bulletins/installation-instructions",
+  "timestamp": "2026-06-28T15:34:45.880Z",
+  "title": "Installation Guide Search",
+  "template": "technical-tool",
+  "blocks": [
+    "widget"
+  ]
+}

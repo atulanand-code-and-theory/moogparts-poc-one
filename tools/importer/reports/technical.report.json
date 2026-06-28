@@ -1,0 +1,16 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/technical.html",
+  "path": "technical",
+  "timestamp": "2026-06-28T15:33:44.081Z",
+  "title": "Auto Repair Questions, Answers, & Advice | MOOG Parts",
+  "template": "technical-landing",
+  "blocks": [
+    "hero-overlay",
+    "columns-split",
+    "columns-split",
+    "columns-split",
+    "columns-split",
+    "columns-split"
+  ]
+}

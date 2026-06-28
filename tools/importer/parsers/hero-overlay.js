@@ -6,7 +6,12 @@
  *   - https://www.moogparts.com/             (.header-hero .header-hero-container) — overlay banners
  *   - https://www.moogparts.com/technologies.html (.header-hero) — VIDEO hero (Play btn, H1, "Find my part" CTA)
  *   - https://www.moogparts.com/parts.html   (.header-foreground) — foreground photo banner (H1 + subtitle, NO CTA)
- * Generated: 2026-06-27. Extended: 2026-06-28 (parts/technologies support).
+ *   - technical-landing pages (.header-simple) — a plain title header: just an
+ *     H1 and sometimes an intro `<p>`, NO background photo and NO CTA. Emits a
+ *     minimal hero (heading + optional paragraph, no image row). Missing
+ *     background image / missing CTA are handled gracefully by the shared logic.
+ * Generated: 2026-06-27. Extended: 2026-06-28 (parts/technologies support;
+ *   technical-landing `.header-simple` title-only hero).
  *
  * Hero library convention: 1 column, up to 3 rows.
  *   Row 1: block name
