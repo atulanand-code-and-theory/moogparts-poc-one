@@ -1,27 +1,154 @@
+/* cards-article — "Parts Matter" article ledes
+   Matched to moogparts.com .ledes .ledes-container
+   Dark band, 3-up article cards: image on top, blue title link,
+   white description, blue "Read More" arrow link, divider rule.
+   Section background (dark) is applied at section scope (.section.grey). */
+
+/* container: flex-wrap grid of cards, mobile-first 1-up */
 .cards-article > ul {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(257px, 1fr));
-  gap: 24px;
+  display: flex;
+  flex-wrap: wrap;
 }
 
+/* card — mobile: full width */
 .cards-article > ul > li {
-  border: 1px solid #dadada;
-  background-color: var(--background-color);
+  box-sizing: border-box;
+  width: 100%;
+  padding: 16px 18px;
+  background-color: transparent;
+  border: 0;
 }
 
-.cards-article .cards-article-card-body {
-  margin: 16px;
-}
-
+/* image: full-width banner on top of the card */
 .cards-article .cards-article-card-image {
+  line-height: 0;
+  margin-bottom: 16px;
+}
+
+/* EDS wraps bare images in <p>; neutralize its margins */
+.cards-article .cards-article-card-image p {
+  margin: 0;
   line-height: 0;
 }
 
-.cards-article > ul > li img {
+.cards-article .cards-article-card-image picture,
+.cards-article .cards-article-card-image img {
+  display: block;
   width: 100%;
-  aspect-ratio: 4 / 3;
+  height: auto;
+  aspect-ratio: 339 / 151;
   object-fit: cover;
+}
+
+/* card body — holds title, description and read-more, with divider rule */
+.cards-article .cards-article-card-body {
+  margin: 0;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgb(239 239 239);
+  color: #fff;
+}
+
+/* title link */
+.cards-article .cards-article-card-body h3 {
+  margin: 0;
+  font-family: roboto-blackitalic, roboto, arial, sans-serif;
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 20px;
+  text-transform: none;
+}
+
+.cards-article .cards-article-card-body h3 a:any-link {
+  color: rgb(0 104 255);
+  text-decoration: none;
+}
+
+.cards-article .cards-article-card-body h3 a:hover {
+  color: rgb(0 104 255);
+  text-decoration: underline;
+}
+
+/* description paragraph (white on dark band) */
+.cards-article .cards-article-card-body p {
+  margin: 8px 0 0;
+  color: #fff;
+  font-family: var(--body-font-family);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+/* "Read More" link — its own paragraph (last child) */
+.cards-article .cards-article-card-body p:last-child {
+  margin-top: 18px;
+}
+
+.cards-article .cards-article-card-body p:last-child a:any-link {
+  display: inline-block;
+  color: rgb(0 104 255);
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: 1px;
+  text-decoration: none;
+}
+
+.cards-article .cards-article-card-body p:last-child a:hover {
+  color: rgb(0 104 255);
+  text-decoration: none;
+}
+
+/* double-chevron arrow after "Read More" */
+.cards-article .cards-article-card-body p:last-child a::after {
+  content: "\00BB";
+  margin-left: 6px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+/* tablet: 2-up */
+@media (width >= 600px) {
+  .cards-article > ul > li {
+    width: 50%;
+    padding: 19px;
+  }
+}
+
+/* desktop: 3-up with larger typography */
+@media (width >= 900px) {
+  .cards-article > ul {
+    padding: 0 14px 33px;
+  }
+
+  .cards-article > ul > li {
+    width: 33.3333%;
+    padding: 19px;
+  }
+
+  .cards-article .cards-article-card-image {
+    margin-bottom: 24px;
+  }
+
+  .cards-article .cards-article-card-image picture,
+  .cards-article .cards-article-card-image img {
+    aspect-ratio: 420 / 187;
+  }
+
+  .cards-article .cards-article-card-body h3 {
+    font-size: 25px;
+    line-height: 30px;
+  }
+
+  .cards-article .cards-article-card-body p {
+    margin-top: 8px;
+    font-size: 18px;
+    line-height: 1.625;
+  }
+
+  .cards-article .cards-article-card-body p:last-child {
+    margin-top: 18px;
+    font-size: 18px;
+  }
 }

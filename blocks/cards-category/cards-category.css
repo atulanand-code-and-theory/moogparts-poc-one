@@ -1,41 +1,179 @@
+/* ==========================================================================
+   cards-category — full-bleed product category tiles (MOOG "hover-tout")
+   Source: https://www.moogparts.com/  .hover-tout
+   Each tile: blue-duotone product image on a black base, with a centered
+   white uppercase italic title. On hover: yellow overlay, title turns blue,
+   and a blue "See Products" button appears.
+   ========================================================================== */
+
+/* Break the block out of the section's max-width 1200px so tiles are
+   edge-to-edge full-bleed like the original. */
+.cards-category-wrapper {
+  max-width: 100% !important;
+  padding: 0 !important;
+}
+
 .cards-category > ul {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(257px, 1fr));
-  gap: 16px;
+  grid-template-columns: 1fr;
+  gap: 0;
 }
 
+/* tile */
 .cards-category > ul > li {
   position: relative;
+  margin: 0;
+  padding: 0;
   line-height: 0;
-  background-color: var(--background-color);
+
+  /* fallback height so the tile + overlaid title show even before / without
+     the background image (image cell is absolutely sized via aspect-ratio) */
+  min-height: 234px;
+  aspect-ratio: 360 / 234;
+  background-color: #000;
+  overflow: hidden;
 }
 
-/* full-bleed background image tile */
+/* full-bleed background image — absolutely fills the tile */
+.cards-category .cards-category-card-image {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  margin: 0;
+  line-height: 0;
+}
+
+.cards-category .cards-category-card-image picture,
 .cards-category .cards-category-card-image img {
+  display: block;
   width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
+  height: 100%;
 }
 
-/* centered overlay title + CTA */
+.cards-category .cards-category-card-image img {
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+/* yellow hover overlay (rgb(244,231,53) @ 0.75) */
+.cards-category > ul > li::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background-color: rgb(244 231 53);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.cards-category > ul > li:hover::after {
+  opacity: 0.75;
+}
+
+/* centered overlay content (title + CTA) */
 .cards-category .cards-category-card-body {
   position: absolute;
   inset: 0;
+  z-index: 3;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
   padding: 16px;
+  margin: 0;
   line-height: normal;
   text-align: center;
-  color: var(--background-color);
 }
 
-.cards-category .cards-category-card-body * {
-  color: var(--background-color);
+.cards-category .cards-category-card-body h3 {
   margin: 0;
+  padding: 0;
+  font-family: roboto-blackitalic, roboto, "Arial Black", sans-serif;
+  font-size: 32px;
+  font-weight: 900;
+  font-style: italic;
+  line-height: 1.125;
+  letter-spacing: normal;
+  text-transform: uppercase;
+  color: #fff;
+  transition: color 0.3s ease;
+}
+
+/* title turns MOOG blue on hover */
+.cards-category > ul > li:hover .cards-category-card-body h3 {
+  color: rgb(0 50 160);
+}
+
+/* "See Products" CTA — hidden until hover (matches original).
+   Absolutely positioned in the lower portion so it does not shift the
+   vertically-centered title. */
+.cards-category .cards-category-card-body p {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 18%;
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.cards-category > ul > li:hover .cards-category-card-body p {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.cards-category .cards-category-card-body a {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 17px 40px;
+  background-color: rgb(0 50 160);
+  color: #fff;
+  font-family: roboto, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: 1px;
+  line-height: 1;
+  text-decoration: none;
+  border: 0;
+  border-radius: 0;
+}
+
+.cards-category .cards-category-card-body a:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
+/* chevron arrow after the CTA label */
+.cards-category .cards-category-card-body a::after {
+  content: "\00BB";
+  font-size: 1.1em;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* tablet — 2-up */
+@media (width >= 600px) {
+  .cards-category > ul {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* desktop — 4-up edge-to-edge like the original */
+@media (width >= 900px) {
+  .cards-category > ul {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .cards-category .cards-category-card-body h3 {
+    font-size: 40px;
+  }
 }

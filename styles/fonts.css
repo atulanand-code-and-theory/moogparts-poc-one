@@ -1,4 +1,54 @@
 /* stylelint-disable max-line-length */
+
+/* MOOG brand fonts (self-hosted from moogparts.com) */
+@font-face {
+  font-family: blenderpro-book;
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/blenderpro-book.woff') format('woff');
+}
+
+@font-face {
+  font-family: blenderpro-bookitalic;
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/blenderpro-bookitalic.woff') format('woff');
+}
+
+@font-face {
+  font-family: blenderpro-bold;
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/blenderpro-bold.woff') format('woff');
+}
+
+@font-face {
+  font-family: blenderpro-bolditalic;
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/blenderpro-bolditalic.woff') format('woff');
+}
+
+@font-face {
+  font-family: roboto-black;
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('../fonts/roboto-black.woff') format('woff');
+}
+
+@font-face {
+  font-family: roboto-blackitalic;
+  font-style: italic;
+  font-weight: 900;
+  font-display: swap;
+  src: url('../fonts/roboto-blackitalic.woff') format('woff');
+}
+
 @font-face {
   font-family: roboto-condensed;
   font-style: normal;

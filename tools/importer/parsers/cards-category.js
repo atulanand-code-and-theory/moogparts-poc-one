@@ -62,14 +62,20 @@ export default function parse(element, { document }) {
       if (pic && pic.querySelector('img[src], source[srcset]')) img = pic;
     }
     if (!img) {
-      // Inline CSS background-image fallback.
-      const bgEl = tile.querySelector('.bg, .has-bg') || tile;
-      const style = bgEl.getAttribute('style') || '';
-      const m = style.match(/url\((['"]?)(.*?)\1\)/i);
-      if (m && m[2]) {
-        const synth = document.createElement('img');
-        synth.src = m[2];
-        img = synth;
+      // Inline CSS background-image fallback. The tile nests a `.has-bg`
+      // wrapper around a `.bg` element, and the `background-image` lives on the
+      // inner `.bg` (the wrapper has no inline style). Scan every candidate and
+      // use the first one whose style actually carries a url().
+      const bgCandidates = [tile, ...tile.querySelectorAll('.bg, .has-bg, [style*="background"]')];
+      for (let i = 0; i < bgCandidates.length; i += 1) {
+        const style = bgCandidates[i].getAttribute('style') || '';
+        const m = style.match(/url\((['"]?)(.*?)\1\)/i);
+        if (m && m[2]) {
+          const synth = document.createElement('img');
+          synth.src = m[2];
+          img = synth;
+          break;
+        }
       }
     }
 

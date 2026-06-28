@@ -16,6 +16,13 @@
  *  - Background image may be an <img>, inside a <picture>, or set as a CSS
  *    background-image on .header-hero-background.
  */
+// Normalize text for emptiness checks. The source site ships a trim()
+// polyfill that does NOT strip non-breaking spaces ( ), so an
+// `<h1>&nbsp;</h1>` placeholder would otherwise read as non-empty. Strip
+// regular whitespace plus nbsp / zero-width characters explicitly.
+const normalizeText = (s) => (s || '').replace(/[\s ​‌‍﻿]+/g, '');
+const hasText = (el) => normalizeText(el.textContent).length > 0;
+
 export default function parse(element, { document }) {
   // --- Background image (optional) ---
   const bgContainer = element.querySelector('.header-hero-background, [class*="background"]');
@@ -44,16 +51,16 @@ export default function parse(element, { document }) {
 
   // Primary heading — first heading that actually has text.
   const heading = Array.from(contentRoot.querySelectorAll('h1, h2, h3, h4, h5, h6'))
-    .find((h) => h.textContent.trim().length > 0) || null;
+    .find((h) => hasText(h)) || null;
 
   // Subheading + body paragraphs (only those with text or media)
   const paragraphs = Array.from(contentRoot.querySelectorAll('p'))
-    .filter((p) => p.textContent.trim().length > 0 || p.querySelector('img, picture, a'));
+    .filter((p) => hasText(p) || p.querySelector('img, picture, a'));
 
   // CTA link(s)
   const ctaLinks = Array.from(contentRoot.querySelectorAll('a.button-main, a[class*="button"], .cta-margin-header a, a'))
     .filter((a, i, arr) => arr.indexOf(a) === i)
-    .filter((a) => a.textContent.trim().length > 0 || a.querySelector('img, picture'));
+    .filter((a) => hasText(a) || a.querySelector('img, picture'));
 
   // Empty-block guard
   if (!heading && paragraphs.length === 0 && ctaLinks.length === 0 && !bgImage) {

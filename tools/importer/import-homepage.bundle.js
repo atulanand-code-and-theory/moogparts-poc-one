@@ -42,6 +42,8 @@ var CustomImportScript = (() => {
   });
 
   // tools/importer/parsers/hero-overlay.js
+  var normalizeText = (s) => (s || "").replace(/[\s ​‌‍﻿]+/g, "");
+  var hasText = (el) => normalizeText(el.textContent).length > 0;
   function parse(element, { document }) {
     const bgContainer = element.querySelector('.header-hero-background, [class*="background"]');
     let bgImage = null;
@@ -62,9 +64,9 @@ var CustomImportScript = (() => {
       }
     }
     const contentRoot = element.querySelector(".header-hero-content, .header-hero-content-container") || element;
-    const heading = Array.from(contentRoot.querySelectorAll("h1, h2, h3, h4, h5, h6")).find((h) => h.textContent.trim().length > 0) || null;
-    const paragraphs = Array.from(contentRoot.querySelectorAll("p")).filter((p) => p.textContent.trim().length > 0 || p.querySelector("img, picture, a"));
-    const ctaLinks = Array.from(contentRoot.querySelectorAll('a.button-main, a[class*="button"], .cta-margin-header a, a')).filter((a, i, arr) => arr.indexOf(a) === i).filter((a) => a.textContent.trim().length > 0 || a.querySelector("img, picture"));
+    const heading = Array.from(contentRoot.querySelectorAll("h1, h2, h3, h4, h5, h6")).find((h) => hasText(h)) || null;
+    const paragraphs = Array.from(contentRoot.querySelectorAll("p")).filter((p) => hasText(p) || p.querySelector("img, picture, a"));
+    const ctaLinks = Array.from(contentRoot.querySelectorAll('a.button-main, a[class*="button"], .cta-margin-header a, a')).filter((a, i, arr) => arr.indexOf(a) === i).filter((a) => hasText(a) || a.querySelector("img, picture"));
     if (!heading && paragraphs.length === 0 && ctaLinks.length === 0 && !bgImage) {
       element.replaceWith(...element.childNodes);
       return;
@@ -87,11 +89,25 @@ var CustomImportScript = (() => {
   // tools/importer/parsers/widget.js
   function parse2(element, { document }) {
     const widgetName = "part-finder";
+    const preserved = [];
+    const heading = element.querySelector("h1, h2, h3");
+    if (heading && heading.textContent.trim()) {
+      const h2 = document.createElement("h2");
+      h2.textContent = heading.textContent.trim();
+      preserved.push(h2);
+    }
+    const intro = element.querySelector("p");
+    if (intro && intro.textContent.trim()) {
+      const p = document.createElement("p");
+      p.textContent = intro.textContent.trim();
+      preserved.push(p);
+    }
     const link = document.createElement("a");
     link.href = `/widgets/${widgetName}.html`;
     link.textContent = `/widgets/${widgetName}.html`;
     const cells = [[link]];
     const block = WebImporter.Blocks.createBlock(document, { name: "widget", cells });
+    preserved.forEach((node) => element.parentNode.insertBefore(node, element));
     element.replaceWith(block);
   }
 
@@ -200,13 +216,16 @@ var CustomImportScript = (() => {
         if (pic && pic.querySelector("img[src], source[srcset]")) img = pic;
       }
       if (!img) {
-        const bgEl = tile.querySelector(".bg, .has-bg") || tile;
-        const style = bgEl.getAttribute("style") || "";
-        const m = style.match(/url\((['"]?)(.*?)\1\)/i);
-        if (m && m[2]) {
-          const synth = document.createElement("img");
-          synth.src = m[2];
-          img = synth;
+        const bgCandidates = [tile, ...tile.querySelectorAll('.bg, .has-bg, [style*="background"]')];
+        for (let i = 0; i < bgCandidates.length; i += 1) {
+          const style = bgCandidates[i].getAttribute("style") || "";
+          const m = style.match(/url\((['"]?)(.*?)\1\)/i);
+          if (m && m[2]) {
+            const synth = document.createElement("img");
+            synth.src = m[2];
+            img = synth;
+            break;
+          }
         }
       }
       const textCell = [];
