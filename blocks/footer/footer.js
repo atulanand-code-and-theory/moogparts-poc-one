@@ -1,5 +1,36 @@
 import { getMetadata } from '../../scripts/aem.js';
 
+// Brand logos are stored as committed assets so they render independently of the
+// content backend, which does not serve the footer's original image references.
+const FOOTER_LOGOS = [
+  { match: 'moog', src: '/icons/moog-logo.png', className: 'footer-logo-moog' },
+  { match: 'driv', src: '/icons/driv-logo.png', className: 'footer-logo-driv' },
+];
+
+/**
+ * Replaces the footer's brand logo images (whose authored sources do not resolve)
+ * with committed local assets, matched by alt text.
+ * @param {Element} footer The footer content container
+ */
+function repairLogos(footer) {
+  footer.querySelectorAll('picture').forEach((picture) => {
+    const img = picture.querySelector('img');
+    const alt = (img?.getAttribute('alt') || '').toLowerCase();
+    const logo = FOOTER_LOGOS.find((l) => alt.includes(l.match));
+    if (!logo) return;
+
+    const replacement = document.createElement('img');
+    replacement.src = logo.src;
+    replacement.alt = img.getAttribute('alt') || '';
+    replacement.loading = 'lazy';
+    replacement.classList.add(logo.className);
+
+    const newPicture = document.createElement('picture');
+    newPicture.append(replacement);
+    picture.replaceWith(newPicture);
+  });
+}
+
 /**
  * Fetches the footer fragment markup, trying the local preview path first and
  * falling back to the authored document path for DA/EDS production.
@@ -84,6 +115,8 @@ export default async function decorate(block) {
   sections.forEach((section) => {
     if (section) footer.append(section);
   });
+
+  repairLogos(footer);
 
   // Wire the sitemap toggle: a menu link pointing at the sitemap anchor controls it.
   if (menu && sitemap) {
