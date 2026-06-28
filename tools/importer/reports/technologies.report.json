@@ -1,0 +1,18 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/technologies.html",
+  "path": "technologies",
+  "timestamp": "2026-06-28T14:23:52.683Z",
+  "title": "Technologies | MOOG Parts",
+  "template": "technologies",
+  "blocks": [
+    "hero-overlay",
+    "columns-split",
+    "columns-split",
+    "columns-split",
+    "columns-split",
+    "cards-article",
+    "widget",
+    "widget"
+  ]
+}

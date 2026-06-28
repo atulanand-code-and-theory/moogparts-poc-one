@@ -4,9 +4,12 @@
 /**
  * Transformer: moogparts section boundaries + section metadata.
  *
- * Driven entirely by payload.template.sections (from page-templates.json).
- * For the homepage template there are 7 sections; each section's `selector`
- * was verified against migration-work/cleaned.html / page-templates.json:
+ * Driven entirely by payload.template.sections (from page-templates.json), so
+ * it is template-agnostic and supports every moogparts template with no
+ * per-template branching. Section selectors were verified against the captured
+ * DOM of each migrated page:
+ *
+ * homepage (7 sections, migration-work was the homepage when authored):
  *   1 .header-hero:nth-of-type(1) .header-hero-container          (style: null)
  *   2 .driv-part-finder-main                                      (style: light)
  *   3 .header-hero:nth-of-type(2) .header-hero-container          (style: null)
@@ -14,6 +17,19 @@
  *   5 .ledes .ledes-container                                     (style: grey)
  *   6 .hover-tout                                                 (style: null)
  *   7 .social-feed .mailing-list                                  (style: yellow)
+ *
+ * parts-landing (3 sections, verified in migration-work/_parts-landing/cleaned.html):
+ *   1 .header-foreground                                          (style: null)
+ *   2 .hover-tout                                                 (style: null)
+ *   3 .where-to-buy-link                                          (style: null)
+ *   -> 2 <hr>, 0 Section Metadata (all styles null)
+ *
+ * technologies (4 sections, verified in migration-work/cleaned.html):
+ *   1 .header-hero                                                (style: null)
+ *   2 .tout                                                       (style: null)
+ *   3 .ledes                                                      (style: grey)
+ *   4 .driv-part-finder-main                                      (style: light)
+ *   -> 3 <hr>, 2 Section Metadata (grey + light)
  *
  * For each section (processed in reverse document order to keep insertion
  * points stable):

@@ -115,6 +115,148 @@
           ]
         }
       ]
+    },
+    {
+      "name": "parts-landing",
+      "representativeUrl": "https://www.moogparts.com/parts.html",
+      "urls": [
+        "https://www.moogparts.com/parts.html"
+      ],
+      "coverageGaps": [],
+      "description": "MOOG Parts category landing page: hero banner with foreground image, 2x4 grid of part category tiles (Steering, Suspension, Driveline, Wheel End), and a Where to Buy / ZIP locator band.",
+      "blocks": [
+        {
+          "name": "hero-overlay",
+          "instances": [
+            ".header-foreground"
+          ]
+        },
+        {
+          "name": "cards-category",
+          "instances": [
+            ".hover-tout"
+          ]
+        },
+        {
+          "name": "widget",
+          "instances": [
+            ".where-to-buy-link"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1",
+          "name": "MOOG parts hero banner",
+          "selector": ".header-foreground",
+          "style": null,
+          "blocks": [
+            "hero-overlay"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2",
+          "name": "Part category tiles",
+          "selector": ".hover-tout",
+          "style": null,
+          "blocks": [
+            "cards-category"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-3",
+          "name": "Where to Buy ZIP locator",
+          "selector": ".where-to-buy-link",
+          "style": null,
+          "blocks": [
+            "widget"
+          ],
+          "defaultContent": []
+        }
+      ]
+    },
+    {
+      "name": "technologies",
+      "representativeUrl": "https://www.moogparts.com/technologies.html",
+      "urls": [
+        "https://www.moogparts.com/technologies.html"
+      ],
+      "coverageGaps": [],
+      "description": "MOOG Technologies page: video hero, Technology Videos list (alternating image+text feature rows), Technology Articles card grid with View More, and a Find My Part finder section.",
+      "blocks": [
+        {
+          "name": "hero-overlay",
+          "instances": [
+            ".header-hero"
+          ]
+        },
+        {
+          "name": "columns-split",
+          "instances": [
+            ".tout"
+          ]
+        },
+        {
+          "name": "cards-article",
+          "instances": [
+            ".ledes"
+          ]
+        },
+        {
+          "name": "widget",
+          "instances": [
+            ".driv-part-finder-main"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1",
+          "name": "Video hero banner",
+          "selector": ".header-hero",
+          "style": null,
+          "blocks": [
+            "hero-overlay"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2",
+          "name": "Technology Videos feature rows",
+          "selector": ".tout",
+          "style": null,
+          "blocks": [
+            "columns-split"
+          ],
+          "defaultContent": [
+            ".fmmp-plaintext:nth-of-type(3)"
+          ]
+        },
+        {
+          "id": "section-3",
+          "name": "Technology Articles card grid",
+          "selector": ".ledes",
+          "style": "grey",
+          "blocks": [
+            "cards-article"
+          ],
+          "defaultContent": [
+            ".fmmp-plaintext:nth-of-type(8)"
+          ]
+        },
+        {
+          "id": "section-4",
+          "name": "FIND MY PART finder",
+          "selector": ".driv-part-finder-main",
+          "style": "light",
+          "blocks": [
+            "widget"
+          ],
+          "defaultContent": []
+        }
+      ]
     }
   ]
 }

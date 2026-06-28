@@ -4,24 +4,59 @@
 /**
  * Transformer: moogparts site-wide cleanup.
  *
- * Removes non-authorable site chrome and third-party widgets from the
- * MOOG Parts (AEM Classic) homepage so the import contains only page-level
- * authorable content.
+ * Removes non-authorable site chrome and third-party widgets from MOOG Parts
+ * (AEM Classic) pages so the import contains only page-level authorable
+ * content. Selectors are shared across the homepage, parts-landing, and
+ * technologies templates (identical global chrome on all three).
  *
- * All selectors below were verified against migration-work/cleaned.html:
- *   - .skip-navigation              (line 5)   skip link
- *   - .body-frame-side-content      (line 7)   off-canvas mobile nav drawer (nav.mobile-nav-items)
- *   - header.global-header          (line 411) global/site header + nav, closes before #page-content (877)
- *   - nav.page-site-nav-container   (line 629) site nav (nested inside header; removed defensively)
- *   - .footer.section / footer.page-footer-container (lines 1238/1239) footer sitemap/legal/social
- *   - #onetrust-consent-sdk         (line 1457) OneTrust cookie consent modal + banner
- *   - #rufous-sandbox               (line 1703) Twitter analytics iframe
+ * Selectors verified against the captured DOM of all migrated pages
+ * (migration-work/cleaned.html = technologies; migration-work/_parts-landing/
+ * cleaned.html = parts-landing; homepage previously verified):
+ *   - .skip-navigation              skip link
+ *   - .body-frame-side-content      off-canvas mobile nav drawer
+ *   - .body-frame-global-content / .global-mobile-nav / .region-and-language
+ *                                   mobile nav drawer body (region/language selector)
+ *   - header.global-header          global/site header + nav (.page-nav lives inside)
+ *   - nav.page-site-nav-container   site nav (nested inside header; removed defensively)
+ *   - .footer.section / footer.page-footer-container   footer sitemap/legal/social
+ *   - #onetrust-consent-sdk         OneTrust cookie consent modal + banner
+ *   - #rufous-sandbox               Twitter analytics iframe
+ *   - .embed-source                 empty AEM embed placeholders between blocks
  *
- * Authorable content preserved: #page-content (hero/finder/bulletins/ledes/tiles)
- * and .social-feed .mailing-list (section 7 mailing-list CTA, line 1229).
+ * Mailing-list band (.social-feed .mailing-list, "Join our MOOG Mailing List"):
+ *   - On the HOMEPAGE this is an authorable section (homepage template
+ *     section-7, style "yellow") and MUST be preserved.
+ *   - On parts-landing and technologies it is part of the global footer chrome
+ *     (nested inside .footer-par, lines 1037-1039 of each page's cleaned.html)
+ *     and MUST be removed.
+ *   Disambiguation is template-aware: the band is removed only when the
+ *   current template does NOT declare a .social-feed/.mailing-list section
+ *   (see isMailingListAuthorable below), so the homepage is never affected.
+ *
+ * Authorable content preserved: #page-content (hero/finder/tiles/ledes/touts).
  */
 
 const TransformHook = { beforeTransform: 'beforeTransform', afterTransform: 'afterTransform' };
+
+/**
+ * Returns true when the current template treats the mailing-list band as an
+ * authorable section (homepage). Driven by payload.template.sections so the
+ * cleanup never removes authorable content. Defaults to false (treat as
+ * chrome) when no template/section info is available.
+ */
+function isMailingListAuthorable(payload) {
+  const sections = payload && payload.template && payload.template.sections;
+  if (!Array.isArray(sections)) return false;
+  return sections.some((section) => {
+    const sel = (section && section.selector) || '';
+    const defaults = (section && section.defaultContent) || [];
+    const hasMailingSelector = sel.includes('mailing-list') || sel.includes('social-feed');
+    const hasMailingDefault = Array.isArray(defaults)
+      && defaults.some((d) => typeof d === 'string'
+        && (d.includes('mailing-list') || d.includes('social-feed')));
+    return hasMailingSelector || hasMailingDefault;
+  });
+}
 
 export default function transform(hookName, element, payload) {
   if (hookName === TransformHook.beforeTransform) {
@@ -54,6 +89,14 @@ export default function transform(hookName, element, payload) {
       'style',
       'link',
     ]);
+
+    // Mailing-list band ("Join our MOOG Mailing List"): on parts-landing and
+    // technologies it is footer chrome nested in .footer-par; on the homepage
+    // it is authorable section-7. Remove only when the current template does
+    // not declare it as an authorable section, so the homepage is unaffected.
+    if (!isMailingListAuthorable(payload)) {
+      WebImporter.DOMUtils.remove(element, ['.social-feed']);
+    }
 
     // Strip AngularJS / AEM authoring/tracking attributes that are not authorable.
     element.querySelectorAll('*').forEach((el) => {

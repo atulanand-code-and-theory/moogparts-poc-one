@@ -2,63 +2,96 @@
 /* global WebImporter */
 /**
  * Parser for hero-overlay. Base: hero.
- * Source: https://www.moogparts.com/ (.header-hero .header-hero-container)
- * Generated: 2026-06-27
+ * Sources:
+ *   - https://www.moogparts.com/             (.header-hero .header-hero-container) — overlay banners
+ *   - https://www.moogparts.com/technologies.html (.header-hero) — VIDEO hero (Play btn, H1, "Find my part" CTA)
+ *   - https://www.moogparts.com/parts.html   (.header-foreground) — foreground photo banner (H1 + subtitle, NO CTA)
+ * Generated: 2026-06-27. Extended: 2026-06-28 (parts/technologies support).
  *
- * Hero library convention: 1 column, 3 rows.
+ * Hero library convention: 1 column, up to 3 rows.
  *   Row 1: block name
  *   Row 2: background image (optional)
- *   Row 3: title (heading), subheading, body text, CTA (all in one cell)
+ *   Row 3: title (heading), subheading/body text, CTA(s) — all in one cell
  *
  * Cross-instance variation handled:
- *  - Instance 1 (Problem Solver Technologies) uses an H1; some instances have
- *    an empty heading element — skip headings with no text.
- *  - Background image may be an <img>, inside a <picture>, or set as a CSS
- *    background-image on .header-hero-background.
+ *  - Homepage overlay: background in `.header-hero-background`, copy in
+ *    `.header-hero-content`.
+ *  - technologies.html video hero: same `.header-hero-*` structure, but the
+ *    content area carries a `<button class="video">` Play control (UI chrome,
+ *    NOT authored content — stripped) plus an H1 and an `a.button-main` CTA.
+ *  - parts.html `.header-foreground`: background `<img>` sits directly under a
+ *    `.has-bg` wrapper; copy lives in `.header-content` (H1 with nested brand
+ *    spans + a subtitle `<p>`); there is NO CTA. A duplicate mobile foreground
+ *    image (`.foreground-image-mobile` / `.header-foreground-image`) is product
+ *    art, not the hero background — excluded from the background row.
+ *  - Headings may contain inline `<span>`/`<sup>` markup (e.g. "MOOG® parts");
+ *    these are preserved.
  */
+
 // Normalize text for emptiness checks. The source site ships a trim()
-// polyfill that does NOT strip non-breaking spaces ( ), so an
+// polyfill that does NOT strip non-breaking spaces ( ), so an
 // `<h1>&nbsp;</h1>` placeholder would otherwise read as non-empty. Strip
 // regular whitespace plus nbsp / zero-width characters explicitly.
-const normalizeText = (s) => (s || '').replace(/[\s ​‌‍﻿]+/g, '');
+const normalizeText = (s) => (s || '').replace(/[\s ​‌‍﻿]+/g, '');
 const hasText = (el) => normalizeText(el.textContent).length > 0;
 
-export default function parse(element, { document, url }) {
+export default function parse(element, { document }) {
   // --- Background image (optional) ---
-  const bgContainer = element.querySelector('.header-hero-background, [class*="background"]');
+  // Order of preference matches the three known layouts:
+  //  1. `.header-hero-background` (homepage / technologies hero)
+  //  2. the `.has-bg` wrapper's direct <img> (parts.html foreground banner)
+  //  3. any generic [class*="background"] container
+  const bgContainer = element.querySelector('.header-hero-background')
+    || element.querySelector('[class*="background"]')
+    || element.querySelector(':scope > .has-bg, :scope > div > .has-bg');
   let bgImage = null;
   if (bgContainer) {
-    bgImage = bgContainer.querySelector('img');
+    // For `.has-bg` (parts), the banner background is its DIRECT child <img>;
+    // a deeper <img> belongs to the mobile foreground product art, so prefer a
+    // direct-child image first, then fall back to any descendant image.
+    bgImage = bgContainer.querySelector(':scope > img') || bgContainer.querySelector('img');
     if (!bgImage) {
       const pic = bgContainer.querySelector('picture');
       if (pic) bgImage = pic;
     }
-    // CSS background-image fallback -> synthesize an <img>
+    // CSS background-image fallback -> synthesize an <img>. Keep the raw URL
+    // from the inline style (which may be absolute or root-relative); the
+    // importer resolves relative paths against the page URL downstream. The
+    // validator does NOT pass `url` into the parser context, so we must not
+    // depend on it here.
     if (!bgImage) {
       const style = bgContainer.getAttribute('style') || '';
       const m = style.match(/url\((['"]?)(.*?)\1\)/i);
       if (m && m[2]) {
         const img = document.createElement('img');
-        img.src = new URL(m[2], url).href;
+        img.setAttribute('src', m[2]);
         bgImage = img;
       }
     }
   }
 
   // --- Content area ---
-  const contentRoot = element.querySelector('.header-hero-content, .header-hero-content-container')
+  // Homepage/technologies use `.header-hero-content`; parts uses
+  // `.header-content`. Fall back to the element itself.
+  const contentRoot = element.querySelector('.header-hero-content, .header-hero-content-container, .header-content')
     || element;
 
-  // Primary heading — first heading that actually has text.
+  // Primary heading — first heading that actually has text. Preserve inline
+  // markup (spans/sup) by referencing the original node.
   const heading = Array.from(contentRoot.querySelectorAll('h1, h2, h3, h4, h5, h6'))
     .find((h) => hasText(h)) || null;
 
-  // Subheading + body paragraphs (only those with text or media)
+  // Subheading + body paragraphs (only those with text or media). Exclude
+  // paragraphs that live inside the mobile foreground image wrapper.
   const paragraphs = Array.from(contentRoot.querySelectorAll('p'))
+    .filter((p) => !p.closest('.foreground-image-mobile, .header-foreground-image'))
     .filter((p) => hasText(p) || p.querySelector('img, picture, a'));
 
-  // CTA link(s)
-  const ctaLinks = Array.from(contentRoot.querySelectorAll('a.button-main, a[class*="button"], .cta-margin-header a, a'))
+  // CTA link(s). The `<button class="video">` Play control is widget UI chrome,
+  // not an authored CTA, and carries no href — the anchor selectors below skip
+  // it. parts.html has no CTA at all (handled gracefully).
+  const ctaLinks = Array.from(contentRoot.querySelectorAll('a.button-main, a[class*="button"], .cta-margin-header a, a[href]'))
+    .filter((a) => !a.closest('.foreground-image-mobile, .header-foreground-image'))
     .filter((a, i, arr) => arr.indexOf(a) === i)
     .filter((a) => hasText(a) || a.querySelector('img, picture'));
 

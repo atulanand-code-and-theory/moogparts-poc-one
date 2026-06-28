@@ -21,7 +21,7 @@
  *   - centered title in `.tout-title` (wrapped in <span>)
  *   - "See Products" CTA as a <button> inside an <a href> linking the category
  */
-export default function parse(element, { document, url }) {
+export default function parse(element, { document }) {
   // Collect all sibling tiles in the same parent group, in document order.
   const parent = element.parentElement;
   const tiles = parent
@@ -71,8 +71,11 @@ export default function parse(element, { document, url }) {
         const style = bgCandidates[i].getAttribute('style') || '';
         const m = style.match(/url\((['"]?)(.*?)\1\)/i);
         if (m && m[2]) {
+          // Keep the raw URL from the inline style; the importer resolves
+          // relative paths downstream. The validator does NOT pass `url` into
+          // the parser context, so we must not depend on it here.
           const synth = document.createElement('img');
-          synth.src = new URL(m[2], url).href;
+          synth.setAttribute('src', m[2]);
           img = synth;
           break;
         }

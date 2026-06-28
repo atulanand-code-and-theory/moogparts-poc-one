@@ -1,0 +1,16 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts.html",
+  "path": "parts",
+  "timestamp": "2026-06-28T14:23:40.691Z",
+  "title": "Performance Aftermarket Chassis & Auto Parts | MOOG Parts",
+  "template": "parts-landing",
+  "blocks": [
+    "hero-overlay",
+    "cards-category",
+    "cards-category",
+    "cards-category",
+    "cards-category",
+    "widget"
+  ]
+}

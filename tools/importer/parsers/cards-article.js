@@ -2,8 +2,10 @@
 /* global WebImporter */
 /**
  * Parser for cards-article. Base: cards.
- * Source: https://www.moogparts.com/ (.ledes .ledes-container)
- * Generated: 2026-06-27
+ * Sources:
+ *   - https://www.moogparts.com/ (.ledes .ledes-container) — Parts Matter ledes
+ *   - https://www.moogparts.com/technologies.html (.ledes) — Technology Articles grid
+ * Generated: 2026-06-27. Extended: 2026-06-28 (technologies `.ledes` support).
  *
  * Cards library convention: 2 columns, multiple rows. First row = block name.
  * Each subsequent row is one card:
@@ -15,8 +17,16 @@
  *   - title link `a.lede-title`
  *   - teaser paragraph `p.lede-teaser-text`
  *   - "Read More" CTA `a.cta-link`
+ *
+ * Both pages share the `.lede` card structure, so iterating `.lede` works for
+ * either selector (`.ledes` vs `.ledes .ledes-container`). The technologies
+ * page also renders a "View More" button inside a `.view-more` wrapper (NOT a
+ * `.lede`), so it is naturally excluded — we only ever read `.lede` cards and
+ * their inner `.lede-*` elements, never the load-more control.
  */
 export default function parse(element, { document }) {
+  // Each `.lede` is one card. The "View More" button lives in `.view-more`
+  // (outside any `.lede`) and is intentionally not collected here.
   const cards = Array.from(element.querySelectorAll('.lede'));
   const cells = [];
 
