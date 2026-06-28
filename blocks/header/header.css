@@ -19,9 +19,9 @@ header nav {
   display: grid;
   grid-template:
     'hamburger brand cta' var(--nav-height, 64px)
-    'sections sections sections' 1fr / auto 1fr auto;
+    'sections sections sections' 1fr / auto minmax(96px, 1fr) minmax(118px, auto);
   align-items: center;
-  gap: 0 16px;
+  gap: 0 12px;
   margin: auto;
   max-width: 1440px;
   padding: 0 24px;
@@ -33,7 +33,7 @@ header nav[aria-expanded='true'] {
     'hamburger brand cta' auto
     'sections sections sections' 1fr
     'tools tools tools' auto / auto 1fr auto;
-  overflow-y: auto;
+  overflow: hidden auto;
   min-height: 100dvh;
 }
 
@@ -48,6 +48,7 @@ header nav .nav-tools {
 header nav .nav-cta-desktop {
   grid-area: cta;
   justify-self: end;
+  min-width: 118px;
 }
 
 header nav p {
@@ -141,8 +142,8 @@ header .nav-brand {
 
 header nav .nav-brand img {
   width: auto;
-  height: 40px;
-  max-width: 180px;
+  height: 34px;
+  max-width: 150px;
   object-fit: contain;
   display: block;
 }
@@ -169,6 +170,12 @@ header nav .nav-sections .nav-menu {
   padding-left: 0;
   margin: 0;
   width: 100%;
+}
+
+header nav .nav-sections .default-content-wrapper,
+header nav .nav-tools .default-content-wrapper,
+header nav .nav-brand .default-content-wrapper {
+  display: contents;
 }
 
 /* ===== Mobile menu (default / below 900px) ===== */
@@ -290,8 +297,10 @@ header nav .nav-cta-button {
   text-transform: uppercase;
   font-family: blenderpro-bold, var(--body-font-family);
   font-weight: 400;
-  padding: 23px 40px 25px;
-  font-size: 18px;
+  padding: 18px 14px;
+  font-size: 16px;
+  line-height: 1;
+  text-align: center;
 }
 
 /* tools = global utility bar */
@@ -414,19 +423,21 @@ header nav .nav-locale-panel a {
     margin-left: 24px;
   }
 
-  /* Find My Part full-width blue bar pinned visually at the bottom of the drawer */
+  /* Keep Find My Part in the top-right grid cell when the drawer is open. */
   header nav[aria-expanded='true'] .nav-cta-desktop {
-    display: block;
-    width: 100vw;
-    margin-left: -24px;
-    box-sizing: border-box;
+    display: flex;
+    width: auto;
+    margin-left: 0;
   }
 
   /* stylelint-disable-next-line no-descending-specificity */
   header nav[aria-expanded='true'] .nav-cta-desktop a,
   header nav .nav-cta-button {
-    display: block;
-    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    min-height: 52px;
     box-sizing: border-box;
     text-align: center;
     background-color: #0032a0;
@@ -435,7 +446,7 @@ header nav .nav-locale-panel a {
     font-family: blenderpro-bold, var(--body-font-family);
     font-weight: 400;
     letter-spacing: 1px;
-    padding: 18px 0;
+    padding: 0 14px;
     font-size: 16px;
   }
 }
@@ -450,11 +461,12 @@ header nav .nav-locale-panel a {
   header nav[aria-expanded='true'] {
     display: grid;
     grid-template:
-      'tools tools tools' auto
-      'brand sections cta' var(--nav-height, 68px) / auto minmax(0, 1fr) auto;
-    column-gap: 24px;
+      'tools tools tools' 57px
+      'brand sections cta' 68px / 281px minmax(0, 1fr) auto;
+    column-gap: 0;
     max-width: 1440px;
     padding: 0;
+    height: 125px;
     min-height: 0;
     overflow: visible;
   }
@@ -478,7 +490,8 @@ header nav .nav-locale-panel a {
     justify-content: flex-end;
     gap: 18px;
     height: 57px;
-    padding: 0 32px;
+    box-sizing: border-box;
+    padding: 0 40px;
     border-bottom: 1px solid #ededed;
     position: relative;
   }
@@ -528,12 +541,13 @@ header nav .nav-locale-panel a {
   header nav .nav-brand {
     grid-area: brand;
     align-self: center;
-    padding-left: 32px;
+    box-sizing: border-box;
+    padding-left: 40px;
   }
 
   header nav .nav-brand img {
-    height: 36px;
-    max-width: 165px;
+    height: 50px;
+    max-width: 241px;
   }
 
   header nav .nav-sections,
@@ -555,7 +569,7 @@ header nav .nav-locale-panel a {
     align-items: center;
     height: 100%;
     width: auto;
-    padding-left: 32px;
+    padding-left: 29px;
   }
 
   header nav .nav-sections .nav-menu > li {
@@ -569,8 +583,8 @@ header nav .nav-locale-panel a {
 
   header nav .nav-sections .nav-menu > li > a {
     display: block;
-    line-height: 66px;
-    height: 66px;
+    line-height: 68px;
+    height: 68px;
     font-style: normal;
     letter-spacing: 1.8px;
     font-size: 16px;
@@ -608,10 +622,10 @@ header nav .nav-locale-panel a {
     position: absolute;
     left: 0;
     right: 0;
-    top: 100%;
+    top: 125px;
     width: 100%;
     box-sizing: border-box;
-    padding: 36px 32px;
+    padding: 26px 40px 36px;
     background-color: #e6e6e6;
     z-index: 25;
     max-height: none;
@@ -619,6 +633,7 @@ header nav .nav-locale-panel a {
     transition: none;
   }
 
+  header nav .nav-sections .nav-menu > li.nav-drop:hover > .nav-megamenu,
   header nav .nav-sections .nav-menu > li.nav-drop[aria-expanded='true'] > .nav-megamenu {
     display: flex;
     justify-content: flex-start;
@@ -681,17 +696,22 @@ header nav .nav-locale-panel a {
     align-self: stretch;
     display: flex;
     align-items: stretch;
+    min-width: 203px;
   }
 
   /* stylelint-disable-next-line no-descending-specificity */
   header nav .nav-cta-desktop a {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background-color: #0032a0;
     color: #fff;
     text-transform: uppercase;
     font-family: blenderpro-bold, var(--body-font-family);
     font-weight: 400;
-    padding: 23px 40px 25px;
+    box-sizing: border-box;
+    min-width: 203px;
+    padding: 0 40px;
     font-size: 18px;
     line-height: 18px;
   }

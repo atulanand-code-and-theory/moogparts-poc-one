@@ -69,6 +69,69 @@ function decorateSocialLink(link) {
   }
 }
 
+function cleanNavFragment(fragment) {
+  fragment.querySelectorAll('script, style, noscript, iframe').forEach((el) => el.remove());
+  fragment.querySelectorAll('[onclick], [ng-click], [ng-class], [ng-if], [ng-repeat], [ng-controller], [ng-app]')
+    .forEach((el) => {
+      [...el.attributes].forEach((attr) => {
+        if (attr.name.startsWith('ng-') || attr.name === 'onclick') el.removeAttribute(attr.name);
+      });
+    });
+
+  fragment.querySelectorAll('li > p').forEach((p) => {
+    const onlyLink = p.children.length === 1 && p.firstElementChild.tagName === 'A';
+    if (onlyLink && p.textContent.trim() === p.firstElementChild.textContent.trim()) {
+      p.replaceWith(p.firstElementChild);
+    }
+  });
+
+  fragment.querySelectorAll('p').forEach((p) => {
+    if (!p.textContent.trim() && !p.querySelector('img, picture, a')) p.remove();
+  });
+}
+
+function sectionText(section) {
+  return (section.textContent || '').trim().replace(/\s+/g, ' ').toLowerCase();
+}
+
+function classifyNavSections(nav) {
+  const sections = [...nav.children].filter((child) => child.tagName === 'DIV');
+  const brand = sections.find((section) => section.querySelector('img[alt*="moog" i], picture img'));
+  const primary = sections.find((section) => {
+    const text = sectionText(section);
+    return section !== brand && text.includes('parts') && text.includes('support');
+  });
+  const tools = sections.find((section) => {
+    const text = sectionText(section);
+    return section !== brand
+      && section !== primary
+      && (
+        text.includes('united states')
+        || text.includes('light commercial')
+        || text.includes('chassis system')
+        || text.includes('facebook')
+        || text.includes('youtube')
+        || text.includes('instagram')
+      );
+  });
+  const mobile = sections.find((section) => {
+    const text = sectionText(section);
+    return section !== brand && section !== primary && section !== tools && text.includes('home');
+  });
+
+  if (brand) brand.classList.add('nav-brand');
+  if (primary) primary.classList.add('nav-sections');
+  if (tools) tools.classList.add('nav-tools');
+  if (mobile) mobile.classList.add('nav-mobile-source');
+
+  return {
+    brand,
+    primary,
+    tools,
+    mobile,
+  };
+}
+
 /**
  * Decorate the utility (tools) row: social icons, text links, locale dropdown.
  */
@@ -90,7 +153,7 @@ function decorateTools(navTools) {
   });
 
   // locale selector: the <ul> at the end of the tools section
-  const localeList = navTools.querySelector(':scope > ul');
+  const localeList = navTools.querySelector(':scope > ul, :scope > div > ul');
   if (localeList) {
     localeList.classList.add('nav-locale-list');
     const trigger = localeList.querySelector(':scope > li');
@@ -152,20 +215,30 @@ function decorateCategoryAccordion(li) {
  */
 function decorateSections(navSections, nav, mobileExtras) {
   if (!navSections) return;
-  const topUl = navSections.querySelector(':scope > ul');
+  const topUl = navSections.querySelector(':scope > ul, :scope > div > ul');
   if (topUl) topUl.classList.add('nav-menu');
+  const topItems = topUl ? [...topUl.querySelectorAll(':scope > li')] : [];
+  const homeItem = topItems.find((li) => li.querySelector(':scope > a')?.textContent.trim().toLowerCase() === 'home');
+  const lcvItem = topItems.find((li) => li.querySelector(':scope > a')?.textContent.trim().toLowerCase() === 'light commercial vehicle');
 
-  // Find My Part CTA (<p> wrapper) — relocate to its own grid area (single instance, no clone)
-  navSections.querySelectorAll(':scope > p > a').forEach((a) => {
-    a.classList.add('nav-cta-button');
+  if (homeItem) homeItem.classList.add('nav-mobile-only', 'nav-mobile-home');
+  if (lcvItem) lcvItem.classList.add('nav-mobile-only', 'nav-mobile-lcv');
+
+  // Find My Part CTA — relocate to its own grid area (single instance, no clone)
+  const ctaLink = [...navSections.querySelectorAll('a')]
+    .find((a) => a.textContent.trim().toLowerCase() === 'find my part');
+  if (ctaLink) {
+    const ctaItem = ctaLink.closest('li');
+    ctaLink.classList.add('nav-cta-button');
     const ctaHolder = document.createElement('div');
     ctaHolder.className = 'nav-cta-desktop';
-    ctaHolder.append(a);
+    ctaHolder.append(ctaLink);
     nav.append(ctaHolder);
-  });
+    if (ctaItem) ctaItem.remove();
+  }
 
   // Mobile-only "Home" link prepended to the menu (hidden on desktop via CSS)
-  if (topUl && mobileExtras && mobileExtras.home) {
+  if (topUl && mobileExtras && mobileExtras.home && !homeItem) {
     const homeLi = document.createElement('li');
     homeLi.className = 'nav-mobile-only nav-mobile-home';
     homeLi.append(mobileExtras.home);
@@ -203,7 +276,7 @@ function decorateSections(navSections, nav, mobileExtras) {
   });
 
   // Mobile-only "Light Commercial Vehicle" appended to the menu (hidden on desktop)
-  if (topUl && mobileExtras && mobileExtras.lcv) {
+  if (topUl && mobileExtras && mobileExtras.lcv && !lcvItem) {
     const lcvLi = document.createElement('li');
     lcvLi.className = 'nav-mobile-only nav-mobile-lcv';
     lcvLi.append(mobileExtras.lcv);
@@ -226,12 +299,16 @@ export default async function decorate(block) {
       const html = await resp.text();
       const tmp = document.createElement('div');
       tmp.innerHTML = html;
+      cleanNavFragment(tmp);
       fragment = tmp;
     }
   } catch (e) {
     fragment = null;
   }
-  if (!fragment) fragment = await loadFragment(navPath);
+  if (!fragment) {
+    fragment = await loadFragment(navPath);
+    if (fragment) cleanNavFragment(fragment);
+  }
 
   // decorate nav DOM
   block.textContent = '';
@@ -239,29 +316,23 @@ export default async function decorate(block) {
   nav.id = 'nav';
   while (fragment.firstElementChild) nav.append(fragment.firstElementChild);
 
-  const classes = ['brand', 'sections', 'tools'];
-  classes.forEach((c, i) => {
-    const section = nav.children[i];
-    if (section) section.classList.add(`nav-${c}`);
-  });
+  const navParts = classifyNavSections(nav);
 
   // the optional 4th section is mobile-only content (e.g. Home)
-  const mobileSection = nav.children[3];
   const mobileExtras = {};
-  if (mobileSection) {
-    mobileSection.classList.add('nav-mobile-source');
-    const homeLink = mobileSection.querySelector('a');
+  if (navParts.mobile) {
+    const homeLink = navParts.mobile.querySelector('a');
     if (homeLink) mobileExtras.home = homeLink;
-    mobileSection.remove();
+    navParts.mobile.remove();
   }
 
-  const navBrand = nav.querySelector('.nav-brand');
+  const navBrand = navParts.brand;
   if (navBrand) {
     const brandLink = navBrand.querySelector('a');
     if (brandLink) brandLink.classList.add('nav-brand-link');
   }
 
-  const navTools = nav.querySelector('.nav-tools');
+  const navTools = navParts.tools;
   decorateTools(navTools);
 
   // Light Commercial Vehicle is a utility-bar link on desktop but also a
@@ -273,7 +344,7 @@ export default async function decorate(block) {
     mobileExtras.lcv = lcvClone;
   }
 
-  const navSections = nav.querySelector('.nav-sections');
+  const navSections = navParts.primary;
   decorateSections(navSections, nav, mobileExtras);
 
   // hamburger for mobile
