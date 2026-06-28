@@ -154,6 +154,13 @@
   margin: 5px 0 0;
 }
 
+/*
+ * Lead-hero CTA (e.g. "Watch and Learn »"): mixed-case bold-italic label with
+ * a trailing double-chevron. Source computed: text-transform none, weight 400
+ * (the weight/slant come from the blenderpro-bolditalic font file), padding
+ * 17px 56px 17px 40px (extra right gap for the arrow) and an icomoon glyph in
+ * ::after. icomoon is unavailable here, so render the chevron with Unicode.
+ */
 .hero-overlay a.hero-overlay-cta:any-link {
   display: inline-block;
   margin: 0;
@@ -162,13 +169,14 @@
   padding: 17px 40px;
   background-color: #0032a0;
   color: #fff;
-  font-family: blenderpro-bold, arial, sans-serif;
+  font-family: blenderpro-bolditalic, blenderpro-bold, arial, sans-serif;
   font-size: 18px;
+  font-style: italic;
   font-weight: 700;
   line-height: 23px;
   letter-spacing: 1px;
   text-align: center;
-  text-transform: uppercase;
+  text-transform: none;
   text-decoration: none;
   white-space: nowrap;
 }
@@ -178,6 +186,29 @@
   background-color: #002280;
   color: #fff;
   text-decoration: none;
+}
+
+/* Trailing double-chevron arrow on the lead-hero CTA */
+.hero-overlay.lead a.hero-overlay-cta:any-link {
+  padding-right: 56px;
+}
+
+.hero-overlay.lead a.hero-overlay-cta::after {
+  content: "\00BB"; /* » */
+  margin-left: 14px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+/*
+ * Centered (Excellence Never Quits) CTA: uppercase "WATCH NOW", no arrow,
+ * upright. Source computed: text-transform uppercase, blenderpro-bold.
+ */
+.hero-overlay.centered a.hero-overlay-cta:any-link {
+  padding: 17px 40px;
+  font-family: blenderpro-bold, arial, sans-serif;
+  font-style: normal;
+  text-transform: uppercase;
 }
 
 @media (width >= 600px) {

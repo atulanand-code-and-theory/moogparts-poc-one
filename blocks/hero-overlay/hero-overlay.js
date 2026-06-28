@@ -43,6 +43,10 @@ export default function decorate(block) {
   const heading = contentRow ? contentRow.querySelector('h1, h2, h3, h4, h5, h6') : null;
   if (heading && heading.tagName === 'H2') {
     block.classList.add('centered');
+  } else if (hasImage) {
+    // Bottom-left lead hero (e.g. "Problem Solver Technologies"): mixed-case
+    // CTA with a trailing chevron arrow.
+    block.classList.add('lead');
   }
 
   // Mark the CTA link so it can be styled as a solid button.

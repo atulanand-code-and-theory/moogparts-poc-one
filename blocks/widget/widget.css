@@ -117,7 +117,9 @@ main .section:has(.widget) .default-content-wrapper p:has(img) {
   max-width: 580px;
 }
 
-/* --- Panel headings (h4) --- */
+/* --- Panel headings (h4) --- *
+ * Source computed: roboto-black, weight 400 (heavy weight provided by the
+ * font family itself, not numeric weight), 20px / 20px line-height. */
 .widget h4,
 .widget .driv-part-finder-main h4,
 /* stylelint-disable-next-line selector-class-pattern -- third-party widget class */
@@ -126,7 +128,7 @@ main .section:has(.widget) .default-content-wrapper p:has(img) {
   padding: 0;
   color: rgb(0 50 160);
   font-family: roboto-black, roboto, sans-serif;
-  font-weight: 900;
+  font-weight: 400;
   font-size: 20px;
   line-height: 20px;
   text-align: center;
@@ -202,7 +204,9 @@ main .section:has(.widget) .default-content-wrapper p:has(img) {
   color: rgb(128 128 128);
 }
 
-/* The blue "search" button */
+/* The blue "search" button — source computed: blenderpro-bolditalic, weight
+ * 400 (bold provided by the font family), 18px / 23px line-height, 1px
+ * letter-spacing, no text-transform (content is already lowercase). */
 .widget .button-main,
 .widget .driv-part-number-search-button.button-main {
   display: flex;
@@ -215,11 +219,10 @@ main .section:has(.widget) .default-content-wrapper p:has(img) {
   color: rgb(255 255 255);
   font-family: blenderpro-bolditalic, roboto, sans-serif;
   font-style: italic;
-  font-weight: 700;
+  font-weight: 400;
   font-size: 18px;
   line-height: 23px;
   letter-spacing: 1px;
-  text-transform: lowercase;
   text-align: center;
   cursor: pointer;
 }
@@ -240,10 +243,8 @@ main .section:has(.widget) .default-content-wrapper p:has(img) {
     max-width: 580px;
   }
 
-  /* Vertical divider between the two panels */
-  .widget .driv-part-number-search {
-    border-left: 1px solid rgb(51 51 51);
-  }
+  /* Source has no vertical divider between the two panels
+   * (.driv-part-number-search computed border: 0 none). */
 
   .widget h4,
   /* stylelint-disable-next-line selector-class-pattern -- third-party widget class */

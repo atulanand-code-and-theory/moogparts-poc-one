@@ -132,15 +132,16 @@
 .section.blue .columns-split h2 {
   margin: 0 0 16px;
   color: var(--moog-yellow);
-  font-family: roboto, roboto-fallback, sans-serif;
+  font-family: roboto-blackitalic, roboto, roboto-fallback, sans-serif;
   font-size: 40px;
-  font-weight: 900;
+  font-weight: 400;
   font-style: italic;
   line-height: 48px;
   text-transform: uppercase;
 }
 
 .section.blue .columns-split p {
+  margin: 0 0 27px;
   color: #fff;
   font-size: 16px;
   line-height: 1.45;
@@ -155,11 +156,11 @@
   padding: 17px 40px;
   background-color: var(--moog-yellow);
   color: var(--moog-blue);
-  font-family: blenderpro-book, roboto, roboto-fallback, sans-serif;
+  font-family: blenderpro-bolditalic, blenderpro-book, roboto, roboto-fallback, sans-serif;
   font-size: 18px;
   font-weight: 400;
-  font-style: normal;
-  letter-spacing: normal;
+  font-style: italic;
+  letter-spacing: 1px;
 }
 
 /* blue band CTAs have no trailing arrow */
@@ -210,9 +211,11 @@
     line-height: 28px;
   }
 
-  /* Blue band variant on desktop */
+  /* Blue band variant on desktop — equal columns, no gap, top-aligned
+     (source: two 41.7% columns meeting at centre within the 1200px content area) */
   .section.blue .columns-split > div {
     gap: 0;
+    align-items: flex-start;
     margin-bottom: 0;
   }
 

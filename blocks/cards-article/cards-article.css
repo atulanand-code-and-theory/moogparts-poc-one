@@ -123,15 +123,24 @@
   color: #fff;
 }
 
+/* article title — source: roboto-black, upright (non-italic), weight 400, 25px/30px */
 .section.grey .cards-article .cards-article-card-body h3 {
-  font-family: roboto-blackitalic, roboto, roboto-fallback, sans-serif;
+  font-family: roboto-black, roboto, roboto-fallback, sans-serif;
   font-weight: 900;
-  font-style: italic;
+  font-style: normal;
 }
 
 .section.grey .cards-article .cards-article-card-body h3 a:any-link,
 .section.grey .cards-article .cards-article-card-body p:last-child a:any-link {
   color: rgb(0 104 255);
+}
+
+/* "Read More" CTA — source: blenderpro-bolditalic, italic, blue, block-level */
+.section.grey .cards-article .cards-article-card-body p:last-child a:any-link {
+  display: block;
+  font-family: blenderpro-bolditalic, roboto, roboto-fallback, sans-serif;
+  font-style: italic;
+  font-weight: 700;
 }
 
 .section.grey .cards-article .cards-article-card-body {
@@ -150,7 +159,7 @@
 /* desktop: 3-up with larger typography */
 @media (width >= 900px) {
   .cards-article > ul {
-    padding: 0 14px 33px;
+    padding: 0 14px 33px; /* source 33px outer minus EDS section gutter */
   }
 
   .cards-article > ul > li {

@@ -6,7 +6,7 @@
      - .has-bg has a PERSISTENT blue overlay (#0068ff @ 0.75) -> blue duotone
      - on :hover the overlay becomes yellow (#f4e735 @ 0.75)
      - .has-bg border: 1px solid #00419f
-     - tile aspect via padding-bottom: 50% desktop (default--6), 85% mobile
+     - tile aspect via padding-bottom: 64.7% desktop (measured 360x234 @ 1440px), 85% mobile
      - centered white uppercase italic h2 (40px desktop / 28px mobile),
        title turns MOOG blue (#0032a0) on hover
      - background image background-size: cover
@@ -44,8 +44,10 @@
 .cards-category .cards-category-card-image {
   position: relative;
   display: block;
+  box-sizing: border-box;
   margin: 0;
   padding-bottom: 85%;
+  font-size: 0;
   line-height: 0;
   border: 1px solid #00419f;
 }
@@ -131,15 +133,16 @@
   }
 }
 
-/* desktop — 4-up edge-to-edge; source aspect padding-bottom 50% (default--6),
-   title font-size 40px. */
+/* desktop — 4-up edge-to-edge. Source aspect (measured at 1440px, tile
+   width 360px): padding-bottom 231.547px on inner width 358px = 64.7%.
+   Title font-size 40px. */
 @media (width >= 900px) {
   .cards-category > ul {
     grid-template-columns: repeat(4, 1fr);
   }
 
   .cards-category .cards-category-card-image {
-    padding-bottom: 50%;
+    padding-bottom: 64.7%;
   }
 
   .cards-category .cards-category-card-body h3 {
