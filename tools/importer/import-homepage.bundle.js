@@ -42,6 +42,8 @@ var CustomImportScript = (() => {
   });
 
   // tools/importer/parsers/hero-overlay.js
+  var normalizeText = (s) => (s || "").replace(/[\s ​‌‍﻿]+/g, "");
+  var hasText = (el) => normalizeText(el.textContent).length > 0;
   function parse(element, { document }) {
     const bgContainer = element.querySelector('.header-hero-background, [class*="background"]');
     let bgImage = null;
@@ -62,9 +64,9 @@ var CustomImportScript = (() => {
       }
     }
     const contentRoot = element.querySelector(".header-hero-content, .header-hero-content-container") || element;
-    const heading = Array.from(contentRoot.querySelectorAll("h1, h2, h3, h4, h5, h6")).find((h) => h.textContent.trim().length > 0) || null;
-    const paragraphs = Array.from(contentRoot.querySelectorAll("p")).filter((p) => p.textContent.trim().length > 0 || p.querySelector("img, picture, a"));
-    const ctaLinks = Array.from(contentRoot.querySelectorAll('a.button-main, a[class*="button"], .cta-margin-header a, a')).filter((a, i, arr) => arr.indexOf(a) === i).filter((a) => a.textContent.trim().length > 0 || a.querySelector("img, picture"));
+    const heading = Array.from(contentRoot.querySelectorAll("h1, h2, h3, h4, h5, h6")).find((h) => hasText(h)) || null;
+    const paragraphs = Array.from(contentRoot.querySelectorAll("p")).filter((p) => hasText(p) || p.querySelector("img, picture, a"));
+    const ctaLinks = Array.from(contentRoot.querySelectorAll('a.button-main, a[class*="button"], .cta-margin-header a, a')).filter((a, i, arr) => arr.indexOf(a) === i).filter((a) => hasText(a) || a.querySelector("img, picture"));
     if (!heading && paragraphs.length === 0 && ctaLinks.length === 0 && !bgImage) {
       element.replaceWith(...element.childNodes);
       return;
