@@ -1,25 +1,33 @@
 export default function decorate(block) {
   const rows = [...block.children];
 
-  // The first row is expected to hold the background image.
-  const imageRow = rows[0];
-  const img = imageRow ? imageRow.querySelector('img') : null;
-  const picture = imageRow ? imageRow.querySelector('picture') : null;
+  // The first row is expected to hold the background image, but the minimal
+  // "header-simple" variant has no image and a single content row only.
+  const firstRow = rows[0];
+  const img = firstRow ? firstRow.querySelector('img') : null;
+  const picture = firstRow ? firstRow.querySelector('picture') : null;
+  const hasImage = !!(img || picture);
 
-  if (img || picture) {
+  let imageRow = null;
+  let contentRow = null;
+
+  if (hasImage) {
     // Promote the image cell into a dedicated background layer.
+    imageRow = firstRow;
     imageRow.classList.add('hero-overlay-bg');
     // Unwrap the image from any <p> EDS added so it can fill the layer.
     const wrapper = (picture || img).closest('p');
     if (wrapper && wrapper.children.length === 1) {
       wrapper.replaceWith(picture || img);
     }
+    // Remaining rows hold the textual content.
+    contentRow = rows[1] || rows.find((r) => r !== imageRow);
   } else {
+    // No background image (minimal title header): the first row IS the content.
     block.classList.add('no-image');
+    contentRow = firstRow;
   }
 
-  // The remaining rows hold the textual content.
-  const contentRow = rows[1] || rows.find((r) => r !== imageRow);
   if (contentRow) {
     contentRow.classList.add('hero-overlay-content');
   }

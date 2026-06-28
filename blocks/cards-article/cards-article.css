@@ -1,8 +1,12 @@
-/* cards-article — "Parts Matter" article ledes
-   Matched to moogparts.com .ledes .ledes-container
-   Dark band, 3-up article cards: image on top, blue title link,
-   white description, blue "Read More" arrow link, divider rule.
-   Section background (dark) is applied at section scope (.section.grey). */
+/* cards-article — MOOG article ledes + product cross-sell cards
+   Two source shapes parse into this block:
+   1. ".ledes" article-teaser grid (technologies, tech-tips): image + blue
+      title link + description + blue "Read More»" link, 3-up grid.
+   2. ".cross-sell" product band (did-you-know-bulletins): image + title +
+      description + blue "View ..." CTA, small set (2 cards).
+   Both render on a WHITE/light background on the source. Card colors are
+   light-native by default; a dark-band override is scoped to .section.grey
+   so a grey-authored section stays legible (no regression). */
 
 /* container: flex-wrap grid of cards, mobile-first 1-up */
 .cards-article > ul {
@@ -39,73 +43,100 @@
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 339 / 151;
+  aspect-ratio: 395 / 186;
   object-fit: cover;
 }
 
-/* card body — holds title, description and read-more, with divider rule */
+/* card body — title, description, CTA */
 .cards-article .cards-article-card-body {
   margin: 0;
-  padding-bottom: 16px;
-  border-bottom: 1px solid rgb(239 239 239);
-  color: #fff;
+  color: var(--text-color);
 }
 
-/* title link */
+/* title link — blenderpro-book, MOOG blue, plain (source: 16px/400, #0032A0) */
 .cards-article .cards-article-card-body h3 {
   margin: 0;
-  font-family: roboto-blackitalic, roboto, arial, sans-serif;
+  font-family: var(--body-font-family);
   font-size: 16px;
-  font-weight: 900;
+  font-weight: 400;
   line-height: 20px;
   text-transform: none;
 }
 
 .cards-article .cards-article-card-body h3 a:any-link {
-  color: rgb(0 104 255);
+  color: var(--moog-blue);
   text-decoration: none;
 }
 
 .cards-article .cards-article-card-body h3 a:hover {
-  color: rgb(0 104 255);
+  color: var(--link-hover-color);
   text-decoration: underline;
 }
 
-/* description paragraph (white on dark band) */
+/* description paragraph (source: 18px/29px, #333 dark) */
 .cards-article .cards-article-card-body p {
   margin: 8px 0 0;
-  color: #fff;
+  color: rgb(51 51 51);
   font-family: var(--body-font-family);
   font-size: 16px;
   font-weight: 400;
   line-height: 1.45;
 }
 
-/* "Read More" link — its own paragraph (last child) */
+/* "Read More" / "View ..." link — its own paragraph (last child) */
 .cards-article .cards-article-card-body p:last-child {
   margin-top: 18px;
 }
 
 .cards-article .cards-article-card-body p:last-child a:any-link {
   display: inline-block;
-  color: rgb(0 104 255);
-  font-weight: 700;
-  font-style: italic;
+  color: var(--link-hover-color);
+  font-weight: 400;
   letter-spacing: 1px;
   text-decoration: none;
 }
 
 .cards-article .cards-article-card-body p:last-child a:hover {
-  color: rgb(0 104 255);
-  text-decoration: none;
+  color: var(--link-hover-color);
+  text-decoration: underline;
 }
 
-/* double-chevron arrow after "Read More" */
+/* double-chevron arrow after the link */
 .cards-article .cards-article-card-body p:last-child a::after {
   content: "\00BB";
   margin-left: 6px;
   font-style: normal;
   font-weight: 700;
+}
+
+/* --- small set (cross-sell: 2 cards) ---------------------------------
+   With a fixed 1/3 column width, two cards would cling to the left and
+   read as broken. Center the row so a 2-card set looks intentional. */
+.cards-article > ul:not(:has(> li:nth-child(3))) {
+  justify-content: center;
+}
+
+/* --- dark band override (only when the section is authored grey) ------
+   Preserves the established dark "Parts Matter" ledes treatment. */
+.section.grey .cards-article .cards-article-card-body,
+.section.grey .cards-article .cards-article-card-body p {
+  color: #fff;
+}
+
+.section.grey .cards-article .cards-article-card-body h3 {
+  font-family: roboto-blackitalic, roboto, roboto-fallback, sans-serif;
+  font-weight: 900;
+  font-style: italic;
+}
+
+.section.grey .cards-article .cards-article-card-body h3 a:any-link,
+.section.grey .cards-article .cards-article-card-body p:last-child a:any-link {
+  color: rgb(0 104 255);
+}
+
+.section.grey .cards-article .cards-article-card-body {
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgb(239 239 239);
 }
 
 /* tablet: 2-up */
@@ -131,14 +162,9 @@
     margin-bottom: 24px;
   }
 
-  .cards-article .cards-article-card-image picture,
-  .cards-article .cards-article-card-image img {
-    aspect-ratio: 420 / 187;
-  }
-
   .cards-article .cards-article-card-body h3 {
-    font-size: 25px;
-    line-height: 30px;
+    font-size: 16px;
+    line-height: 20px;
   }
 
   .cards-article .cards-article-card-body p {
@@ -150,5 +176,11 @@
   .cards-article .cards-article-card-body p:last-child {
     margin-top: 18px;
     font-size: 18px;
+  }
+
+  /* dark band keeps its larger article title */
+  .section.grey .cards-article .cards-article-card-body h3 {
+    font-size: 25px;
+    line-height: 30px;
   }
 }

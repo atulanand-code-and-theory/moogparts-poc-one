@@ -1,15 +1,25 @@
-/* columns-split — MOOG "Problem Solver Bulletins + Diagnostic Center" blue band.
-   Two stacked rows. Each row = text column + image column side by side on desktop,
-   stacked on mobile. Source: https://www.moogparts.com/ (computed styles). */
+/* columns-split — MOOG side-by-side image + text feature rows.
+   Two variants share this block:
+   1. Default (light): the technical/technologies ".tout" feature rows — image
+      column + text column (blue H2, dark body, blue arrow CTA) on a white/light
+      background. Multiple rows stack vertically.
+   2. Blue band: the homepage "Problem Solver / Diagnostic" band inside a
+      `.section.blue` — yellow headings, white body, yellow CTA buttons.
+   Source: https://www.moogparts.com/technical.html and homepage (computed styles). */
 
-/* Each row: stacked on mobile, text first then image visually controlled per cell */
+/* ---------------------------------------------------------------------------
+   Shared layout — each row stacks on mobile, side-by-side on desktop
+--------------------------------------------------------------------------- */
+
+/* Each row: image then text, stacked on mobile, with vertical rhythm between rows */
 .columns-split > div {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  margin-bottom: 48px;
 }
 
-/* Image cells (tagged by columns-split.js) */
+/* Image cells (tagged by columns-split.js) render first */
 .columns-split > div > .columns-split-img-col {
   order: 0;
 }
@@ -18,7 +28,11 @@
   order: 1;
 }
 
-/* Images fill their column, square corners, fixed aspect like source (600x251) */
+.columns-split > div:last-child {
+  margin-bottom: 0;
+}
+
+/* Images fill their column, square corners */
 .columns-split img {
   display: block;
   width: 100%;
@@ -31,29 +45,33 @@
   margin: 0;
 }
 
-/* Headings — MOOG yellow, uppercase, heavy italic */
+/* ---------------------------------------------------------------------------
+   Default (light) variant — the .tout feature rows
+--------------------------------------------------------------------------- */
+
+/* Headings — MOOG blue, uppercase, heavy italic */
 .columns-split h2 {
-  margin: 0 0 16px;
-  color: rgb(245 233 68);
-  font-family: roboto, roboto-fallback, sans-serif;
-  font-size: 40px;
-  font-weight: 900;
+  margin: 0 0 20px;
+  color: var(--moog-blue);
+  font-family: roboto-blackitalic, roboto, roboto-fallback, sans-serif;
+  font-size: 32px;
+  font-weight: 400;
   font-style: italic;
-  line-height: 48px;
+  line-height: 1.2;
   text-transform: uppercase;
 }
 
-/* Body copy — white */
+/* Body copy — dark grey */
 .columns-split p {
   margin: 0 0 24px;
-  color: #fff;
+  color: #333;
   font-size: 16px;
-  line-height: 1.45;
+  line-height: 28px;
 }
 
-/* CTA paragraphs sit close together; on mobile they're full width and stacked */
+/* CTA paragraph spacing */
 .columns-split p:has(> a) {
-  margin-top: 15px;
+  margin-top: 24px;
 }
 
 /* image wrapped in <p> by EDS — remove the paragraph spacing */
@@ -65,41 +83,110 @@
   margin-bottom: 0;
 }
 
-/* CTAs — yellow square buttons with blue text (overrides global a.button rounding) */
-.columns-split a {
+/* CTA — solid MOOG-blue button, white bold-italic text, trailing arrow.
+   Override global a.button rounding/styles with matching specificity. */
+.columns-split a,
+.columns-split a.button:any-link {
   display: inline-block;
+  align-items: initial;
+  justify-content: initial;
   margin: 0;
   border: 0;
   border-radius: 0;
   padding: 17px 40px;
-  background-color: rgb(245 233 68);
-  color: rgb(0 50 160);
+  background-color: var(--moog-blue);
+  color: #fff;
+  font-family: blenderpro-bolditalic, blenderpro-book, roboto, roboto-fallback, sans-serif;
   font-size: 18px;
-  font-weight: 400;
-  line-height: 23px;
+  font-weight: 700;
+  font-style: italic;
+  line-height: 1.2;
+  letter-spacing: 1px;
   text-align: center;
   text-decoration: none;
   text-transform: none;
+  white-space: nowrap;
 }
 
-.columns-split p:has(> a) a {
-  display: block;
-  text-align: center;
+/* trailing double-chevron arrow */
+.columns-split a::after,
+.columns-split a.button:any-link::after {
+  content: "\00BB";
+  margin-left: 12px;
+  font-weight: 700;
 }
 
 .columns-split a:hover,
-.columns-split a:focus-visible {
-  background-color: rgb(230 218 50);
-  color: rgb(0 50 160);
+.columns-split a:focus-visible,
+.columns-split a.button:any-link:hover,
+.columns-split a.button:any-link:focus-visible {
+  background-color: var(--link-hover-color);
+  color: #fff;
   text-decoration: none;
 }
 
+/* ---------------------------------------------------------------------------
+   Blue band variant — homepage "Problem Solver / Diagnostic" inside .section.blue
+--------------------------------------------------------------------------- */
+
+.section.blue .columns-split h2 {
+  margin: 0 0 16px;
+  color: var(--moog-yellow);
+  font-family: roboto, roboto-fallback, sans-serif;
+  font-size: 40px;
+  font-weight: 900;
+  font-style: italic;
+  line-height: 48px;
+  text-transform: uppercase;
+}
+
+.section.blue .columns-split p {
+  color: #fff;
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.section.blue .columns-split p:has(> a) {
+  margin-top: 15px;
+}
+
+.section.blue .columns-split a,
+.section.blue .columns-split a.button:any-link {
+  padding: 17px 40px;
+  background-color: var(--moog-yellow);
+  color: var(--moog-blue);
+  font-family: blenderpro-book, roboto, roboto-fallback, sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: normal;
+}
+
+/* blue band CTAs have no trailing arrow */
+.section.blue .columns-split a::after,
+.section.blue .columns-split a.button:any-link::after {
+  content: none;
+}
+
+.section.blue .columns-split a:hover,
+.section.blue .columns-split a:focus-visible,
+.section.blue .columns-split a.button:any-link:hover,
+.section.blue .columns-split a.button:any-link:focus-visible {
+  background-color: rgb(230 218 50);
+  color: var(--moog-blue);
+}
+
+/* ---------------------------------------------------------------------------
+   Desktop (>= 900px) — two columns side by side
+--------------------------------------------------------------------------- */
+
 @media (width >= 900px) {
-  /* Each row becomes two equal side-by-side columns */
+  /* Each row becomes two equal side-by-side columns, vertically centred */
   .columns-split > div {
     flex-direction: row;
     align-items: center;
-    gap: 0;
+    gap: 48px;
+    margin-bottom: 64px;
   }
 
   .columns-split > div > div {
@@ -112,25 +199,36 @@
     order: unset;
   }
 
+  /* Default variant heading scales up */
+  .columns-split h2 {
+    font-size: 40px;
+    line-height: 48px;
+  }
+
   .columns-split p {
+    font-size: 16px;
+    line-height: 28px;
+  }
+
+  /* Blue band variant on desktop */
+  .section.blue .columns-split > div {
+    gap: 0;
+    margin-bottom: 0;
+  }
+
+  .section.blue .columns-split p {
     font-size: 18px;
     line-height: 1.625;
   }
 
-  /* CTA paragraphs: inline auto-width buttons sitting on one row */
-  .columns-split p:has(> a) {
+  .section.blue .columns-split p:has(> a) {
     display: inline-block;
     margin-top: 20px;
     margin-right: 10px;
     vertical-align: top;
   }
 
-  /* second of two adjacent CTAs aligns on the same row */
-  .columns-split p:has(> a) + p:has(> a) {
-    margin-top: 20px;
-  }
-
-  .columns-split p:has(> a) a {
+  .section.blue .columns-split p:has(> a) a {
     display: inline-block;
   }
 }

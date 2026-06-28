@@ -27,6 +27,21 @@
   text-align: center;
 }
 
+/*
+ * Minimal title header ("header-simple") variant: no background image, no CTA.
+ * Source renders a compact MOOG bright-blue band with a centered white
+ * uppercase italic heading. Degrade gracefully: drop the 600px overlay box.
+ */
+.hero-overlay.block.no-image {
+  justify-content: center;
+  align-items: center;
+  min-height: auto;
+  padding: 35px 10px 40px;
+  background-color: #0068ff;
+  text-align: center;
+  overflow: visible;
+}
+
 /* Background image layer + dark overlay */
 .hero-overlay .hero-overlay-bg {
   position: absolute;
@@ -107,6 +122,10 @@
   line-height: 1.45;
 }
 
+.hero-overlay.no-image .hero-overlay-content p {
+  margin: 12px 0 0;
+}
+
 /* Subtitle paragraph in the centered hero (e.g. "A MOOG Video Series") */
 .hero-overlay.centered .hero-overlay-content p:first-of-type {
   margin-bottom: 20px;
@@ -114,6 +133,20 @@
   font-style: italic;
   font-size: 18px;
   text-transform: uppercase;
+}
+
+/* Minimal "header-simple" content: compact centered heading on the blue band */
+.hero-overlay.no-image .hero-overlay-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hero-overlay.no-image .hero-overlay-content h1,
+.hero-overlay.no-image .hero-overlay-content h2,
+.hero-overlay.no-image .hero-overlay-content h3 {
+  margin: 0;
+  font-size: 60px;
+  line-height: 1;
 }
 
 /* CTA button */
@@ -160,6 +193,13 @@
 
   .hero-overlay .hero-overlay-content h1 {
     font-size: 70px;
+  }
+
+  .hero-overlay.no-image .hero-overlay-content h1,
+  .hero-overlay.no-image .hero-overlay-content h2,
+  .hero-overlay.no-image .hero-overlay-content h3 {
+    font-size: 70px;
+    line-height: 1;
   }
 
   .hero-overlay .hero-overlay-content p {

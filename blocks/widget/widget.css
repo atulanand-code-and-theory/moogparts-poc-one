@@ -1,17 +1,85 @@
 /*
- * Widget block — Find My Part (part finder) section.
+ * Widget block — generic frame around a runtime-loaded Vue widget.
  *
- * The part finder itself is a runtime-loaded Vue widget (`.driv-part-finder-main`)
- * fetched from /widgets/part-finder.html and is therefore only present in
- * environments where that asset is served. The styles below frame the section
- * (centered MOOG-blue heading, subtitle, two-panel search layout) and style the
- * widget's internal markup to match moogparts.com. All values are extracted from
- * the original `.driv-part-finder-main` computed styles at desktop (1440px) and
- * mobile (375px).
+ * The widget block self-names from its source container, so it frames several
+ * different widget sources across the site (part-finder, where-to-buy,
+ * search-files, diagnostic-center, documents-autocomplete). Each runtime widget
+ * is fetched from /widgets/<name>.html and is only present where that asset is
+ * served; in the local EDS preview the asset is absent and the block renders an
+ * empty placeholder frame (`.widget-unavailable`).
+ *
+ * The "framing" (centered MOOG-blue heading + grey subtitle/intro) is section
+ * default content authored as siblings of the widget block, not part of the
+ * widget itself. Those rules live in the SECTION FRAMING block below and apply
+ * to any section that contains a widget. The WIDGET-INTERNAL block styles the
+ * part-finder's own markup once it loads. All values are extracted from the
+ * original moogparts.com computed styles at desktop (1440px) and mobile (375px).
  *
  * MOOG blue: rgb(0, 50, 160)
+ * Intro grey: rgb(51, 51, 51)
  * Field grey background: rgb(239, 239, 239)
  */
+
+/* ===================================================================== *
+ * SECTION FRAMING — heading + intro authored alongside the widget block.
+ * Targets any section containing a widget block (loaded or unavailable),
+ * regardless of which widget variant self-named the wrapper/container.
+ * ===================================================================== */
+
+/* Heading: "FIND MY PART" / "WHERE TO BUY" / "DID YOU KNOW BULLETINS" … */
+main .section:has(.widget) .default-content-wrapper h1,
+main .section:has(.widget) .default-content-wrapper h2,
+main .section:has(.widget) .default-content-wrapper h3 {
+  margin: 0;
+  padding: 0 0 15px;
+  color: rgb(0 50 160);
+  font-family: roboto-blackitalic, roboto, roboto-fallback, sans-serif;
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 1.2;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* Intro / sublabel paragraph(s) below the heading. */
+main .section:has(.widget) .default-content-wrapper p {
+  margin: 0 auto 27px;
+  padding: 0;
+  max-width: 900px;
+  color: rgb(51 51 51);
+  font-family: blenderpro-book, roboto, roboto-fallback, sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.625;
+  text-align: center;
+}
+
+/* Tracking-pixel / image-only trailing paragraphs must never show. */
+main .section:has(.widget) .default-content-wrapper p:has(picture),
+main .section:has(.widget) .default-content-wrapper p:has(img) {
+  display: none;
+}
+
+@media (width >= 900px) {
+  main .section:has(.widget) .default-content-wrapper h1,
+  main .section:has(.widget) .default-content-wrapper h2,
+  main .section:has(.widget) .default-content-wrapper h3 {
+    font-size: 40px;
+    line-height: 48px;
+  }
+}
+
+/* Graceful degradation: when the runtime asset is unavailable the block keeps
+ * an empty placeholder. Collapse it so the section framing stands alone
+ * instead of leaving a broken/oversized gap. */
+.widget.widget-unavailable {
+  min-height: 0;
+  margin: 0;
+}
+
+/* ===================================================================== *
+ * WIDGET-INTERNAL — part-finder markup once /widgets/part-finder.html loads.
+ * ===================================================================== */
 
 /* Block container — centered, full content width, vertical rhythm. */
 .widget {
@@ -21,33 +89,9 @@
   text-align: center;
 }
 
-/* --- Heading: "FIND MY PART" --- */
-.widget h2,
-.widget .driv-part-finder-main h2 {
-  margin: 0;
-  padding: 0 0 15px;
-  color: rgb(0 50 160);
-  font-family: roboto-blackitalic, roboto, sans-serif;
-  font-style: italic;
-  font-weight: 900;
-  font-size: 40px;
-  line-height: 48px;
-  text-align: center;
-  text-transform: uppercase;
-}
-
-/* --- Subtitle --- */
-.widget > div > div > p,
-.widget .driv-part-finder-main > p {
-  margin: 0 0 27px;
-  padding: 0;
-  color: rgb(51 51 51);
-  font-family: blenderpro-book, roboto, sans-serif;
-  font-weight: 400;
-  font-size: 18px;
-  line-height: 29.25px;
-  text-align: center;
-}
+/* Heading/subtitle inside a widget section are section default content and are
+ * styled by the SECTION FRAMING rules above, not here — the part-finder widget
+ * markup itself contains no h2 or top-level paragraph. */
 
 /* --- Panels wrapper: stacked on mobile, side-by-side on desktop --- */
 .widget .ymm-and-part-number,
