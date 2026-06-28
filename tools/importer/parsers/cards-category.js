@@ -21,7 +21,7 @@
  *   - centered title in `.tout-title` (wrapped in <span>)
  *   - "See Products" CTA as a <button> inside an <a href> linking the category
  */
-export default function parse(element, { document }) {
+export default function parse(element, { document, url }) {
   // Collect all sibling tiles in the same parent group, in document order.
   const parent = element.parentElement;
   const tiles = parent
@@ -72,7 +72,7 @@ export default function parse(element, { document }) {
         const m = style.match(/url\((['"]?)(.*?)\1\)/i);
         if (m && m[2]) {
           const synth = document.createElement('img');
-          synth.src = m[2];
+          synth.src = new URL(m[2], url).href;
           img = synth;
           break;
         }

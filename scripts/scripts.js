@@ -78,6 +78,124 @@ function buildAutoBlocks(main) {
   }
 }
 
+const HOMEPAGE_MEDIA_FALLBACKS = {
+  heroOverlay: [
+    '/content/loc-na/loc-us/fmmp-moog/en_US/jcr:content/main-par/header_hero_1176964492'
+      + '.img.jpg/1780687234401.jpg',
+    '/content/loc-na/loc-us/fmmp-moog/en_US/jcr:content/main-par/responsivegrid_1035720358'
+      + '/header_hero_copy.img.jpg/1780687234515.jpg',
+  ],
+  columnsSplit: [
+    '/content/loc-na/loc-us/fmmp-moog/en_US/_jcr_content/main-par/responsivegrid_1471213028'
+      + '/responsivegrid/image.img.jpg/problem-solver-bulletin-hero-1780687234662.jpg',
+    '/content/loc-na/loc-us/fmmp-moog/en_US/_jcr_content/main-par/responsivegrid_1471213028'
+      + '/responsivegrid_copy/image.img.jpg/Diagnostic-Center-Landing_Hero-1780687234733.jpg',
+  ],
+  cardsArticle: [
+    '/content/dam/marketing/North-America/moog/partsmatter/Why_Does_My_Car_Pull_To_One_Side_4.jpg',
+    '/content/dam/marketing/North-America/moog/partsmatter/Uneven-Tire-Tread-Up-Close.jpg',
+    '/content/dam/marketing/North-America/moog/partsmatter/Car-On-Alignment-Machine-Hero.jpg',
+  ],
+  cardsCategory: [
+    '/content/loc-na/loc-us/fmmp-moog/en_US/jcr:content/main-par/hover_tout_1311363996'
+      + '.img.jpg/1780687234850.jpg',
+    '/content/loc-na/loc-us/fmmp-moog/en_US/jcr:content/main-par/hover_tout_662349038'
+      + '.img.jpg/1780687234890.jpg',
+    '/content/loc-na/loc-us/fmmp-moog/en_US/jcr:content/main-par/hover_tout_458124775'
+      + '.img.jpg/1780687234931.jpg',
+    '/content/loc-na/loc-us/fmmp-moog/en_US/jcr:content/main-par/hover_tout'
+      + '.img.jpg/1780687234972.jpg',
+  ],
+  yellow: [
+    '/content/loc-na/loc-us/fmmp-moog/en_US/jcr:content/main-par/hero_copy.img.png/1780687235013.png',
+  ],
+};
+
+function liveMoogAsset(path) {
+  return new URL(path, 'https://www.moogparts.com').href;
+}
+
+function isBrokenImportedImage(img) {
+  const src = img.getAttribute('src') || '';
+  return src === 'about:error' || src.startsWith('about:');
+}
+
+function applyImageFallbacks(scope, selector, fallbacks) {
+  const brokenImages = [...scope.querySelectorAll(selector)].filter(isBrokenImportedImage);
+  brokenImages.forEach((img, index) => {
+    const fallback = fallbacks[index];
+    if (fallback) img.src = liveMoogAsset(fallback);
+  });
+}
+
+/**
+ * Repairs currently imported homepage media placeholders that DA serves as
+ * `about:error`. The source URLs are the live MOOG homepage assets and should
+ * be replaced by regenerated DA media URLs when content is refreshed.
+ * @param {Element} main The main container element
+ */
+function repairHomepageMedia(main) {
+  applyImageFallbacks(main, '.hero-overlay img', HOMEPAGE_MEDIA_FALLBACKS.heroOverlay);
+  applyImageFallbacks(main, '.columns-split img', HOMEPAGE_MEDIA_FALLBACKS.columnsSplit);
+  applyImageFallbacks(main, '.cards-article img', HOMEPAGE_MEDIA_FALLBACKS.cardsArticle);
+  applyImageFallbacks(main, '.cards-category img', HOMEPAGE_MEDIA_FALLBACKS.cardsCategory);
+  applyImageFallbacks(main, '.yellow img', HOMEPAGE_MEDIA_FALLBACKS.yellow);
+}
+
+function refreshSectionContainerClasses(section) {
+  [...section.classList]
+    .filter((className) => className.endsWith('-container'))
+    .forEach((className) => section.classList.remove(className));
+
+  section.querySelectorAll(':scope > div > div.block').forEach((block) => {
+    const blockName = block.dataset.blockName || block.classList[0];
+    if (blockName) section.classList.add(`${blockName}-container`);
+  });
+}
+
+function removeEmptyImportedMediaWrappers(section) {
+  section.querySelectorAll(':scope > .default-content-wrapper').forEach((wrapper) => {
+    const images = [...wrapper.querySelectorAll('img')];
+    const hasText = wrapper.textContent.trim().length > 0;
+    const hasOnlyBrokenMedia = images.length > 0 && images.every(isBrokenImportedImage);
+    if (!hasText && hasOnlyBrokenMedia) wrapper.remove();
+  });
+}
+
+/**
+ * Cleans section artifacts produced by the first homepage import:
+ * - move the second hero out of the Find My Part band when its section break is missing
+ * - drop empty sections
+ * @param {Element} main The main container element
+ */
+function normalizeHomepageSections(main) {
+  main.querySelectorAll(':scope > .section').forEach((section) => {
+    const wrappers = [...section.children];
+    const hasWidget = wrappers.some((wrapper) => wrapper.classList.contains('widget-wrapper'));
+    const splitIndex = wrappers.findIndex((wrapper, index) => (
+      index > 0 && wrapper.classList.contains('hero-overlay-wrapper')
+    ));
+
+    if (hasWidget && splitIndex > 0) {
+      const newSection = document.createElement('div');
+      newSection.className = 'section';
+      newSection.dataset.sectionStatus = 'initialized';
+      newSection.style.display = 'none';
+      wrappers.slice(splitIndex).forEach((wrapper) => newSection.append(wrapper));
+      section.after(newSection);
+      refreshSectionContainerClasses(section);
+      refreshSectionContainerClasses(newSection);
+    } else {
+      refreshSectionContainerClasses(section);
+    }
+    removeEmptyImportedMediaWrappers(section);
+  });
+
+  main.querySelectorAll(':scope > .section').forEach((section) => {
+    if (!section.textContent.trim() && section.children.length === 0) section.remove();
+  });
+}
+
 /**
  * Decorates formatted links to style them as buttons.
  * @param {HTMLElement} main The main container element
@@ -125,8 +243,10 @@ function decorateButtons(main) {
 export function decorateMain(main) {
   decorateIcons(main);
   buildAutoBlocks(main);
+  repairHomepageMedia(main);
   decorateSections(main);
   decorateBlocks(main);
+  normalizeHomepageSections(main);
   decorateButtons(main);
 }
 

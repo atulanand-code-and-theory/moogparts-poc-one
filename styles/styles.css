@@ -355,3 +355,75 @@ main .section.grey {
     padding: 60px 0;
   }
 }
+
+/* MOOG mailing-list CTA band */
+main .section.yellow {
+  margin: 0;
+  padding: 40px 0;
+  background-color: var(--moog-yellow);
+  color: var(--moog-blue);
+  text-align: center;
+}
+
+main .section.yellow h1,
+main .section.yellow h2,
+main .section.yellow h3,
+main .section.yellow h4,
+main .section.yellow h5,
+main .section.yellow h6 {
+  margin: 0 0 18px;
+  color: var(--moog-blue);
+  font-family: roboto-blackitalic, roboto, roboto-fallback, sans-serif;
+  font-size: 32px;
+  font-style: italic;
+  font-weight: 900;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+main .section.yellow p {
+  margin: 0;
+}
+
+main .section.yellow p:has(img) {
+  display: none;
+}
+
+main .section.yellow a:any-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  padding: 0 34px;
+  background-color: var(--moog-blue);
+  color: #fff;
+  font-family: blenderpro-bolditalic, roboto, roboto-fallback, sans-serif;
+  font-size: 18px;
+  font-style: italic;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+main .section.yellow a:hover,
+main .section.yellow a:focus-visible {
+  background-color: var(--link-hover-color);
+  color: #fff;
+  text-decoration: none;
+}
+
+@media (width >= 900px) {
+  main .section.yellow {
+    padding: 60px 0;
+  }
+
+  main .section.yellow h1,
+  main .section.yellow h2,
+  main .section.yellow h3,
+  main .section.yellow h4,
+  main .section.yellow h5,
+  main .section.yellow h6 {
+    font-size: 42px;
+  }
+}

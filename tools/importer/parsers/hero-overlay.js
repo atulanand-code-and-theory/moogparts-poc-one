@@ -23,7 +23,7 @@
 const normalizeText = (s) => (s || '').replace(/[\s ​‌‍﻿]+/g, '');
 const hasText = (el) => normalizeText(el.textContent).length > 0;
 
-export default function parse(element, { document }) {
+export default function parse(element, { document, url }) {
   // --- Background image (optional) ---
   const bgContainer = element.querySelector('.header-hero-background, [class*="background"]');
   let bgImage = null;
@@ -39,7 +39,7 @@ export default function parse(element, { document }) {
       const m = style.match(/url\((['"]?)(.*?)\1\)/i);
       if (m && m[2]) {
         const img = document.createElement('img');
-        img.src = m[2];
+        img.src = new URL(m[2], url).href;
         bgImage = img;
       }
     }

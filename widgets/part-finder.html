@@ -1,0 +1,44 @@
+<div class="driv-part-finder-main part-finder-shell">
+  <div class="part-finder-search ymm-and-part-number" aria-label="Find My Part search options">
+    <section class="driv-ymm-search" aria-labelledby="part-finder-vehicle-heading">
+      <h4 id="part-finder-vehicle-heading">Search by Vehicle</h4>
+      <div class="part-finder-fields">
+        <label class="part-finder-field">
+          <span>Year</span>
+          <select name="year" disabled>
+            <option>Year</option>
+          </select>
+        </label>
+        <label class="part-finder-field">
+          <span>Make</span>
+          <select name="make" disabled>
+            <option>Make</option>
+          </select>
+        </label>
+        <label class="part-finder-field">
+          <span>Model</span>
+          <select name="model" disabled>
+            <option>Model</option>
+          </select>
+        </label>
+      </div>
+    </section>
+    <section class="driv-part-number-search" aria-labelledby="part-finder-number-heading">
+      <h4 id="part-finder-number-heading" class="part-number_header">Search by Part Number</h4>
+      <form class="part-number_wrapper" action="/find-my-part" method="get">
+        <label class="input-wrapper">
+          <span class="sr-only">Part number</span>
+          <input
+            class="part-number-input"
+            name="part-number"
+            type="search"
+            placeholder="Enter a part number"
+            autocomplete="off"
+            disabled
+          >
+        </label>
+        <button class="button-main driv-part-number-search-button" type="submit" disabled>search</button>
+      </form>
+    </section>
+  </div>
+</div>

@@ -63,6 +63,7 @@
 /* Individual panel (Search by Vehicle / Search by Part Number) */
 .widget .driv-ymm-search,
 .widget .driv-part-number-search {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: center;

@@ -44,7 +44,7 @@ var CustomImportScript = (() => {
   // tools/importer/parsers/hero-overlay.js
   var normalizeText = (s) => (s || "").replace(/[\s ​‌‍﻿]+/g, "");
   var hasText = (el) => normalizeText(el.textContent).length > 0;
-  function parse(element, { document }) {
+  function parse(element, { document, url }) {
     const bgContainer = element.querySelector('.header-hero-background, [class*="background"]');
     let bgImage = null;
     if (bgContainer) {
@@ -58,7 +58,7 @@ var CustomImportScript = (() => {
         const m = style.match(/url\((['"]?)(.*?)\1\)/i);
         if (m && m[2]) {
           const img = document.createElement("img");
-          img.src = m[2];
+          img.src = new URL(m[2], url).href;
           bgImage = img;
         }
       }
@@ -190,7 +190,7 @@ var CustomImportScript = (() => {
   }
 
   // tools/importer/parsers/cards-category.js
-  function parse5(element, { document }) {
+  function parse5(element, { document, url }) {
     const parent = element.parentElement;
     const tiles = parent ? Array.from(parent.querySelectorAll(":scope > .hover-tout")) : [element];
     if (tiles.length && tiles[0] !== element) {
@@ -222,7 +222,7 @@ var CustomImportScript = (() => {
           const m = style.match(/url\((['"]?)(.*?)\1\)/i);
           if (m && m[2]) {
             const synth = document.createElement("img");
-            synth.src = m[2];
+            synth.src = new URL(m[2], url).href;
             img = synth;
             break;
           }
