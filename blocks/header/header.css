@@ -18,7 +18,7 @@ header nav {
   box-sizing: border-box;
   display: grid;
   grid-template:
-    'hamburger brand tools' var(--nav-height, 64px)
+    'hamburger brand cta' var(--nav-height, 64px)
     'sections sections sections' 1fr / auto 1fr auto;
   align-items: center;
   gap: 0 16px;
@@ -30,11 +30,24 @@ header nav {
 
 header nav[aria-expanded='true'] {
   grid-template:
-    'hamburger brand' auto
-    'sections sections' 1fr
-    'tools tools' auto / auto 1fr;
+    'hamburger brand cta' auto
+    'sections sections sections' 1fr
+    'tools tools tools' auto / auto 1fr auto;
   overflow-y: auto;
   min-height: 100dvh;
+}
+
+/* utility bar (social, Chassis, LCV, locale) is hidden in the collapsed mobile
+   header; it only appears inside the open drawer */
+header nav .nav-tools {
+  grid-area: tools;
+  display: none;
+}
+
+/* Find My Part CTA sits top-right next to the logo on mobile (matches source) */
+header nav .nav-cta-desktop {
+  grid-area: cta;
+  justify-self: end;
 }
 
 header nav p {
@@ -282,10 +295,6 @@ header nav .nav-cta-button {
 }
 
 /* tools = global utility bar */
-header nav .nav-tools {
-  grid-area: tools;
-}
-
 header nav .nav-tools p {
   margin: 6px 0;
 }
@@ -362,69 +371,73 @@ header nav .nav-locale-panel a {
   font-size: 13px;
 }
 
-/* ===== Mobile tools + CTA (inside open drawer, below 900px) ===== */
+/* ===== Mobile tools + CTA (inside open drawer, below 900px) =====
+   Scoped to mobile only: on desktop the nav also carries aria-expanded='true',
+   so these drawer rules must not leak past the breakpoint. */
+@media (width < 900px) {
+  /* Chassis System 101 and the bordered LCV button are desktop utility-bar only;
+     hide them in the mobile drawer (LCV is promoted into the menu list, Chassis
+     is not part of the source mobile menu).
+     The base nav .nav-tools rule hides tools when collapsed; restore inside drawer. */
+  header nav[aria-expanded='true'] .nav-tools .nav-utility-link,
+  header nav[aria-expanded='true'] .nav-tools .nav-lcv {
+    display: none;
+  }
 
-/* Chassis System 101 and the bordered LCV button are desktop utility-bar only;
-   hide them in the mobile drawer (LCV is promoted into the menu list, Chassis
-   is not part of the source mobile menu) */
-header nav[aria-expanded='true'] .nav-tools .nav-utility-link,
-header nav[aria-expanded='true'] .nav-tools .nav-lcv {
-  display: none;
-}
+  header nav[aria-expanded='true'] .nav-tools {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    gap: 4px 14px;
+    width: 100vw;
+    margin-left: -24px;
+    box-sizing: border-box;
+    padding: 16px 0;
+  }
 
-header nav[aria-expanded='true'] .nav-tools {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  gap: 4px 14px;
-  width: 100vw;
-  margin-left: -24px;
-  box-sizing: border-box;
-  padding: 16px 0;
-}
+  /* locale list spans the full viewport width (gate: secondary-nav == viewport) */
+  header nav[aria-expanded='true'] .nav-tools .nav-locale-list {
+    width: 100vw;
+    box-sizing: border-box;
+    padding: 0 24px;
+    margin-top: 8px;
+  }
 
-/* locale list spans the full viewport width (gate: secondary-nav == viewport) */
-header nav[aria-expanded='true'] .nav-tools .nav-locale-list {
-  width: 100vw;
-  box-sizing: border-box;
-  padding: 0 24px;
-  margin-top: 8px;
-}
+  header nav[aria-expanded='true'] .nav-tools .nav-social {
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+  }
 
-header nav[aria-expanded='true'] .nav-tools .nav-social {
-  display: inline-flex;
-  align-items: center;
-  margin: 0;
-}
+  /* first social icon indented to match the menu text */
+  header nav[aria-expanded='true'] .nav-tools .nav-social:first-of-type {
+    margin-left: 24px;
+  }
 
-/* first social icon indented to match the menu text */
-header nav[aria-expanded='true'] .nav-tools .nav-social:first-of-type {
-  margin-left: 24px;
-}
+  /* Find My Part full-width blue bar pinned visually at the bottom of the drawer */
+  header nav[aria-expanded='true'] .nav-cta-desktop {
+    display: block;
+    width: 100vw;
+    margin-left: -24px;
+    box-sizing: border-box;
+  }
 
-/* Find My Part full-width blue bar pinned visually at the bottom of the drawer */
-header nav[aria-expanded='true'] .nav-cta-desktop {
-  display: block;
-  width: 100vw;
-  margin-left: -24px;
-  box-sizing: border-box;
-}
-
-/* stylelint-disable-next-line no-descending-specificity */
-header nav[aria-expanded='true'] .nav-cta-desktop a,
-header nav .nav-cta-button {
-  display: block;
-  width: 100%;
-  box-sizing: border-box;
-  text-align: center;
-  background-color: #0032a0;
-  color: #fff;
-  text-transform: uppercase;
-  font-family: blenderpro-bold, var(--body-font-family);
-  font-weight: 400;
-  letter-spacing: 1px;
-  padding: 18px 0;
-  font-size: 16px;
+  /* stylelint-disable-next-line no-descending-specificity */
+  header nav[aria-expanded='true'] .nav-cta-desktop a,
+  header nav .nav-cta-button {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    background-color: #0032a0;
+    color: #fff;
+    text-transform: uppercase;
+    font-family: blenderpro-bold, var(--body-font-family);
+    font-weight: 400;
+    letter-spacing: 1px;
+    padding: 18px 0;
+    font-size: 16px;
+  }
 }
 
 /* ===== Desktop ===== */
@@ -438,7 +451,7 @@ header nav .nav-cta-button {
     display: grid;
     grid-template:
       'tools tools tools' auto
-      'brand sections cta' var(--nav-height, 68px) / auto 1fr auto;
+      'brand sections cta' var(--nav-height, 68px) / auto minmax(0, 1fr) auto;
     column-gap: 24px;
     max-width: 1440px;
     padding: 0;
@@ -518,20 +531,31 @@ header nav .nav-cta-button {
     padding-left: 32px;
   }
 
-  header nav .nav-sections {
+  header nav .nav-brand img {
+    height: 36px;
+    max-width: 165px;
+  }
+
+  header nav .nav-sections,
+  header nav[aria-expanded='true'] .nav-sections {
     grid-area: sections;
     display: flex;
     visibility: visible;
     align-self: stretch;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    width: auto;
+    margin-left: 0;
+    min-width: 0;
   }
 
   header nav .nav-sections .nav-menu {
     display: flex;
-    gap: 56px;
+    gap: 48px;
     align-items: center;
     height: 100%;
+    width: auto;
+    padding-left: 32px;
   }
 
   header nav .nav-sections .nav-menu > li {
@@ -554,26 +578,17 @@ header nav .nav-cta-button {
     width: auto;
   }
 
-  /* non-dropdown links grow to fill leftover space, mirroring the source nav
-     where Technologies / Installation Guide Search expand (Parts/Support stay tight) */
-  header nav .nav-sections .nav-menu > li:not(.nav-drop) {
-    flex: 1 0 auto;
-  }
-
-  header nav .nav-sections .nav-menu > li:not(.nav-drop) > a {
-    width: 100%;
-  }
-
   header nav .nav-sections .nav-menu > li.nav-drop {
-    position: relative;
-    padding-right: 16px;
+    position: static;
   }
 
   header nav .nav-sections .nav-menu > li.nav-drop > a {
     cursor: pointer;
+    position: relative;
+    padding-right: 18px;
   }
 
-  header nav .nav-sections .nav-menu > li.nav-drop::after {
+  header nav .nav-sections .nav-menu > li.nav-drop > a::after {
     content: '';
     position: absolute;
     right: 0;
@@ -586,7 +601,8 @@ header nav .nav-cta-button {
     color: #0032a0;
   }
 
-  /* full-width gray megamenu panel (flex row, not a mobile accordion) */
+  /* full-width gray megamenu panel (flex row, not a mobile accordion).
+     Containing block is .nav-wrapper (position: relative on desktop). */
   header nav .nav-sections .nav-megamenu {
     display: none;
     position: absolute;
