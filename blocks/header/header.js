@@ -14,12 +14,19 @@ function closeAllMegamenus(nav) {
   nav.querySelectorAll('.nav-drop[aria-expanded="true"]').forEach((d) => d.setAttribute('aria-expanded', 'false'));
 }
 
+function updatePageScrollLock(nav) {
+  const mobileMenuOpen = !isDesktop.matches && nav.getAttribute('aria-expanded') === 'true';
+  const localeOpen = !!nav.querySelector('.nav-locale[aria-expanded="true"]');
+  document.body.style.overflowY = mobileMenuOpen || localeOpen ? 'hidden' : '';
+}
+
 function closeLocale(nav) {
   const localeOpen = nav.querySelector('.nav-locale[aria-expanded="true"]');
   if (!localeOpen) return;
   localeOpen.setAttribute('aria-expanded', 'false');
   const trigger = localeOpen.querySelector('.nav-locale-trigger');
   if (trigger) trigger.setAttribute('aria-expanded', 'false');
+  updatePageScrollLock(nav);
 }
 
 /**
@@ -51,8 +58,8 @@ function closeOnEscape(e) {
 function toggleMenu(nav, navSections, forceExpanded = null) {
   const expanded = forceExpanded !== null ? !forceExpanded : nav.getAttribute('aria-expanded') === 'true';
   const button = nav.querySelector('.nav-hamburger button');
-  document.body.style.overflowY = (expanded || isDesktop.matches) ? '' : 'hidden';
   nav.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+  updatePageScrollLock(nav);
   if (button) button.setAttribute('aria-label', expanded ? 'Open navigation' : 'Close navigation');
   if (!expanded || isDesktop.matches) {
     window.addEventListener('keydown', closeOnEscape);
@@ -74,6 +81,19 @@ function decorateSocialLink(link) {
     link.setAttribute('title', link.textContent.trim());
     link.innerHTML = SOCIAL_ICONS[key];
   }
+}
+
+function decorateLocalePanel(panel) {
+  [...panel.children].forEach((region, index) => {
+    if (region.tagName !== 'LI') return;
+    region.classList.add('region');
+    if (index === 0) region.classList.add('two-col');
+    const list = region.querySelector(':scope > ul');
+    if (list) {
+      list.classList.add('language-list');
+      list.querySelectorAll(':scope > li').forEach((item) => item.classList.add('language-link'));
+    }
+  });
 }
 
 function cleanNavFragment(fragment) {
@@ -156,6 +176,7 @@ function decorateTools(navTools) {
       trigger.classList.add('nav-locale-trigger');
       trigger.type = trigger.tagName === 'BUTTON' ? 'button' : trigger.type;
       panel.classList.add('nav-locale-panel');
+      decorateLocalePanel(panel);
       localeRoot.setAttribute('aria-expanded', 'false');
       trigger.setAttribute('aria-expanded', 'false');
       trigger.addEventListener('click', (e) => {
@@ -164,6 +185,7 @@ function decorateTools(navTools) {
         const open = localeRoot.getAttribute('aria-expanded') === 'true';
         localeRoot.setAttribute('aria-expanded', open ? 'false' : 'true');
         trigger.setAttribute('aria-expanded', open ? 'false' : 'true');
+        updatePageScrollLock(localeRoot.closest('nav'));
       });
     }
   }
@@ -195,6 +217,7 @@ function decorateTools(navTools) {
       triggerLink.classList.add('nav-locale-trigger');
       triggerLink.setAttribute('role', 'button');
       panel.classList.add('nav-locale-panel');
+      decorateLocalePanel(panel);
       trigger.setAttribute('aria-expanded', 'false');
       triggerLink.setAttribute('aria-expanded', 'false');
       triggerLink.addEventListener('click', (e) => {
@@ -203,6 +226,7 @@ function decorateTools(navTools) {
         const open = trigger.getAttribute('aria-expanded') === 'true';
         trigger.setAttribute('aria-expanded', open ? 'false' : 'true');
         triggerLink.setAttribute('aria-expanded', open ? 'false' : 'true');
+        updatePageScrollLock(trigger.closest('nav'));
       });
     }
   }
