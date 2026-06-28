@@ -92,7 +92,7 @@
 .cards-category .cards-category-card-body h3 {
   margin: 0;
   padding: 0;
-  font-family: roboto, "Arial Black", sans-serif;
+  font-family: roboto-blackitalic, roboto, "Arial Black", sans-serif;
   font-size: 32px;
   font-weight: 900;
   font-style: italic;

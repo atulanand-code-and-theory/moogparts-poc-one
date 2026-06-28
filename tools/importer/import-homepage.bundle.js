@@ -89,11 +89,25 @@ var CustomImportScript = (() => {
   // tools/importer/parsers/widget.js
   function parse2(element, { document }) {
     const widgetName = "part-finder";
+    const preserved = [];
+    const heading = element.querySelector("h1, h2, h3");
+    if (heading && heading.textContent.trim()) {
+      const h2 = document.createElement("h2");
+      h2.textContent = heading.textContent.trim();
+      preserved.push(h2);
+    }
+    const intro = element.querySelector("p");
+    if (intro && intro.textContent.trim()) {
+      const p = document.createElement("p");
+      p.textContent = intro.textContent.trim();
+      preserved.push(p);
+    }
     const link = document.createElement("a");
     link.href = `/widgets/${widgetName}.html`;
     link.textContent = `/widgets/${widgetName}.html`;
     const cells = [[link]];
     const block = WebImporter.Blocks.createBlock(document, { name: "widget", cells });
+    preserved.forEach((node) => element.parentNode.insertBefore(node, element));
     element.replaceWith(block);
   }
 
