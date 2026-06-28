@@ -323,3 +323,31 @@ main .section.highlight {
   margin: 0;
   padding: 40px 0;
 }
+
+/* MOOG blue band */
+main .section.blue {
+  margin: 0;
+  padding: 70px 0;
+  background-color: rgb(0 50 160);
+  color: #fff;
+}
+
+@media (width >= 900px) {
+  main .section.blue {
+    padding: 100px 0;
+  }
+}
+
+/* MOOG dark band (article ledes "Parts Matter") */
+main .section.grey {
+  margin: 0;
+  padding: 40px 0;
+  background-color: rgb(37 37 37);
+  color: #fff;
+}
+
+@media (width >= 900px) {
+  main .section.grey {
+    padding: 60px 0;
+  }
+}

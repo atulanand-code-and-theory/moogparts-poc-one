@@ -1,3 +1,208 @@
+/*
+ * Widget block — Find My Part (part finder) section.
+ *
+ * The part finder itself is a runtime-loaded Vue widget (`.driv-part-finder-main`)
+ * fetched from /widgets/part-finder.html and is therefore only present in
+ * environments where that asset is served. The styles below frame the section
+ * (centered MOOG-blue heading, subtitle, two-panel search layout) and style the
+ * widget's internal markup to match moogparts.com. All values are extracted from
+ * the original `.driv-part-finder-main` computed styles at desktop (1440px) and
+ * mobile (375px).
+ *
+ * MOOG blue: rgb(0, 50, 160)
+ * Field grey background: rgb(239, 239, 239)
+ */
+
+/* Block container — centered, full content width, vertical rhythm. */
 .widget {
   display: block;
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* --- Heading: "FIND MY PART" --- */
+.widget h2,
+.widget .driv-part-finder-main h2 {
+  margin: 0;
+  padding: 0 0 15px;
+  color: rgb(0 50 160);
+  font-family: roboto-blackitalic, roboto, sans-serif;
+  font-style: italic;
+  font-weight: 900;
+  font-size: 40px;
+  line-height: 48px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* --- Subtitle --- */
+.widget > div > div > p,
+.widget .driv-part-finder-main > p {
+  margin: 0 0 27px;
+  padding: 0;
+  color: rgb(51 51 51);
+  font-family: blenderpro-book, roboto, sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 29.25px;
+  text-align: center;
+}
+
+/* --- Panels wrapper: stacked on mobile, side-by-side on desktop --- */
+.widget .ymm-and-part-number,
+.widget .part-finder-search,
+.widget .driv-part-finder-main > div:last-child {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 10px 0 20px;
+  margin: 0;
+}
+
+/* Individual panel (Search by Vehicle / Search by Part Number) */
+.widget .driv-ymm-search,
+.widget .driv-part-number-search {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 15px;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 580px;
+}
+
+/* --- Panel headings (h4) --- */
+.widget h4,
+.widget .driv-part-finder-main h4,
+/* stylelint-disable-next-line selector-class-pattern -- third-party widget class */
+.widget .part-number_header {
+  margin: 20px 0 15px;
+  padding: 0;
+  color: rgb(0 50 160);
+  font-family: roboto-black, roboto, sans-serif;
+  font-weight: 900;
+  font-size: 20px;
+  line-height: 20px;
+  text-align: center;
+  text-transform: none;
+}
+
+/* --- Vehicle search: select/dropdown field --- */
+.widget .ymm-search-field,
+.widget .autocomplete {
+  background-color: rgb(239 239 239);
+}
+
+.widget .dropdown-toggle,
+/* stylelint-disable-next-line selector-class-pattern -- third-party widget class */
+.widget .vs__dropdown-toggle {
+  display: flex;
+  align-items: center;
+  height: 50px;
+  padding: 0;
+  border: 1px solid rgb(0 50 160);
+  background-color: rgb(239 239 239);
+  color: rgb(0 50 160);
+  font-size: 16px;
+}
+
+.widget input[type="search"],
+.widget .form-control {
+  width: 100%;
+  height: 48px;
+  padding: 0 7px 0 20px;
+  border: none;
+  background-color: transparent;
+  color: rgb(0 50 160);
+  font-family: blenderpro-book, roboto, sans-serif;
+  font-style: italic;
+  font-size: 16px;
+}
+
+.widget input[type="search"]::placeholder,
+.widget .form-control::placeholder {
+  color: rgb(0 50 160);
+  font-style: italic;
+}
+
+/* --- Part number search --- */
+/* stylelint-disable-next-line selector-class-pattern -- third-party widget class */
+.widget .part-number_wrapper {
+  display: flex;
+  align-items: center;
+  height: 50px;
+}
+
+.widget .input-wrapper {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.widget .part-number-input {
+  display: inline-block;
+  width: 100%;
+  height: 50px;
+  padding: 1px 2px 1px 15px;
+  border: 1px solid rgb(0 50 160);
+  background-color: rgb(239 239 239);
+  color: rgb(128 128 128);
+  font-family: blenderpro-book, roboto, sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.widget .part-number-input::placeholder {
+  color: rgb(128 128 128);
+}
+
+/* The blue "search" button */
+.widget .button-main,
+.widget .driv-part-number-search-button.button-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  padding: 0 18px;
+  border: 0;
+  background-color: rgb(0 50 160);
+  color: rgb(255 255 255);
+  font-family: blenderpro-bolditalic, roboto, sans-serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 23px;
+  letter-spacing: 1px;
+  text-transform: lowercase;
+  text-align: center;
+  cursor: pointer;
+}
+
+/* --- Desktop layout: panels side by side with center divider --- */
+@media (width >= 900px) {
+  .widget .ymm-and-part-number,
+  .widget .part-finder-search,
+  .widget .driv-part-finder-main > div:last-child {
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
+  }
+
+  .widget .driv-ymm-search,
+  .widget .driv-part-number-search {
+    flex: 0 1 580px;
+    max-width: 580px;
+  }
+
+  /* Vertical divider between the two panels */
+  .widget .driv-part-number-search {
+    border-left: 1px solid rgb(51 51 51);
+  }
+
+  .widget h4,
+  /* stylelint-disable-next-line selector-class-pattern -- third-party widget class */
+  .widget .part-number_header {
+    margin-top: 20px;
+  }
 }

@@ -202,13 +202,16 @@ var CustomImportScript = (() => {
         if (pic && pic.querySelector("img[src], source[srcset]")) img = pic;
       }
       if (!img) {
-        const bgEl = tile.querySelector(".bg, .has-bg") || tile;
-        const style = bgEl.getAttribute("style") || "";
-        const m = style.match(/url\((['"]?)(.*?)\1\)/i);
-        if (m && m[2]) {
-          const synth = document.createElement("img");
-          synth.src = m[2];
-          img = synth;
+        const bgCandidates = [tile, ...tile.querySelectorAll('.bg, .has-bg, [style*="background"]')];
+        for (let i = 0; i < bgCandidates.length; i += 1) {
+          const style = bgCandidates[i].getAttribute("style") || "";
+          const m = style.match(/url\((['"]?)(.*?)\1\)/i);
+          if (m && m[2]) {
+            const synth = document.createElement("img");
+            synth.src = m[2];
+            img = synth;
+            break;
+          }
         }
       }
       const textCell = [];

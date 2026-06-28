@@ -7,7 +7,11 @@ export default function decorate(block) {
     const li = document.createElement('li');
     while (row.firstElementChild) li.append(row.firstElementChild);
     [...li.children].forEach((div) => {
-      if (div.children.length === 1 && div.querySelector('picture')) div.className = 'cards-article-card-image';
+      // image cell: contains an image/picture but no heading/paragraph text content
+      const hasMedia = div.querySelector('picture, img');
+      const hasText = div.querySelector('h1, h2, h3, h4, h5, h6')
+        || [...div.querySelectorAll('p')].some((p) => p.textContent.trim().length);
+      if (hasMedia && !hasText) div.className = 'cards-article-card-image';
       else div.className = 'cards-article-card-body';
     });
     ul.append(li);
