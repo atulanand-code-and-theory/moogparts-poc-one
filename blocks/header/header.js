@@ -14,6 +14,14 @@ function closeAllMegamenus(nav) {
   nav.querySelectorAll('.nav-drop[aria-expanded="true"]').forEach((d) => d.setAttribute('aria-expanded', 'false'));
 }
 
+function closeLocale(nav) {
+  const localeOpen = nav.querySelector('.nav-locale[aria-expanded="true"]');
+  if (!localeOpen) return;
+  localeOpen.setAttribute('aria-expanded', 'false');
+  const trigger = localeOpen.querySelector('.nav-locale-trigger');
+  if (trigger) trigger.setAttribute('aria-expanded', 'false');
+}
+
 /**
  * Collapse every open mobile accordion (top-level + nested) and reset chevrons.
  */
@@ -28,8 +36,7 @@ function closeOnEscape(e) {
     const nav = document.getElementById('nav');
     if (!nav) return;
     closeAllMegamenus(nav);
-    const localeOpen = nav.querySelector('.nav-locale[aria-expanded="true"]');
-    if (localeOpen) localeOpen.setAttribute('aria-expanded', 'false');
+    closeLocale(nav);
     if (!isDesktop.matches) {
       const navSections = nav.querySelector('.nav-sections');
       // eslint-disable-next-line no-use-before-define
@@ -137,6 +144,30 @@ function classifyNavSections(nav) {
  */
 function decorateTools(navTools) {
   if (!navTools) return;
+  const liveLocale = [...navTools.querySelectorAll('.region-and-language')]
+    .find((el) => el.querySelector('.region-list')
+      || (el.matches('.current-language') && el.parentElement?.querySelector(':scope > .region-list')));
+  if (liveLocale) {
+    const trigger = liveLocale.matches('.current-language') ? liveLocale : liveLocale.querySelector('.current-language');
+    const localeRoot = trigger?.parentElement?.querySelector(':scope > .region-list') ? trigger.parentElement : liveLocale;
+    const panel = localeRoot.querySelector(':scope > .region-list') || liveLocale.querySelector('.region-list');
+    if (trigger && panel) {
+      localeRoot.classList.add('nav-locale');
+      trigger.classList.add('nav-locale-trigger');
+      trigger.type = trigger.tagName === 'BUTTON' ? 'button' : trigger.type;
+      panel.classList.add('nav-locale-panel');
+      localeRoot.setAttribute('aria-expanded', 'false');
+      trigger.setAttribute('aria-expanded', 'false');
+      trigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const open = localeRoot.getAttribute('aria-expanded') === 'true';
+        localeRoot.setAttribute('aria-expanded', open ? 'false' : 'true');
+        trigger.setAttribute('aria-expanded', open ? 'false' : 'true');
+      });
+    }
+  }
+
   // social + text links live in <p> wrappers
   navTools.querySelectorAll('p > a').forEach((a) => {
     const wrapper = a.closest('p');
@@ -154,7 +185,7 @@ function decorateTools(navTools) {
 
   // locale selector: the <ul> at the end of the tools section
   const localeList = navTools.querySelector(':scope > ul, :scope > div > ul');
-  if (localeList) {
+  if (localeList && !localeList.classList.contains('region-list')) {
     localeList.classList.add('nav-locale-list');
     const trigger = localeList.querySelector(':scope > li');
     const triggerLink = trigger.querySelector(':scope > a');
@@ -165,10 +196,13 @@ function decorateTools(navTools) {
       triggerLink.setAttribute('role', 'button');
       panel.classList.add('nav-locale-panel');
       trigger.setAttribute('aria-expanded', 'false');
+      triggerLink.setAttribute('aria-expanded', 'false');
       triggerLink.addEventListener('click', (e) => {
         e.preventDefault();
+        e.stopPropagation();
         const open = trigger.getAttribute('aria-expanded') === 'true';
         trigger.setAttribute('aria-expanded', open ? 'false' : 'true');
+        triggerLink.setAttribute('aria-expanded', open ? 'false' : 'true');
       });
     }
   }
@@ -363,17 +397,16 @@ export default async function decorate(block) {
     // close mobile menu + reset hamburger, collapse any open accordions
     collapseAllAccordions(nav);
     closeAllMegamenus(nav);
-    const localeOpen = nav.querySelector('.nav-locale[aria-expanded="true"]');
-    if (localeOpen) localeOpen.setAttribute('aria-expanded', 'false');
+    closeLocale(nav);
     toggleMenu(nav, navSections, isDesktop.matches);
   });
 
   // close open panels when clicking outside the nav
   document.addEventListener('click', (e) => {
+    const localeOpen = nav.querySelector('.nav-locale[aria-expanded="true"]');
+    if (localeOpen && !localeOpen.contains(e.target)) closeLocale(nav);
     if (!nav.contains(e.target)) {
       closeAllMegamenus(nav);
-      const localeOpen = nav.querySelector('.nav-locale[aria-expanded="true"]');
-      if (localeOpen) localeOpen.setAttribute('aria-expanded', 'false');
     }
   });
 
