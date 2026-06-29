@@ -21,8 +21,22 @@ export default function parse(element, { document }) {
   const cells = [];
 
   items.forEach((item) => {
-    // First cell: card image (optional).
-    const img = item.querySelector('.timeline-showcase img, img');
+    // First cell: card image. On the source the per-entry photo is a CSS
+    // background-image on `.timeline-showcase` (inline style), not an <img>.
+    // Extract it and synthesize an <img> so the image survives migration.
+    let img = item.querySelector('.timeline-showcase img, img');
+    if (!img) {
+      const showcase = item.querySelector('.timeline-showcase, [style*="background-image"]');
+      const style = showcase ? showcase.getAttribute('style') || '' : '';
+      const m = style.match(/background-image:\s*url\((['"]?)([^'")]+)\1\)/i);
+      if (m && m[2] && !/\/0\.gif$/.test(m[2])) {
+        const src = m[2].startsWith('http') ? m[2] : `https://www.moogparts.com${m[2]}`;
+        img = document.createElement('img');
+        img.src = src;
+        const yearTxt = (item.querySelector('h2') || {}).textContent || '';
+        img.alt = `MOOG history ${yearTxt.replace(/\s+/g, ' ').trim()}`.trim();
+      }
+    }
 
     // Second cell: text content (year heading + title heading + description).
     const textCell = [];

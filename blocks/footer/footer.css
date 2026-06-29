@@ -5,6 +5,57 @@ footer {
   font-size: 16px;
 }
 
+/* Site-wide "Join our MOOG Mailing List" band (MOOG yellow, centered). */
+footer .footer-mailing-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 32px 20px;
+  background-color: var(--moog-yellow, #f5e944);
+  text-align: center;
+}
+
+footer .footer-mailing-list h5 {
+  margin: 0;
+  color: var(--moog-blue, #0032a0);
+  font-family: roboto-blackitalic, roboto, roboto-fallback, sans-serif;
+  font-style: italic;
+  font-weight: 900;
+  font-size: 24px;
+  text-transform: uppercase;
+}
+
+footer .footer-mailing-list a.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  padding: 0 34px;
+  background-color: var(--moog-blue, #0032a0);
+  color: #fff;
+  font-family: blenderpro-bolditalic, roboto, roboto-fallback, sans-serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+footer .footer-mailing-list a.button:hover,
+footer .footer-mailing-list a.button:focus-visible {
+  background-color: var(--link-hover-color, #0068ff);
+  color: #fff;
+}
+
+@media (width >= 600px) {
+  footer .footer-mailing-list {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
 footer .footer-content {
   margin: 0;
   max-width: none;

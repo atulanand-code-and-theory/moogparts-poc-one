@@ -101,6 +101,16 @@ export default async function decorate(block) {
   const sections = parseSections(html);
 
   block.textContent = '';
+
+  // Site-wide "Join our MOOG Mailing List" band. On the source this lives in the
+  // footer area (footer-par) above the main footer on every page; render it here
+  // so it appears consistently without baking it into each page's content.
+  const mailingList = document.createElement('div');
+  mailingList.className = 'footer-mailing-list';
+  mailingList.innerHTML = '<h5>Join our MOOG Mailing List</h5>'
+    + '<a class="button" href="/email">Join Mailing List</a>';
+  block.append(mailingList);
+
   const footer = document.createElement('div');
   footer.className = 'footer-content';
 
