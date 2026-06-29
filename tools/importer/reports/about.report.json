@@ -2,10 +2,10 @@
   "status": "success",
   "url": "https://www.moogparts.com/about.html",
   "path": "about",
-  "timestamp": "2026-06-28T17:49:20.218Z",
+  "timestamp": "2026-06-29T05:06:54.954Z",
   "title": "About Us | MOOG Parts",
   "template": "standalone",
   "blocks": [
-    "cards-article"
+    "cards-timeline"
   ]
 }

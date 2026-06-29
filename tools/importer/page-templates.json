@@ -924,7 +924,6 @@
         {
           "name": "cards-article",
           "instances": [
-            ".timeline",
             ".cross-sell",
             ".carousel-container"
           ]
@@ -933,6 +932,12 @@
           "name": "cards-benefits",
           "instances": [
             ".main-par .responsivegrid:has(.text-content) + .responsivegrid img"
+          ]
+        },
+        {
+          "name": "cards-timeline",
+          "instances": [
+            ".timeline"
           ]
         }
       ],
@@ -973,7 +978,8 @@
           ],
           "style": null,
           "blocks": [
-            "cards-article"
+            "cards-article",
+            "cards-timeline"
           ],
           "defaultContent": []
         },

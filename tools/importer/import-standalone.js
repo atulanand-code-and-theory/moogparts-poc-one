@@ -6,6 +6,7 @@ import widgetParser from './parsers/widget.js';
 import columnsSplitParser from './parsers/columns-split.js';
 import cardsArticleParser from './parsers/cards-article.js';
 import cardsBenefitsParser from './parsers/cards-benefits.js';
+import cardsTimelineParser from './parsers/cards-timeline.js';
 import cleanupTransformer from './transformers/moogparts-cleanup.js';
 import sectionsTransformer from './transformers/moogparts-sections.js';
 
@@ -47,7 +48,6 @@ const PAGE_TEMPLATE = {
       {
         "name": "cards-article",
         "instances": [
-          ".timeline",
           ".cross-sell",
           ".carousel-container"
         ]
@@ -56,6 +56,12 @@ const PAGE_TEMPLATE = {
         "name": "cards-benefits",
         "instances": [
           ".main-par .responsivegrid:has(.text-content) + .responsivegrid img"
+        ]
+      },
+      {
+        "name": "cards-timeline",
+        "instances": [
+          ".timeline"
         ]
       }
     ],
@@ -96,7 +102,8 @@ const PAGE_TEMPLATE = {
         ],
         "style": null,
         "blocks": [
-          "cards-article"
+          "cards-article",
+          "cards-timeline"
         ],
         "defaultContent": []
       },
@@ -124,6 +131,7 @@ const parsers = {
   'columns-split': columnsSplitParser,
   'cards-article': cardsArticleParser,
   'cards-benefits': cardsBenefitsParser,
+  'cards-timeline': cardsTimelineParser,
 };
 
 const transformers = [

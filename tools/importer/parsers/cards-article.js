@@ -331,10 +331,8 @@ function parseCarousel(element, { document }) {
 }
 
 export default function parse(element, { document }) {
-  // --- standalone `.timeline` "Our History" band ---
-  if (element.classList.contains('timeline') || element.querySelector('.timeline-item')) {
-    if (parseTimeline(element, { document })) return;
-  }
+  // NOTE: the standalone `.timeline` "Our History" band is handled by the
+  // dedicated cards-timeline parser/block, not here.
 
   // --- standalone `.carousel-container` application-spotlight carousel ---
   if (element.classList.contains('carousel-container') || element.querySelector('.tout-slide')) {

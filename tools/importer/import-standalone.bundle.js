@@ -344,41 +344,6 @@ var CustomImportScript = (() => {
     groupTouts.slice(1).forEach((t) => t.remove());
     return true;
   }
-  function parseTimeline(element, { document }) {
-    const items = Array.from(element.querySelectorAll(".timeline-item"));
-    const cells = [];
-    items.forEach((item) => {
-      const img = item.querySelector(".timeline-showcase img, img");
-      const textCell = [];
-      const yearEl = item.querySelector("h2");
-      const yearText = yearEl ? yearEl.textContent.replace(/\s+/g, " ").trim() : "";
-      if (yearText) {
-        const h3 = document.createElement("h3");
-        h3.textContent = yearText;
-        textCell.push(h3);
-      }
-      const titleEl = item.querySelector("h4, h3:not(:first-of-type)");
-      if (titleEl && titleEl.textContent.trim()) {
-        const h4 = document.createElement("h4");
-        h4.innerHTML = titleEl.innerHTML;
-        textCell.push(h4);
-      }
-      const copy = item.querySelector(".timeline-item-copy");
-      if (copy) {
-        Array.from(copy.querySelectorAll("p")).filter((p) => p.textContent.trim()).forEach((p) => textCell.push(p));
-      }
-      if (img || textCell.length) {
-        cells.push([img || "", textCell.length ? textCell : ""]);
-      }
-    });
-    if (cells.length === 0) {
-      element.replaceWith(...element.childNodes);
-      return true;
-    }
-    const block = WebImporter.Blocks.createBlock(document, { name: "cards-article", cells });
-    element.replaceWith(block);
-    return true;
-  }
   function parseCarousel(element, { document }) {
     if (element.parentElement && element.parentElement.closest(".carousel-container")) {
       element.remove();
@@ -423,9 +388,6 @@ var CustomImportScript = (() => {
     return true;
   }
   function parse4(element, { document }) {
-    if (element.classList.contains("timeline") || element.querySelector(".timeline-item")) {
-      if (parseTimeline(element, { document })) return;
-    }
     if (element.classList.contains("carousel-container") || element.querySelector(".tout-slide")) {
       if (parseCarousel(element, { document })) return;
     }
@@ -498,6 +460,43 @@ var CustomImportScript = (() => {
       element.parentNode.insertBefore(h2, element);
     }
     element.replaceWith(block);
+  }
+
+  // tools/importer/parsers/cards-timeline.js
+  function parse6(element, { document }) {
+    const items = Array.from(element.querySelectorAll(".timeline-item"));
+    const cells = [];
+    items.forEach((item) => {
+      const img = item.querySelector(".timeline-showcase img, img");
+      const textCell = [];
+      const yearEl = item.querySelector("h2");
+      const yearText = yearEl ? yearEl.textContent.replace(/\s+/g, " ").trim() : "";
+      if (yearText) {
+        const h3 = document.createElement("h3");
+        h3.textContent = yearText;
+        textCell.push(h3);
+      }
+      const titleEl = item.querySelector("h4, h3:not(:first-of-type)");
+      if (titleEl && titleEl.textContent.trim()) {
+        const h4 = document.createElement("h4");
+        h4.innerHTML = titleEl.innerHTML;
+        textCell.push(h4);
+      }
+      const copy = item.querySelector(".timeline-item-copy");
+      if (copy) {
+        Array.from(copy.querySelectorAll("p")).filter((p) => p.textContent.trim()).forEach((p) => textCell.push(p));
+      }
+      if (img || textCell.length) {
+        cells.push([img || "", textCell.length ? textCell : ""]);
+      }
+    });
+    if (cells.length === 0) {
+      element.replaceWith(...element.childNodes);
+      return true;
+    }
+    const block = WebImporter.Blocks.createBlock(document, { name: "cards-timeline", cells });
+    element.replaceWith(block);
+    return true;
   }
 
   // tools/importer/transformers/moogparts-cleanup.js
@@ -581,6 +580,13 @@ var CustomImportScript = (() => {
         if (!pic.querySelector("img")) {
           const wrap = pic.closest("p") || pic;
           wrap.remove();
+        }
+      });
+      element.querySelectorAll("p, span, div, h1, h2, h3, h4, h5, h6").forEach((el) => {
+        if (el.children.length > 0) return;
+        const text = (el.textContent || "").trim();
+        if (text.toLowerCase() === "loading..." || /^\{\{[^}]+\}\}$/.test(text)) {
+          el.remove();
         }
       });
       if (!isMailingListAuthorable(payload)) {
@@ -684,7 +690,6 @@ var CustomImportScript = (() => {
       {
         "name": "cards-article",
         "instances": [
-          ".timeline",
           ".cross-sell",
           ".carousel-container"
         ]
@@ -693,6 +698,12 @@ var CustomImportScript = (() => {
         "name": "cards-benefits",
         "instances": [
           ".main-par .responsivegrid:has(.text-content) + .responsivegrid img"
+        ]
+      },
+      {
+        "name": "cards-timeline",
+        "instances": [
+          ".timeline"
         ]
       }
     ],
@@ -733,7 +744,8 @@ var CustomImportScript = (() => {
         ],
         "style": null,
         "blocks": [
-          "cards-article"
+          "cards-article",
+          "cards-timeline"
         ],
         "defaultContent": []
       },
@@ -759,7 +771,8 @@ var CustomImportScript = (() => {
     widget: parse2,
     "columns-split": parse3,
     "cards-article": parse4,
-    "cards-benefits": parse5
+    "cards-benefits": parse5,
+    "cards-timeline": parse6
   };
   var transformers = [
     transform,
