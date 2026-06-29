@@ -246,10 +246,10 @@
   border-top: 1px solid var(--light-color);
 }
 
-/* Image — matches live site 3:2 ratio at proportional size */
+/* Image */
 .find-my-part-results-us .fmpr-row-image {
-  width: 160px;
-  height: 110px;
+  width: 220px;
+  height: 160px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -282,21 +282,31 @@
   margin: 0 0 0.375rem;
 }
 
+.find-my-part-results-us .fmpr-row-part-name {
+  font-size: var(--body-font-size-m);
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0 0 0.75rem;
+}
+
+.find-my-part-results-us .fmpr-row-part-name a {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
 .find-my-part-results-us .fmpr-row-part-number a {
   color: var(--moog-blue);
   font-weight: 700;
   text-decoration: none;
 }
 
-.find-my-part-results-us .fmpr-row-part-number a:hover {
+.find-my-part-results-us .fmpr-row-part-name a:hover {
+  color: var(--moog-blue);
   text-decoration: underline;
 }
 
-.find-my-part-results-us .fmpr-row-part-name {
-  font-size: var(--body-font-size-m);
-  font-weight: 700;
-  color: var(--text-color);
-  margin: 0 0 0.75rem;
+.find-my-part-results-us .fmpr-row-part-number a:hover {
+  text-decoration: underline;
 }
 
 /* Features accordion */

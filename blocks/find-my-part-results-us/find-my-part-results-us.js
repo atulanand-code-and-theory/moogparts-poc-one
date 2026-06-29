@@ -16,6 +16,21 @@ function getVehicleGroupLabel(vehicleGroupId) {
   return type ? type.label : '';
 }
 
+function buildPartDetailsUrl(redirectUrl) {
+  if (!redirectUrl) return null;
+  try {
+    const src = new URL(redirectUrl.replace(/&amp;/g, '&'));
+    const params = new URLSearchParams({
+      brand_code: src.searchParams.get('brand_code') || '',
+      part_number: src.searchParams.get('part_number') || '',
+      part_name: src.searchParams.get('part_name') || '',
+    });
+    return `/part-details?${params.toString()}`;
+  } catch {
+    return null;
+  }
+}
+
 function buildListRow(app, yearLabel, makeLabel, modelLabel) {
   const li = document.createElement('li');
   li.className = 'fmpr-row';
@@ -39,12 +54,12 @@ function buildListRow(app, yearLabel, makeLabel, modelLabel) {
 
   const partNumberEl = document.createElement('p');
   partNumberEl.className = 'fmpr-row-part-number';
-  const partHref = app.part_detail_redirect_url?.replace(/&amp;/g, '&') || '#';
+  const partHref = buildPartDetailsUrl(app.part_detail_redirect_url) || '#';
   partNumberEl.innerHTML = `Part No: <a href="${partHref}">${app.part_number}</a>`;
 
   const partNameEl = document.createElement('p');
   partNameEl.className = 'fmpr-row-part-name';
-  partNameEl.textContent = app.part_name;
+  partNameEl.innerHTML = `<a href="${partHref}">${app.part_name}</a>`;
 
   const featuresWrapper = document.createElement('div');
   featuresWrapper.className = 'fmpr-row-features';
