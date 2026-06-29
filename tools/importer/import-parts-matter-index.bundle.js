@@ -99,8 +99,9 @@ var CustomImportScript = (() => {
   var hasText2 = (el) => !!el && el.textContent.trim().length > 0;
   function buildTextCell(inner, document) {
     const parts = [];
-    const heading = inner.querySelector("h1, h2, h3, h4, h5, h6");
-    if (hasText2(heading)) parts.push(heading);
+    inner.querySelectorAll("h1, h2, h3, h4, h5, h6").forEach((h) => {
+      if (hasText2(h)) parts.push(h);
+    });
     inner.querySelectorAll("p").forEach((p) => {
       if (hasText2(p) || p.querySelector("img, a")) parts.push(p);
     });
@@ -223,7 +224,9 @@ var CustomImportScript = (() => {
     const items = Array.from(element.querySelectorAll(".cross-sell-item"));
     const cells = [];
     items.forEach((item) => {
-      const img = item.querySelector(".image img, img");
+      const imgEl = item.querySelector(".image img, img");
+      const imgSrc = imgEl ? imgEl.getAttribute("src") || "" : "";
+      const img = imgEl && imgSrc && !/\{\{/.test(imgSrc) ? imgEl : null;
       const textCell = [];
       const title = item.querySelector("h3, h2, .cross-sell-title");
       if (title && title.textContent.trim()) {
@@ -234,9 +237,10 @@ var CustomImportScript = (() => {
       const desc = item.querySelector("p");
       if (desc && desc.textContent.trim()) textCell.push(desc);
       const cta = item.querySelector("a[href]");
-      if (cta && cta.textContent.trim()) {
+      const ctaHref = cta ? cta.getAttribute("href") || "" : "";
+      if (cta && cta.textContent.trim() && ctaHref && !/\{\{/.test(ctaHref)) {
         const a = document.createElement("a");
-        a.href = cta.getAttribute("href") || "#";
+        a.href = ctaHref;
         a.textContent = cta.textContent.replace(/\s+/g, " ").trim();
         textCell.push(a);
       }
@@ -297,7 +301,53 @@ var CustomImportScript = (() => {
     groupTouts.slice(1).forEach((t) => t.remove());
     return true;
   }
+  function parseCarousel(element, { document }) {
+    if (element.parentElement && element.parentElement.closest(".carousel-container")) {
+      element.remove();
+      return true;
+    }
+    const allSlides = Array.from(element.querySelectorAll(".tout-slide"));
+    const seen = /* @__PURE__ */ new Set();
+    const slides = allSlides.filter((slide) => {
+      const ordinal = Array.from(slide.classList).find((c) => /^slide\d+$/.test(c));
+      const key = ordinal || `idx-${allSlides.indexOf(slide)}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+    const cells = [];
+    slides.forEach((slide) => {
+      const img = slide.querySelector(".tout-image .preview-img, .tout-image img, img.preview-img, img");
+      const textCell = [];
+      const titleP = slide.querySelector(".tout-content .content p, .tout-content p, .content p");
+      if (titleP && titleP.textContent.trim()) {
+        const h3 = document.createElement("h3");
+        h3.textContent = titleP.textContent.replace(/\s+/g, " ").trim();
+        textCell.push(h3);
+      }
+      const cta = slide.querySelector(".slide-cta a[href], a.button-main[href], a.button-arrow[href]");
+      if (cta && cta.textContent.trim()) {
+        const a = document.createElement("a");
+        a.href = cta.getAttribute("href") || "#";
+        a.textContent = cta.textContent.replace(/\s+/g, " ").trim();
+        textCell.push(a);
+      }
+      if (img || textCell.length) {
+        cells.push([img || "", textCell.length ? textCell : ""]);
+      }
+    });
+    if (cells.length === 0) {
+      element.replaceWith(...element.childNodes);
+      return true;
+    }
+    const block = WebImporter.Blocks.createBlock(document, { name: "cards-article", cells });
+    element.replaceWith(block);
+    return true;
+  }
   function parse3(element, { document }) {
+    if (element.classList.contains("carousel-container") || element.querySelector(".tout-slide")) {
+      if (parseCarousel(element, { document })) return;
+    }
     if (element.classList.contains("tout")) {
       if (parseToutCards(element, { document })) return;
     }
@@ -338,7 +388,11 @@ var CustomImportScript = (() => {
   var WIDGET_NAME_BY_CLASS = [
     { className: "driv-part-finder-main", name: "part-finder" },
     { className: "ymm-search", name: "part-finder" },
+    // Both the parts-page ZIP locator (`.where-to-buy-link`) and the standalone
+    // where-to-buy page's full search widget (`.where-to-buy-search`) resolve to
+    // the same `/widgets/where-to-buy.*` asset.
     { className: "where-to-buy-link", name: "where-to-buy" },
+    { className: "where-to-buy-search", name: "where-to-buy" },
     { className: "search-files", name: "search-files" },
     { className: "diagnostic-center", name: "diagnostic-center" },
     { className: "documents-autocomplete", name: "documents-autocomplete" }
@@ -430,14 +484,40 @@ var CustomImportScript = (() => {
         //     driven, not in any mapped section, leaks a stray heading + button.
         ".buy-online-toolbox",
         ".random-tip",
+        // where-to-buy runtime store-locator chrome: the interactive Google Maps
+        // canvas (map tiles, zoom controls, {{dealer.*}} ng-repeat infowindow
+        // templates) and the filter sidebar are widget runtime UI, not authorable
+        // content. The authorable ZIP locator is .where-to-buy-search (mapped to
+        // the widget block); these two leak map controls + unhydrated templates.
+        ".where-to-buy-map",
+        ".where-to-buy-search-filter",
         // Third-party / safe-to-strip elements
         "#rufous-sandbox",
         "iframe",
         "script",
         "noscript",
         "style",
-        "link"
+        "link",
+        // Marketing tracking pixels (dataxu/w55c) and leaked Google Maps tiles
+        // (the real store map is the runtime where-to-buy widget). These are
+        // non-content images that otherwise become stray <picture> blocks.
+        'img[src*="tags.w55c.net"]',
+        'img[src*="maps.googleapis.com"]',
+        'img[src*="maps.gstatic.com"]'
       ]);
+      element.querySelectorAll("picture").forEach((pic) => {
+        if (!pic.querySelector("img")) {
+          const wrap = pic.closest("p") || pic;
+          wrap.remove();
+        }
+      });
+      element.querySelectorAll("p, span, div, h1, h2, h3, h4, h5, h6").forEach((el) => {
+        if (el.children.length > 0) return;
+        const text = (el.textContent || "").trim();
+        if (text.toLowerCase() === "loading..." || /^\{\{[^}]+\}\}$/.test(text)) {
+          el.remove();
+        }
+      });
       if (!isMailingListAuthorable(payload)) {
         WebImporter.DOMUtils.remove(element, [".social-feed"]);
       }

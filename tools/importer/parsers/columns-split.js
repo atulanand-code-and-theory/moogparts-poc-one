@@ -41,8 +41,11 @@ const hasText = (el) => !!el && el.textContent.trim().length > 0;
  */
 function buildTextCell(inner, document) {
   const parts = [];
-  const heading = inner.querySelector('h1, h2, h3, h4, h5, h6');
-  if (hasText(heading)) parts.push(heading);
+  // Collect ALL headings in document order (e.g. a "FEATURED ARTICLE" eyebrow
+  // plus the actual article title), not just the first.
+  inner.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach((h) => {
+    if (hasText(h)) parts.push(h);
+  });
   inner.querySelectorAll('p').forEach((p) => {
     if (hasText(p) || p.querySelector('img, a')) parts.push(p);
   });
