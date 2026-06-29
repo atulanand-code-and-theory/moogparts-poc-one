@@ -319,8 +319,19 @@ export default async function decorate(block) {
   retryBtn.textContent = 'Try Again';
   errorEl.append(errorMsg, retryBtn);
 
+  const backBtn = document.createElement('a');
+  backBtn.className = 'pd-back-btn';
+  backBtn.href = '/find-my-part';
+  backBtn.textContent = '← Back To Results';
+  backBtn.addEventListener('click', (e) => {
+    if (window.history.length > 1) {
+      e.preventDefault();
+      window.history.back();
+    }
+  });
+
   block.innerHTML = '';
-  block.append(loadingEl, errorEl, layout);
+  block.append(backBtn, loadingEl, errorEl, layout);
 
   if (!partNumber || !brandCode) {
     loadingEl.hidden = true;

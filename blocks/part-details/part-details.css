@@ -4,6 +4,19 @@
   padding: 24px 16px;
 }
 
+/* Back button */
+.part-details .pd-back-btn {
+  display: inline-block;
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: #333;
+  text-decoration: none;
+}
+
+.part-details .pd-back-btn:hover {
+  text-decoration: underline;
+}
+
 /* Loading */
 .part-details .pd-loading {
   display: flex;
