@@ -381,6 +381,18 @@ main .section.yellow h6 {
   text-transform: uppercase;
 }
 
+/* Parts product "Quick-Look Benefits" section heading (default content sibling
+   of the cards-benefits block): MOOG-blue, centered, uppercase italic — matches
+   source. Scoped to the section so article-body headings are unaffected. */
+main .section:has(.cards-benefits) > .default-content-wrapper h2 {
+  color: var(--moog-blue);
+  font-family: roboto-blackitalic, roboto, roboto-fallback, sans-serif;
+  font-style: italic;
+  font-weight: 900;
+  text-align: center;
+  text-transform: uppercase;
+}
+
 main .section.yellow p {
   margin: 0;
 }

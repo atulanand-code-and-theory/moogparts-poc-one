@@ -1,7 +1,9 @@
 /* cards-benefits — MOOG "Quick-Look Benefits" text-only grid.
-   Centered, even columns of label + one-line description. No images, no
-   borders — pure text on the page's white background. Mobile-first 1-up,
-   2-up on tablet, 4-up on desktop to match the source .columns-4 layout. */
+   Source: .product-benefits-container .columns-4 — a 4-up row of plain text
+   items, each a short bold uppercase label above a one-line description.
+   No images, no borders — centered text on the page's white background.
+   All values extracted from source computed styles (migration-work/
+   cards-benefits-extracted.css). Mobile-first: 1-up, 2-up tablet, 4-up desktop. */
 
 .cards-benefits > ul {
   list-style: none;
@@ -9,14 +11,15 @@
   padding: 0;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 32px 24px;
+  gap: 24px;
   text-align: center;
 }
 
-/* card — no border, no background; this is a plain text feature item */
+/* item — no border, no background; a plain text feature item.
+   Source .product-benefit padding: 20px 24.77px. */
 .cards-benefits > ul > li {
   margin: 0;
-  padding: 0;
+  padding: 20px 24px;
   border: 0;
   background-color: transparent;
 }
@@ -25,26 +28,28 @@
   margin: 0;
 }
 
-/* benefit label — short, bold, MOOG blue, uppercase eyebrow */
+/* benefit label — bold uppercase, bright MOOG link-hover blue (#0068FF).
+   Source p.h5-rep: 20px / blenderpro-bold / 26px / 2px tracking / uppercase. */
 .cards-benefits .cards-benefits-label {
-  margin: 0 0 8px;
-  color: var(--moog-blue, #0032a0);
-  font-family: var(--body-font-family);
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: 1px;
+  margin: 0;
+  color: rgb(0 104 255);
+  font-family: blenderpro-bold, var(--body-font-family);
+  font-size: 20px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 26px;
+  letter-spacing: 2px;
   text-transform: uppercase;
 }
 
-/* description — short supporting line */
+/* description — short supporting line. Source p: 16px / blenderpro-book / 26px / #333. */
 .cards-benefits .cards-benefits-card-body p {
   margin: 0;
   color: rgb(51 51 51);
   font-family: var(--body-font-family);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 400;
-  line-height: 1.45;
+  line-height: 26px;
 }
 
 /* tablet: 2-up */
@@ -58,14 +63,6 @@
 @media (width >= 900px) {
   .cards-benefits > ul {
     grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
-  }
-
-  .cards-benefits .cards-benefits-label {
-    font-size: 15px;
-  }
-
-  .cards-benefits .cards-benefits-card-body p {
-    font-size: 16px;
+    gap: 0;
   }
 }

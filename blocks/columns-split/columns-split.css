@@ -178,6 +178,120 @@
 }
 
 /* ---------------------------------------------------------------------------
+   Product-feature variant — parts product-detail pages.
+   Distinguished from the .tout (default) and blue-band variants because the
+   text column carries a bulleted benefits <ul>. `:has(ul)` scopes every rule
+   here to that variant only, so the other two variants never regress.
+   Source: parts/steering/idler-arms.html .product-feature (computed styles).
+   Layout: centred blue headline (section default content) above an
+   image | text 50/50 row; blue italic H3; grey bulleted benefits list;
+   stacked inline-blue CTA text links (not solid buttons).
+--------------------------------------------------------------------------- */
+
+/* These variant rules intentionally appear after — and override — the lower
+   specificity .tout rules above; `:has(ul)` already wins on specificity. */
+/* stylelint-disable no-descending-specificity */
+
+/* Centred blue headline — lives in the section as default content, a sibling
+   of the block. Scope to sections that contain the product-feature variant. */
+main .section:has(.columns-split ul) h2 {
+  margin: 0 0 24px;
+  color: var(--moog-blue);
+  font-family: roboto-black, roboto, roboto-fallback, sans-serif;
+  font-size: 32px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.16;
+  letter-spacing: 1px;
+  text-align: center;
+  text-transform: none;
+}
+
+/* H3 — MOOG blue, heavy italic (blackitalic), no extra transform */
+.columns-split:has(ul) h3 {
+  margin: 0 0 16px;
+  color: var(--moog-blue);
+  font-family: roboto-blackitalic, roboto, roboto-fallback, sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.33;
+  letter-spacing: 1px;
+  text-transform: none;
+}
+
+/* Benefits list — grey discs + grey body, blenderpro book */
+.columns-split:has(ul) ul {
+  margin: 0 0 8px 16px;
+  padding: 0;
+  list-style: disc outside;
+  color: #333;
+}
+
+.columns-split:has(ul) ul > li {
+  margin: 0 0 12px;
+  padding: 0;
+  color: #333;
+  font-family: blenderpro-book, roboto, roboto-fallback, sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.44;
+  list-style: disc;
+}
+
+.columns-split:has(ul) ul > li::marker {
+  color: #333;
+}
+
+/* CTAs — inline blue TEXT links (not solid buttons). Reset the default
+   .tout button styling that the shared rule applies, then restate as links. */
+.columns-split:has(ul) a,
+.columns-split:has(ul) a.button:any-link {
+  display: inline-block;
+  margin: 0 20px 0 0;
+  border: 0;
+  border-radius: 0;
+  padding: 0 20px 0 0;
+  background-color: transparent;
+  color: #0068ff; /* source CTA link blue (brand linkHover) */
+  font-family: blenderpro-bolditalic, blenderpro-book, roboto, roboto-fallback, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  font-style: normal;
+  line-height: 46px;
+  letter-spacing: 1px;
+  text-align: left;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+/* keep the trailing double-chevron, coloured to match the link */
+.columns-split:has(ul) a::after,
+.columns-split:has(ul) a.button:any-link::after {
+  content: "\00BB";
+  margin-left: 8px;
+  font-weight: 700;
+}
+
+.columns-split:has(ul) a:hover,
+.columns-split:has(ul) a:focus-visible,
+.columns-split:has(ul) a.button:any-link:hover,
+.columns-split:has(ul) a.button:any-link:focus-visible {
+  background-color: transparent;
+  color: var(--moog-blue);
+  text-decoration: none;
+}
+
+/* CTA paragraphs (each link is its own button-container) stack tightly */
+.columns-split:has(ul) p.button-container,
+.columns-split:has(ul) p:has(> a) {
+  margin: 0;
+}
+
+/* stylelint-enable no-descending-specificity */
+
+/* ---------------------------------------------------------------------------
    Desktop (>= 900px) — two columns side by side
 --------------------------------------------------------------------------- */
 
@@ -234,4 +348,18 @@
   .section.blue .columns-split p:has(> a) a {
     display: inline-block;
   }
+
+  /* Product-feature variant — larger centred headline + heading on desktop */
+  /* stylelint-disable no-descending-specificity */
+  main .section:has(.columns-split ul) h2 {
+    margin-bottom: 32px;
+    font-size: 60px;
+    line-height: 1.16;
+  }
+
+  .columns-split:has(ul) h3 {
+    font-size: 30px;
+    line-height: 1.33;
+  }
+  /* stylelint-enable no-descending-specificity */
 }

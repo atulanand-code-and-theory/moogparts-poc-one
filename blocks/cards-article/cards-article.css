@@ -53,16 +53,22 @@
   color: var(--text-color);
 }
 
-/* title link — blenderpro-book, MOOG blue, plain (source: 16px/400, #0032A0) */
+/* product-card title — MOOG .tout/.cross-sell treatment:
+   roboto-blackitalic, MOOG blue, UPPERCASE. The title is a plain
+   heading (no <a>) on category tout grids AND on cross-sell bands,
+   so the color/family live on the h3 itself, not on a nested link. */
 .cards-article .cards-article-card-body h3 {
   margin: 0;
-  font-family: var(--body-font-family);
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 20px;
-  text-transform: none;
+  color: var(--moog-blue);
+  font-family: roboto-blackitalic, roboto, roboto-fallback, sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  font-style: italic;
+  line-height: 24px;
+  text-transform: uppercase;
 }
 
+/* when a title IS authored as a link, keep it the same blue treatment */
 .cards-article .cards-article-card-body h3 a:any-link {
   color: var(--moog-blue);
   text-decoration: none;
@@ -90,9 +96,12 @@
 
 .cards-article .cards-article-card-body p:last-child a:any-link {
   display: inline-block;
-  color: var(--link-hover-color);
-  font-weight: 400;
+  color: var(--moog-blue);
+  font-family: blenderpro-bolditalic, roboto, roboto-fallback, sans-serif;
+  font-style: italic;
+  font-weight: 700;
   letter-spacing: 1px;
+  text-transform: uppercase;
   text-decoration: none;
 }
 
@@ -123,11 +132,15 @@
   color: #fff;
 }
 
-/* article title — source: roboto-black, upright (non-italic), weight 400, 25px/30px */
+/* article title — source: roboto-black, upright (non-italic), weight 400, 25px/30px.
+   Explicitly resets the product-card base treatment (blue/italic/uppercase)
+   so the dark .ledes band keeps its white, sentence-case article titles. */
 .section.grey .cards-article .cards-article-card-body h3 {
+  color: #fff;
   font-family: roboto-black, roboto, roboto-fallback, sans-serif;
   font-weight: 900;
   font-style: normal;
+  text-transform: none;
 }
 
 .section.grey .cards-article .cards-article-card-body h3 a:any-link,
@@ -135,12 +148,15 @@
   color: rgb(0 104 255);
 }
 
-/* "Read More" CTA — source: blenderpro-bolditalic, italic, blue, block-level */
+/* "Read More" CTA — source: blenderpro-bolditalic, italic, blue, block-level.
+   Resets the product-card base uppercase so the ledes "Read More" stays
+   sentence-case as on the source dark band. */
 .section.grey .cards-article .cards-article-card-body p:last-child a:any-link {
   display: block;
   font-family: blenderpro-bolditalic, roboto, roboto-fallback, sans-serif;
   font-style: italic;
   font-weight: 700;
+  text-transform: none;
 }
 
 .section.grey .cards-article .cards-article-card-body {
@@ -172,8 +188,8 @@
   }
 
   .cards-article .cards-article-card-body h3 {
-    font-size: 16px;
-    line-height: 20px;
+    font-size: 22px;
+    line-height: 26px;
   }
 
   .cards-article .cards-article-card-body p {
