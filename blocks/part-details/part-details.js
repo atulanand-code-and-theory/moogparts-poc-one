@@ -33,38 +33,67 @@ async function fetchPartDetails(partNumber, brandCode) {
   return Promise.all([productRes.json(), appsRes.json()]);
 }
 
-function buildGallery(images) {
+function buildGallery(primaries, thumbnails) {
   const gallery = document.createElement('div');
   gallery.className = 'pd-gallery';
+
+  const thumbMap = Object.fromEntries(thumbnails.map((t) => [t.index, resolveImageUrl(t.url)]));
+  const pairs = primaries
+    .map((p) => ({
+      mainUrl: resolveImageUrl(p.url),
+      thumbUrl: thumbMap[p.index] || resolveImageUrl(p.url),
+    }))
+    .filter((p) => p.mainUrl);
 
   const mainImg = document.createElement('img');
   mainImg.className = 'pd-main-image';
   mainImg.alt = '';
-  const firstUrl = resolveImageUrl(images[0]?.url);
-  if (firstUrl) mainImg.src = firstUrl;
+  if (pairs[0]) mainImg.src = pairs[0].mainUrl;
+
+  let currentIndex = 0;
+
+  const thumbEls = [];
+
+  function activate(index) {
+    currentIndex = index;
+    mainImg.src = pairs[index].mainUrl;
+    thumbEls.forEach((t, i) => t.classList.toggle('pd-thumbnail-active', i === index));
+  }
+
+  const navEl = document.createElement('div');
+  navEl.className = 'pd-gallery-nav';
+
+  const prevBtn = document.createElement('button');
+  prevBtn.type = 'button';
+  prevBtn.className = 'pd-gallery-arrow';
+  prevBtn.setAttribute('aria-label', 'Previous image');
+  prevBtn.textContent = '◄';
+  prevBtn.addEventListener('click', () => activate((currentIndex - 1 + pairs.length) % pairs.length));
 
   const thumbsEl = document.createElement('div');
   thumbsEl.className = 'pd-thumbnails';
 
-  images.forEach((img, i) => {
-    const url = resolveImageUrl(img.url);
-    if (!url) return;
+  pairs.forEach(({ thumbUrl }, i) => {
     const thumb = document.createElement('img');
-    thumb.src = url;
+    thumb.src = thumbUrl;
     thumb.alt = '';
     thumb.loading = 'lazy';
     thumb.className = 'pd-thumbnail';
     if (i === 0) thumb.classList.add('pd-thumbnail-active');
-    thumb.addEventListener('click', () => {
-      mainImg.src = url;
-      mainImg.alt = thumb.alt;
-      thumbsEl.querySelectorAll('.pd-thumbnail').forEach((t) => t.classList.remove('pd-thumbnail-active'));
-      thumb.classList.add('pd-thumbnail-active');
-    });
+    thumb.addEventListener('click', () => activate(i));
+    thumbEls.push(thumb);
     thumbsEl.appendChild(thumb);
   });
 
-  gallery.append(mainImg, thumbsEl);
+  const nextBtn = document.createElement('button');
+  nextBtn.type = 'button';
+  nextBtn.className = 'pd-gallery-arrow';
+  nextBtn.setAttribute('aria-label', 'Next image');
+  nextBtn.textContent = '►';
+  nextBtn.addEventListener('click', () => activate((currentIndex + 1) % pairs.length));
+
+  navEl.append(prevBtn, thumbsEl, nextBtn);
+  gallery.append(mainImg, navEl);
   return gallery;
 }
 
@@ -126,6 +155,24 @@ function buildSpecsTable(attributes) {
   return wrapper;
 }
 
+const APP_COLUMNS = [
+  { label: 'Make', get: (app) => app.make?.value || '' },
+  { label: 'Model', get: (app) => app.model?.value || '' },
+  {
+    label: 'Year Range',
+    get: (app) => {
+      const y = app.years || [];
+      return y.length ? `${Math.min(...y)}–${Math.max(...y)}` : '';
+    },
+  },
+  { label: 'Description', get: (app) => app.category?.part_type_value || '' },
+  { label: 'Position', get: (app) => app.position?.value || '' },
+  { label: 'Drive Wheel', get: (app) => app.drive?.value || '' },
+  { label: 'Veh. Qty.', get: (app) => app.qty ?? '' },
+  { label: 'Engine Base', get: (app) => app.engine_base_value || '' },
+  { label: 'Engine VIN', get: (app) => app.engine_version_value || '' },
+];
+
 function buildAppsTable(applicationGroupList) {
   const wrapper = document.createElement('div');
   wrapper.className = 'pd-apps-wrapper';
@@ -148,9 +195,9 @@ function buildAppsTable(applicationGroupList) {
     table.className = 'pd-apps-table';
     const thead = document.createElement('thead');
     const headerRow = document.createElement('tr');
-    ['Years', 'Make', 'Model', 'Position', 'Qty'].forEach((col) => {
+    APP_COLUMNS.forEach(({ label }) => {
       const th = document.createElement('th');
-      th.textContent = col;
+      th.textContent = label;
       headerRow.appendChild(th);
     });
     thead.appendChild(headerRow);
@@ -159,13 +206,9 @@ function buildAppsTable(applicationGroupList) {
     const apps = groupData?.applications || [];
     apps.forEach((app) => {
       const tr = document.createElement('tr');
-      const years = app.years || [];
-      const yearRange = years.length
-        ? `${Math.min(...years)}–${Math.max(...years)}`
-        : '';
-      [yearRange, app.make?.value || '', app.model?.value || '', app.position?.value || '', app.qty ?? ''].forEach((val) => {
+      APP_COLUMNS.forEach(({ get }) => {
         const td = document.createElement('td');
-        td.textContent = val;
+        td.textContent = get(app);
         tr.appendChild(td);
       });
       tbody.appendChild(tr);
@@ -178,19 +221,51 @@ function buildAppsTable(applicationGroupList) {
   return wrapper;
 }
 
-function buildTabs(specsPanel, appsPanel) {
+function buildOtherMedia(documents) {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'pd-media-wrapper';
+  if (!documents.length) return wrapper;
+
+  const heading = document.createElement('h3');
+  heading.className = 'pd-media-section-title';
+  heading.textContent = 'Documents';
+  wrapper.appendChild(heading);
+
+  const list = document.createElement('div');
+  list.className = 'pd-media-list';
+  documents.forEach((doc) => {
+    const card = document.createElement('a');
+    card.className = 'pd-media-card';
+    card.href = doc.url;
+    card.target = '_blank';
+    card.rel = 'noopener noreferrer';
+    const titleEl = document.createElement('span');
+    titleEl.className = 'pd-media-card-title';
+    titleEl.textContent = doc.title;
+    const langEl = document.createElement('span');
+    langEl.className = 'pd-media-card-lang';
+    langEl.textContent = `Language: ${doc.language}`;
+    card.append(titleEl, langEl);
+    list.appendChild(card);
+  });
+  wrapper.appendChild(list);
+  return wrapper;
+}
+
+function buildTabs(specsPanel, appsPanel, mediaPanel) {
   const tabs = document.createElement('div');
   tabs.className = 'pd-tabs';
 
   const nav = document.createElement('div');
   nav.className = 'pd-tab-nav';
 
-  const panels = [
+  const allPanels = [
     { id: 'specs', label: 'Specifications', panel: specsPanel },
     { id: 'apps', label: 'Applications', panel: appsPanel },
-  ];
+    { id: 'media', label: 'Other Media', panel: mediaPanel },
+  ].filter(({ panel }) => panel.children.length > 0 || panel === specsPanel || panel === appsPanel);
 
-  panels.forEach(({ id, label, panel }, i) => {
+  allPanels.forEach(({ id, label, panel }, i) => {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'pd-tab-btn';
@@ -211,7 +286,7 @@ function buildTabs(specsPanel, appsPanel) {
     nav.appendChild(btn);
   });
 
-  tabs.append(nav, ...panels.map((p) => p.panel));
+  tabs.append(nav, ...allPanels.map((p) => p.panel));
   return tabs;
 }
 
@@ -264,12 +339,15 @@ export default async function decorate(block) {
 
       loadingEl.hidden = true;
 
-      const images = product.dam_assets?.productPrimaries || [];
-      const gallery = buildGallery(images);
+      const primaries = product.dam_assets?.productPrimaries || [];
+      const thumbnails = product.dam_assets?.productThumbnails || [];
+      const documents = product.dam_assets?.productDocuments || [];
+      const gallery = buildGallery(primaries, thumbnails);
       const info = buildInfo(product);
       const specsPanel = buildSpecsTable(product.part_attributes);
       const appsPanel = buildAppsTable(appsData.application_group_list);
-      const tabs = buildTabs(specsPanel, appsPanel);
+      const mediaPanel = buildOtherMedia(documents);
+      const tabs = buildTabs(specsPanel, appsPanel, mediaPanel);
 
       layout.append(gallery, info, tabs);
     } catch {
