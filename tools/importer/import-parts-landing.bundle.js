@@ -46,16 +46,25 @@ var CustomImportScript = (() => {
   var hasText = (el) => normalizeText(el.textContent).length > 0;
   function parse(element, { document }) {
     const bgContainer = element.querySelector(".header-hero-background") || element.querySelector('[class*="background"]') || element.querySelector(":scope > .has-bg, :scope > div > .has-bg");
+    const isUsableBgImg = (img) => img && !img.closest(".foreground-image-mobile, .header-foreground-image") && !img.classList.contains("cq-image-placeholder") && !/\/0\.gif(\?|$)/i.test(img.getAttribute("src") || "");
     let bgImage = null;
     if (bgContainer) {
-      bgImage = bgContainer.querySelector(":scope > img") || bgContainer.querySelector("img");
+      const directImg = bgContainer.querySelector(":scope > img");
+      if (isUsableBgImg(directImg)) {
+        bgImage = directImg;
+      } else {
+        const descendantImg = Array.from(bgContainer.querySelectorAll("img")).find((img) => isUsableBgImg(img));
+        if (descendantImg) bgImage = descendantImg;
+      }
       if (!bgImage) {
         const pic = bgContainer.querySelector("picture");
-        if (pic) bgImage = pic;
+        if (pic && !pic.closest(".foreground-image-mobile, .header-foreground-image")) {
+          bgImage = pic;
+        }
       }
       if (!bgImage) {
         const style = bgContainer.getAttribute("style") || "";
-        const m = style.match(/url\((['"]?)(.*?)\1\)/i);
+        const m = style.match(/background(?:-image)?\s*:\s*[^;]*url\((['"]?)(.*?)\1\)/i);
         if (m && m[2]) {
           const img = document.createElement("img");
           img.setAttribute("src", m[2]);
@@ -164,7 +173,15 @@ var CustomImportScript = (() => {
   // tools/importer/parsers/widget.js
   var WIDGET_NAME_BY_CLASS = [
     { className: "driv-part-finder-main", name: "part-finder" },
-    { className: "where-to-buy-link", name: "where-to-buy" }
+    { className: "ymm-search", name: "part-finder" },
+    // Both the parts-page ZIP locator (`.where-to-buy-link`) and the standalone
+    // where-to-buy page's full search widget (`.where-to-buy-search`) resolve to
+    // the same `/widgets/where-to-buy.*` asset.
+    { className: "where-to-buy-link", name: "where-to-buy" },
+    { className: "where-to-buy-search", name: "where-to-buy" },
+    { className: "search-files", name: "search-files" },
+    { className: "diagnostic-center", name: "diagnostic-center" },
+    { className: "documents-autocomplete", name: "documents-autocomplete" }
   ];
   function resolveWidgetName(element) {
     const found = WIDGET_NAME_BY_CLASS.find(({ className }) => element.classList.contains(className) || element.querySelector(`.${className}`));
@@ -213,6 +230,18 @@ var CustomImportScript = (() => {
   function transform(hookName, element, payload) {
     if (hookName === TransformHook.beforeTransform) {
       WebImporter.DOMUtils.remove(element, ["#onetrust-consent-sdk"]);
+      element.querySelectorAll(".article iframe[src]").forEach((iframe) => {
+        const src = iframe.getAttribute("src") || "";
+        if (!/(?:youtube\.com|youtube-nocookie\.com|youtu\.be)/i.test(src)) return;
+        let href = src;
+        if (href.startsWith("//")) href = `https:${href}`;
+        const embedMatch = href.match(/\/embed\/([\w-]+)/);
+        if (embedMatch) href = `https://www.youtube.com/watch?v=${embedMatch[1]}`;
+        const a = element.ownerDocument.createElement("a");
+        a.href = href;
+        a.textContent = href;
+        iframe.replaceWith(a);
+      });
     }
     if (hookName === TransformHook.afterTransform) {
       WebImporter.DOMUtils.remove(element, [
@@ -226,16 +255,55 @@ var CustomImportScript = (() => {
         "nav.page-site-nav-container",
         ".footer.section",
         "footer.page-footer-container",
-        // Empty AEM embed placeholders left between hero blocks (no authorable content)
+        // Empty AEM embed placeholders left between hero blocks (no authorable
+        // content); also covers the leading empty placeholder on tech-tips.
         ".embed-source",
+        // Presentational divider rules between touts (technical-landing) - not
+        // authorable content, drop so they don't become stray default content.
+        ".block-separator",
+        // Parts-specific chrome (parts-category / parts-product), verified in
+        // /parts/steering/idler-arms.html cleaned.html:
+        //   - retailer "Buy Now" popup nested in product-feature CTAs; leaks
+        //     retailer links into the columns-split block (authorable "Get it
+        //     Installed" / "Buy in Store" CTAs + "Buy Now" button text kept).
+        //   - "Tech Tips" random-tip teaser widget after the YMM finder; JS-
+        //     driven, not in any mapped section, leaks a stray heading + button.
+        ".buy-online-toolbox",
+        ".random-tip",
+        // where-to-buy runtime store-locator chrome: the interactive Google Maps
+        // canvas (map tiles, zoom controls, {{dealer.*}} ng-repeat infowindow
+        // templates) and the filter sidebar are widget runtime UI, not authorable
+        // content. The authorable ZIP locator is .where-to-buy-search (mapped to
+        // the widget block); these two leak map controls + unhydrated templates.
+        ".where-to-buy-map",
+        ".where-to-buy-search-filter",
         // Third-party / safe-to-strip elements
         "#rufous-sandbox",
         "iframe",
         "script",
         "noscript",
         "style",
-        "link"
+        "link",
+        // Marketing tracking pixels (dataxu/w55c) and leaked Google Maps tiles
+        // (the real store map is the runtime where-to-buy widget). These are
+        // non-content images that otherwise become stray <picture> blocks.
+        'img[src*="tags.w55c.net"]',
+        'img[src*="maps.googleapis.com"]',
+        'img[src*="maps.gstatic.com"]'
       ]);
+      element.querySelectorAll("picture").forEach((pic) => {
+        if (!pic.querySelector("img")) {
+          const wrap = pic.closest("p") || pic;
+          wrap.remove();
+        }
+      });
+      element.querySelectorAll("p, span, div, h1, h2, h3, h4, h5, h6").forEach((el) => {
+        if (el.children.length > 0) return;
+        const text = (el.textContent || "").trim();
+        if (text.toLowerCase() === "loading..." || /^\{\{[^}]+\}\}$/.test(text)) {
+          el.remove();
+        }
+      });
       if (!isMailingListAuthorable(payload)) {
         WebImporter.DOMUtils.remove(element, [".social-feed"]);
       }
@@ -253,22 +321,30 @@ var CustomImportScript = (() => {
 
   // tools/importer/transformers/moogparts-sections.js
   var TransformHook2 = { beforeTransform: "beforeTransform", afterTransform: "afterTransform" };
+  function resolveSelector(root, selector) {
+    if (!selector) return null;
+    const candidates = Array.isArray(selector) ? selector : [selector];
+    for (let c = 0; c < candidates.length; c += 1) {
+      const sel = candidates[c];
+      if (typeof sel === "string" && sel) {
+        try {
+          const found = root.querySelector(sel);
+          if (found) return found;
+        } catch (e) {
+        }
+      }
+    }
+    return null;
+  }
   function transform2(hookName, element, payload) {
     if (hookName !== TransformHook2.beforeTransform) return;
     const sections = payload && payload.template && payload.template.sections;
     if (!Array.isArray(sections) || sections.length < 2) return;
     const doc = element.ownerDocument;
-    const resolved = sections.map((section) => {
-      let el = null;
-      if (section.selector) {
-        try {
-          el = element.querySelector(section.selector);
-        } catch (e) {
-          el = null;
-        }
-      }
-      return { section, el };
-    });
+    const resolved = sections.map((section) => ({
+      section,
+      el: resolveSelector(element, section.selector)
+    }));
     for (let i = resolved.length - 1; i >= 0; i -= 1) {
       const { section, el } = resolved[i];
       if (!el) continue;

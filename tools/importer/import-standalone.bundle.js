@@ -143,8 +143,9 @@ var CustomImportScript = (() => {
   var hasText2 = (el) => !!el && el.textContent.trim().length > 0;
   function buildTextCell(inner, document) {
     const parts = [];
-    const heading = inner.querySelector("h1, h2, h3, h4, h5, h6");
-    if (hasText2(heading)) parts.push(heading);
+    inner.querySelectorAll("h1, h2, h3, h4, h5, h6").forEach((h) => {
+      if (hasText2(h)) parts.push(h);
+    });
     inner.querySelectorAll("p").forEach((p) => {
       if (hasText2(p) || p.querySelector("img, a")) parts.push(p);
     });
@@ -349,18 +350,44 @@ var CustomImportScript = (() => {
       element.remove();
       return true;
     }
-    const allSlides = Array.from(element.querySelectorAll(".tout-slide"));
+    const ownerDoc = element.ownerDocument || document;
+    const topCarousels = Array.from(ownerDoc.querySelectorAll(".carousel-container")).filter((c) => !(c.parentElement && c.parentElement.closest(".carousel-container")));
+    if (topCarousels.length && topCarousels[0] !== element) {
+      element.remove();
+      return true;
+    }
+    const collectSlides = (root) => {
+      const real = Array.from(root.querySelectorAll(".tout-slide:not(.slick-cloned)"));
+      return real.length ? real : Array.from(root.querySelectorAll(".tout-slide"));
+    };
+    const allSlides = topCarousels.length ? topCarousels.flatMap(collectSlides) : collectSlides(element);
     const seen = /* @__PURE__ */ new Set();
     const slides = allSlides.filter((slide) => {
-      const ordinal = Array.from(slide.classList).find((c) => /^slide\d+$/.test(c));
-      const key = ordinal || `idx-${allSlides.indexOf(slide)}`;
-      if (seen.has(key)) return false;
+      const titleEl = slide.querySelector(".tout-content .content p, .tout-content p, .content p");
+      const key = (titleEl ? titleEl.textContent : slide.textContent).replace(/\s+/g, " ").trim().toLowerCase();
+      if (!key || seen.has(key)) return false;
       seen.add(key);
       return true;
     });
     const cells = [];
     slides.forEach((slide) => {
-      const img = slide.querySelector(".tout-image .preview-img, .tout-image img, img.preview-img, img");
+      let img = slide.querySelector(".tout-image .preview-img, .tout-image img, img.preview-img, img");
+      const rawSrc = img && (img.getAttribute("src") || img.getAttribute("data-lazy") || img.getAttribute("data-src") || img.getAttribute("data-original"));
+      let src = rawSrc && !/\/0\.gif(\?|$)/i.test(rawSrc) ? rawSrc : null;
+      if (!src) {
+        const bgEl = slide.querySelector('.preview-container, .tout-image [style*="background-image"], [style*="background-image"]');
+        const style = bgEl ? bgEl.getAttribute("style") || "" : "";
+        const m = style.match(/background-image:\s*url\((['"]?)(.*?)\1\)/i);
+        if (m && m[2] && !/\/0\.gif(\?|$)/i.test(m[2])) src = m[2];
+      }
+      if (src) {
+        const clean = document.createElement("img");
+        clean.setAttribute("src", src.startsWith("http") ? src : `https://www.moogparts.com${src.replace(/^\/?/, "/")}`);
+        clean.setAttribute("alt", img && img.getAttribute("alt") || "");
+        img = clean;
+      } else {
+        img = null;
+      }
       const textCell = [];
       const titleP = slide.querySelector(".tout-content .content p, .tout-content p, .content p");
       if (titleP && titleP.textContent.trim()) {
