@@ -1,0 +1,92 @@
+.cross-sell {
+  padding: 2.5rem 1.5rem;
+  background-color: #fff;
+}
+
+.cross-sell .cs-header {
+  text-align: center;
+  padding-bottom: 2rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--light-color);
+}
+
+.cross-sell .cs-header h2 {
+  font-family: var(--heading-font-family);
+  font-size: var(--heading-font-size-l);
+  color: var(--moog-blue);
+  margin: 0 0 0.5rem;
+}
+
+.cross-sell .cs-header p {
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-m);
+  color: var(--text-color);
+  margin: 0;
+}
+
+.cross-sell .cs-items {
+  display: flex;
+  flex-flow: column;
+  gap: 1.5rem;
+}
+
+@media (width >= 600px) {
+  .cross-sell .cs-items {
+    flex-flow: row wrap;
+    justify-content: center;
+  }
+}
+
+.cross-sell .cs-item {
+  display: flex;
+  flex-flow: column;
+  border: 1px solid var(--light-color);
+  padding: 1.5rem;
+  flex: 1;
+  max-width: 420px;
+}
+
+.cross-sell .cs-img {
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.cross-sell .cs-img img {
+  max-width: 100%;
+  height: 160px;
+  object-fit: contain;
+}
+
+.cross-sell .cs-item h3 {
+  font-family: var(--heading-font-family);
+  font-size: var(--heading-font-size-s);
+  color: var(--moog-blue);
+  margin: 0 0 0.75rem;
+}
+
+.cross-sell .cs-item p {
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-m);
+  color: var(--text-color);
+  line-height: 1.6;
+  margin: 0 0 1.25rem;
+  flex: 1;
+}
+
+.cross-sell .cs-cta {
+  display: inline-block;
+  background-color: var(--moog-blue);
+  color: #fff;
+  padding: 0.625rem 1.25rem;
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s);
+  font-weight: 700;
+  text-transform: uppercase;
+  text-decoration: none;
+  align-self: flex-start;
+}
+
+.cross-sell .cs-cta:hover {
+  background-color: var(--link-hover-color, #001f6b);
+  color: #fff;
+}

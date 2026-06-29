@@ -31,6 +31,93 @@ function buildPartDetailsUrl(redirectUrl) {
   }
 }
 
+function buildTabSection(app, yearLabel, makeLabel, modelLabel) {
+  const docs = app.dam_assets?.productDocuments || [];
+  const hasTechnical = docs.length > 0;
+
+  const tabsContainer = document.createElement('div');
+  tabsContainer.className = 'fmpr-tabs';
+
+  const nav = document.createElement('ul');
+  nav.className = 'fmpr-tabs-nav';
+
+  const featuresBtn = document.createElement('li');
+  featuresBtn.className = 'fmpr-tab-btn fmpr-tab-btn-active';
+  featuresBtn.textContent = 'Features';
+  featuresBtn.dataset.tab = 'features';
+  nav.appendChild(featuresBtn);
+
+  if (hasTechnical) {
+    const techBtn = document.createElement('li');
+    techBtn.className = 'fmpr-tab-btn';
+    techBtn.textContent = 'Technical';
+    techBtn.dataset.tab = 'technical';
+    nav.appendChild(techBtn);
+  }
+
+  const featuresPanel = document.createElement('div');
+  featuresPanel.className = 'fmpr-tab-panel';
+  featuresPanel.dataset.panel = 'features';
+
+  const product = document.createElement('p');
+  product.textContent = `Product: ${app.part_name}`;
+
+  const position = document.createElement('p');
+  position.textContent = `Position: ${app.position?.value || ''}`;
+
+  const appQty = document.createElement('p');
+  appQty.textContent = `Application Qty: ${app.quantity_per_application ?? app.qty ?? ''}`;
+
+  const fits = document.createElement('p');
+  fits.className = 'fmpr-row-fits';
+  const fitsCheck = document.createElement('span');
+  fitsCheck.className = 'fmpr-row-fits-icon';
+  fitsCheck.setAttribute('aria-hidden', 'true');
+  const fitsLabel = document.createElement('span');
+  fitsLabel.textContent = `${yearLabel}, ${makeLabel}, ${modelLabel}`.toUpperCase();
+  fits.append('Fits: ', fitsCheck, fitsLabel);
+
+  featuresPanel.append(product, position, appQty, fits);
+
+  tabsContainer.append(nav, featuresPanel);
+
+  if (hasTechnical) {
+    const techPanel = document.createElement('div');
+    techPanel.className = 'fmpr-tab-panel';
+    techPanel.dataset.panel = 'technical';
+    techPanel.hidden = true;
+
+    docs.forEach((doc) => {
+      const docEl = document.createElement('div');
+      docEl.className = 'fmpr-tech-doc';
+      const titleEl = document.createElement('p');
+      titleEl.className = 'fmpr-tech-doc-title';
+      titleEl.textContent = doc.title || doc.fileName;
+      const link = document.createElement('a');
+      link.href = doc.url;
+      link.target = '_blank';
+      link.download = doc.fileName || '';
+      link.textContent = doc.fileName || doc.title;
+      docEl.append(titleEl, link);
+      techPanel.appendChild(docEl);
+    });
+
+    tabsContainer.appendChild(techPanel);
+  }
+
+  nav.addEventListener('click', (e) => {
+    const btn = e.target.closest('.fmpr-tab-btn');
+    if (!btn) return;
+    nav.querySelectorAll('.fmpr-tab-btn').forEach((b) => b.classList.remove('fmpr-tab-btn-active'));
+    btn.classList.add('fmpr-tab-btn-active');
+    tabsContainer.querySelectorAll('.fmpr-tab-panel').forEach((panel) => {
+      panel.hidden = panel.dataset.panel !== btn.dataset.tab;
+    });
+  });
+
+  return tabsContainer;
+}
+
 function buildListRow(app, yearLabel, makeLabel, modelLabel) {
   const li = document.createElement('li');
   li.className = 'fmpr-row';
@@ -61,45 +148,8 @@ function buildListRow(app, yearLabel, makeLabel, modelLabel) {
   partNameEl.className = 'fmpr-row-part-name';
   partNameEl.innerHTML = `<a href="${partHref}">${app.part_name}</a>`;
 
-  const featuresWrapper = document.createElement('div');
-  featuresWrapper.className = 'fmpr-row-features';
-
-  const toggleList = document.createElement('ul');
-  toggleList.className = 'fmpr-row-features-toggle-list';
-  const toggleItem = document.createElement('li');
-  toggleItem.className = 'fmpr-row-features-toggle';
-  toggleItem.textContent = 'Features';
-  toggleList.appendChild(toggleItem);
-
-  const featuresBody = document.createElement('div');
-  featuresBody.className = 'fmpr-row-features-body';
-
-  const product = document.createElement('p');
-  product.textContent = `Product: ${app.part_name}`;
-
-  const position = document.createElement('p');
-  position.textContent = `Position: ${app.position?.value || ''}`;
-
-  const appQty = document.createElement('p');
-  appQty.textContent = `Application Qty: ${app.quantity_per_application ?? app.qty ?? ''}`;
-
-  const fits = document.createElement('p');
-  fits.className = 'fmpr-row-fits';
-  const fitsCheck = document.createElement('span');
-  fitsCheck.className = 'fmpr-row-fits-icon';
-  fitsCheck.setAttribute('aria-hidden', 'true');
-  const fitsLabel = document.createElement('span');
-  fitsLabel.textContent = `${yearLabel}, ${makeLabel}, ${modelLabel}`.toUpperCase();
-  fits.append('Fits: ', fitsCheck, fitsLabel);
-
-  featuresBody.append(product, position, appQty, fits);
-
-  toggleItem.addEventListener('click', () => {
-    featuresBody.hidden = !featuresBody.hidden;
-  });
-
-  featuresWrapper.append(toggleList, featuresBody);
-  body.append(partNumberEl, partNameEl, featuresWrapper);
+  const tabSection = buildTabSection(app, yearLabel, makeLabel, modelLabel);
+  body.append(partNumberEl, partNameEl, tabSection);
   li.append(imageDiv, body);
   return li;
 }
@@ -110,7 +160,10 @@ function getFilteredApps(applications, filterState) {
       || filterState.categories.has(app.category.category_value);
     const ptMatch = filterState.partTypes.size === 0
       || filterState.partTypes.has(app.category.part_type_value);
-    return catMatch && ptMatch;
+    const driveMatch = filterState.drives.size === 0
+      || !app.drive
+      || filterState.drives.has(app.drive.value);
+    return catMatch && ptMatch && driveMatch;
   });
 }
 
@@ -141,6 +194,7 @@ function buildFacetPanel(data, filterState, onFilterChange) {
   const applications = data.application_list?.applications || [];
   const categorySet = new Set(applications.map((app) => app.category.category_value));
   const partTypeSet = new Set(applications.map((app) => app.category.part_type_value));
+  const driveValues = data.configs?.sub_configs?.find((sc) => sc.type === 'drive')?.values || [];
 
   function buildAccordion(label, items, stateSet) {
     const group = document.createElement('div');
@@ -204,11 +258,22 @@ function buildFacetPanel(data, filterState, onFilterChange) {
   clearBtn.addEventListener('click', () => {
     filterState.categories.clear();
     filterState.partTypes.clear();
+    filterState.drives.clear();
     aside.querySelectorAll('input[type="checkbox"]').forEach((cb) => { cb.checked = false; });
     onFilterChange();
   });
 
   aside.append(header, catAccordion, ptAccordion);
+
+  if (driveValues.length > 0) {
+    const driveAccordion = buildAccordion(
+      'Drive',
+      driveValues.map((v) => v.value),
+      filterState.drives,
+    );
+    aside.appendChild(driveAccordion);
+  }
+
   return aside;
 }
 
@@ -302,7 +367,7 @@ export default async function decorate(block) {
   retryBtn.textContent = 'Try Again';
   errorEl.appendChild(retryBtn);
 
-  const filterState = { categories: new Set(), partTypes: new Set() };
+  const filterState = { categories: new Set(), partTypes: new Set(), drives: new Set() };
 
   async function loadResults() {
     loadingEl.hidden = false;
