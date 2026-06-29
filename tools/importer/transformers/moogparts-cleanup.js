@@ -148,6 +148,13 @@ export default function transform(hookName, element, payload) {
       //     driven, not in any mapped section, leaks a stray heading + button.
       '.buy-online-toolbox',
       '.random-tip',
+      // where-to-buy runtime store-locator chrome: the interactive Google Maps
+      // canvas (map tiles, zoom controls, {{dealer.*}} ng-repeat infowindow
+      // templates) and the filter sidebar are widget runtime UI, not authorable
+      // content. The authorable ZIP locator is .where-to-buy-search (mapped to
+      // the widget block); these two leak map controls + unhydrated templates.
+      '.where-to-buy-map',
+      '.where-to-buy-search-filter',
       // Third-party / safe-to-strip elements
       '#rufous-sandbox',
       'iframe',
@@ -155,7 +162,34 @@ export default function transform(hookName, element, payload) {
       'noscript',
       'style',
       'link',
+      // Marketing tracking pixels (dataxu/w55c) and leaked Google Maps tiles
+      // (the real store map is the runtime where-to-buy widget). These are
+      // non-content images that otherwise become stray <picture> blocks.
+      'img[src*="tags.w55c.net"]',
+      'img[src*="maps.googleapis.com"]',
+      'img[src*="maps.gstatic.com"]',
     ]);
+
+    // Drop now-empty <picture>/<p> wrappers left behind after removing the
+    // tracking-pixel <img> above (avoids stray empty blocks in the output).
+    element.querySelectorAll('picture').forEach((pic) => {
+      if (!pic.querySelector('img')) {
+        const wrap = pic.closest('p') || pic;
+        wrap.remove();
+      }
+    });
+
+    // Strip orphan widget/carousel "loading..." placeholders and unhydrated
+    // AngularJS template expressions ({{ ... }}) that leak from runtime widgets
+    // (related-stories carousel, store-locator dealer ng-repeat) as text. These
+    // are never authorable content.
+    element.querySelectorAll('p, span, div, h1, h2, h3, h4, h5, h6').forEach((el) => {
+      if (el.children.length > 0) return;
+      const text = (el.textContent || '').trim();
+      if (text.toLowerCase() === 'loading...' || /^\{\{[^}]+\}\}$/.test(text)) {
+        el.remove();
+      }
+    });
 
     // Mailing-list band ("Join our MOOG Mailing List"): on parts-landing and
     // technologies it is footer chrome nested in .footer-par; on the homepage

@@ -556,14 +556,33 @@ var CustomImportScript = (() => {
         //     driven, not in any mapped section, leaks a stray heading + button.
         ".buy-online-toolbox",
         ".random-tip",
+        // where-to-buy runtime store-locator chrome: the interactive Google Maps
+        // canvas (map tiles, zoom controls, {{dealer.*}} ng-repeat infowindow
+        // templates) and the filter sidebar are widget runtime UI, not authorable
+        // content. The authorable ZIP locator is .where-to-buy-search (mapped to
+        // the widget block); these two leak map controls + unhydrated templates.
+        ".where-to-buy-map",
+        ".where-to-buy-search-filter",
         // Third-party / safe-to-strip elements
         "#rufous-sandbox",
         "iframe",
         "script",
         "noscript",
         "style",
-        "link"
+        "link",
+        // Marketing tracking pixels (dataxu/w55c) and leaked Google Maps tiles
+        // (the real store map is the runtime where-to-buy widget). These are
+        // non-content images that otherwise become stray <picture> blocks.
+        'img[src*="tags.w55c.net"]',
+        'img[src*="maps.googleapis.com"]',
+        'img[src*="maps.gstatic.com"]'
       ]);
+      element.querySelectorAll("picture").forEach((pic) => {
+        if (!pic.querySelector("img")) {
+          const wrap = pic.closest("p") || pic;
+          wrap.remove();
+        }
+      });
       if (!isMailingListAuthorable(payload)) {
         WebImporter.DOMUtils.remove(element, [".social-feed"]);
       }
