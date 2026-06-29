@@ -1,0 +1,11 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts-matter/parts-of-a-car.html",
+  "path": "parts-matter/parts-of-a-car",
+  "timestamp": "2026-06-29T03:27:00.631Z",
+  "title": "Parts of Car Diagram | MOOG Parts",
+  "template": "content-article",
+  "blocks": [
+    "hero-overlay"
+  ]
+}
