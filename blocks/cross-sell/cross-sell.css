@@ -1,20 +1,28 @@
-.cross-sell {
-  padding: 2.5rem 1.5rem;
-  background-color: #fff;
+.section:has(.cross-sell) {
+  overflow-x: clip;
 }
 
-.cross-sell .cs-header {
+.cross-sell {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  padding: 3rem 2rem;
+  background-color: #efefef;
   text-align: center;
-  padding-bottom: 2rem;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid var(--light-color);
+}
+
+/* Header */
+.cross-sell .cs-header {
+  margin-bottom: 2.5rem;
 }
 
 .cross-sell .cs-header h2 {
   font-family: var(--heading-font-family);
-  font-size: var(--heading-font-size-l);
+  font-size: var(--heading-font-size-xl, 2.25rem);
+  font-weight: 700;
+  font-style: italic;
   color: var(--moog-blue);
-  margin: 0 0 0.5rem;
+  text-transform: uppercase;
+  margin: 0 0 0.75rem;
 }
 
 .cross-sell .cs-header p {
@@ -22,71 +30,84 @@
   font-size: var(--body-font-size-m);
   color: var(--text-color);
   margin: 0;
+  line-height: 1.8;
 }
 
+/* Items row */
 .cross-sell .cs-items {
   display: flex;
   flex-flow: column;
-  gap: 1.5rem;
+  gap: 0;
+  max-width: 1100px;
+  margin-inline: auto;
 }
 
 @media (width >= 600px) {
   .cross-sell .cs-items {
-    flex-flow: row wrap;
-    justify-content: center;
+    flex-flow: row;
   }
 }
 
 .cross-sell .cs-item {
   display: flex;
   flex-flow: column;
-  border: 1px solid var(--light-color);
-  padding: 1.5rem;
+  align-items: center;
   flex: 1;
-  max-width: 420px;
+  padding: 1.5rem 3rem;
 }
 
+@media (width >= 600px) {
+  .cross-sell .cs-item:not(:last-child) {
+    border-right: 1px solid #ccc;
+  }
+}
+
+/* Image */
 .cross-sell .cs-img {
-  margin-bottom: 1rem;
-  text-align: center;
+  margin-bottom: 1.25rem;
 }
 
 .cross-sell .cs-img img {
   max-width: 100%;
-  height: 160px;
+  height: 200px;
   object-fit: contain;
 }
 
+/* Item title */
 .cross-sell .cs-item h3 {
   font-family: var(--heading-font-family);
-  font-size: var(--heading-font-size-s);
+  font-size: var(--heading-font-size-m, 1.5rem);
+  font-weight: 700;
+  font-style: italic;
   color: var(--moog-blue);
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.875rem;
 }
 
+/* Description */
 .cross-sell .cs-item p {
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-m);
   color: var(--text-color);
-  line-height: 1.6;
-  margin: 0 0 1.25rem;
+  line-height: 1.7;
+  margin: 0 0 1.5rem;
   flex: 1;
 }
 
+/* CTA button */
 .cross-sell .cs-cta {
   display: inline-block;
-  background-color: var(--moog-blue);
+  background-color: var(--moog-dark-blue, #0a1f5c);
   color: #fff;
-  padding: 0.625rem 1.25rem;
+  padding: 0.75rem 1.75rem;
   font-family: var(--body-font-family);
-  font-size: var(--body-font-size-s);
+  font-size: var(--body-font-size-m);
   font-weight: 700;
-  text-transform: uppercase;
+  font-style: italic;
   text-decoration: none;
-  align-self: flex-start;
+  text-align: center;
 }
 
 .cross-sell .cs-cta:hover {
-  background-color: var(--link-hover-color, #001f6b);
+  background-color: var(--moog-blue);
   color: #fff;
 }

@@ -37,7 +37,7 @@ function buildItem(item) {
     const cta = document.createElement('a');
     cta.href = item.ctaPath;
     cta.className = 'cs-cta';
-    cta.textContent = `View ${item.ctaLabel || item.ledeTitle || ''}`;
+    cta.textContent = `View ${item.ctaLabel || item.ledeTitle || ''} »`;
     el.appendChild(cta);
   }
 
@@ -56,7 +56,7 @@ export default async function decorate(block) {
   const heading = document.createElement('h2');
   heading.textContent = 'Other Parts For Your Vehicle';
   const tagline = document.createElement('p');
-  tagline.innerHTML = 'MOOG<sup>®</sup> offers a wide variety of auto parts for all your vehicle needs. Check them out today!';
+  tagline.innerHTML = 'MOOG<sup>®</sup> offers a wide variety of auto parts for all your vehicle needs.<br>Check them out today!';
   header.append(heading, tagline);
   block.appendChild(header);
 
