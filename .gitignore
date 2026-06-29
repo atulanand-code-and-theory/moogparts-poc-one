@@ -1,4 +1,5 @@
 .hlx/*
+.playwright-mcp/
 coverage/*
 logs/*
 node_modules/*

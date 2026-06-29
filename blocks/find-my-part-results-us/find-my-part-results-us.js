@@ -16,26 +16,12 @@ function getVehicleGroupLabel(vehicleGroupId) {
   return type ? type.label : '';
 }
 
-function buildApplicationMap(applications) {
-  const map = new Map();
-  applications.forEach((app) => {
-    const { category_value: cat, sub_category_value: sub, part_type_value: pt } = app.category;
-    if (!map.has(cat)) map.set(cat, new Map());
-    const subMap = map.get(cat);
-    if (!subMap.has(sub)) subMap.set(sub, new Map());
-    const ptMap = subMap.get(sub);
-    if (!ptMap.has(pt)) ptMap.set(pt, []);
-    ptMap.get(pt).push(app);
-  });
-  return map;
-}
-
-function buildCard(app, whereToBuyUrl) {
+function buildListRow(app, yearLabel, makeLabel, modelLabel) {
   const li = document.createElement('li');
-  li.className = 'fmpr-card';
+  li.className = 'fmpr-row';
 
   const imageDiv = document.createElement('div');
-  imageDiv.className = 'fmpr-card-image';
+  imageDiv.className = 'fmpr-row-image';
   const primaryImages = app.dam_assets?.productPrimaries;
   const imageUrl = resolveImageUrl(primaryImages?.[0]?.url);
   if (imageUrl) {
@@ -45,96 +31,177 @@ function buildCard(app, whereToBuyUrl) {
     img.loading = 'lazy';
     imageDiv.appendChild(img);
   } else {
-    imageDiv.classList.add('fmpr-card-image-placeholder');
+    imageDiv.classList.add('fmpr-row-image-placeholder');
   }
 
   const body = document.createElement('div');
-  body.className = 'fmpr-card-body';
+  body.className = 'fmpr-row-body';
 
-  const partNumber = document.createElement('p');
-  partNumber.className = 'fmpr-card-part-number';
-  partNumber.textContent = app.part_number;
+  const partNumberEl = document.createElement('p');
+  partNumberEl.className = 'fmpr-row-part-number';
+  const partHref = app.part_detail_redirect_url?.replace(/&amp;/g, '&') || '#';
+  partNumberEl.innerHTML = `Part No: <a href="${partHref}">${app.part_number}</a>`;
 
-  const partName = document.createElement('p');
-  partName.className = 'fmpr-card-part-name';
-  partName.textContent = app.part_name;
+  const partNameEl = document.createElement('p');
+  partNameEl.className = 'fmpr-row-part-name';
+  partNameEl.textContent = app.part_name;
+
+  const featuresWrapper = document.createElement('div');
+  featuresWrapper.className = 'fmpr-row-features';
+
+  const toggleList = document.createElement('ul');
+  toggleList.className = 'fmpr-row-features-toggle-list';
+  const toggleItem = document.createElement('li');
+  toggleItem.className = 'fmpr-row-features-toggle';
+  toggleItem.textContent = 'Features';
+  toggleList.appendChild(toggleItem);
+
+  const featuresBody = document.createElement('div');
+  featuresBody.className = 'fmpr-row-features-body';
+  featuresBody.hidden = true;
+
+  const product = document.createElement('p');
+  product.textContent = `Product: ${app.part_name}`;
 
   const position = document.createElement('p');
-  position.className = 'fmpr-card-position';
-  position.textContent = app.position?.value || '';
+  position.textContent = `Position: ${app.position?.value || ''}`;
 
-  const brand = document.createElement('p');
-  brand.className = 'fmpr-card-brand';
-  brand.textContent = app.brand_name;
+  const appQty = document.createElement('p');
+  appQty.textContent = `Application Qty: ${app.quantity_per_application ?? app.qty ?? ''}`;
 
-  const ctaHref = whereToBuyUrl || app.part_detail_redirect_url?.replace(/&amp;/g, '&') || '#';
-  const cta = document.createElement('a');
-  cta.className = 'fmpr-card-cta';
-  cta.href = ctaHref;
-  cta.target = '_blank';
-  cta.rel = 'noopener noreferrer';
-  cta.textContent = 'View Details »»';
+  const fits = document.createElement('p');
+  fits.className = 'fmpr-row-fits';
+  const fitsCheck = document.createElement('span');
+  fitsCheck.className = 'fmpr-row-fits-icon';
+  fitsCheck.setAttribute('aria-hidden', 'true');
+  const fitsLabel = document.createElement('span');
+  fitsLabel.textContent = `${yearLabel}, ${makeLabel}, ${modelLabel}`.toUpperCase();
+  fits.append('Fits: ', fitsCheck, fitsLabel);
 
-  body.append(partNumber, partName, position, brand, cta);
+  featuresBody.append(product, position, appQty, fits);
+
+  toggleItem.addEventListener('click', () => {
+    const expanded = !featuresBody.hidden;
+    featuresBody.hidden = expanded;
+    toggleItem.classList.toggle('fmpr-row-features-toggle--open', !expanded);
+  });
+
+  featuresWrapper.append(toggleList, featuresBody);
+  body.append(partNumberEl, partNameEl, featuresWrapper);
   li.append(imageDiv, body);
   return li;
 }
 
-function buildResultsTree(data, whereToBuyUrl) {
-  const appMap = buildApplicationMap(data.application_list.applications);
-  const totalCount = data.application_list.total_count;
-  const fragment = document.createDocumentFragment();
+function getFilteredApps(applications, filterState) {
+  return applications.filter((app) => {
+    const catMatch = filterState.categories.size === 0
+      || filterState.categories.has(app.category.category_value);
+    const ptMatch = filterState.partTypes.size === 0
+      || filterState.partTypes.has(app.category.part_type_value);
+    return catMatch && ptMatch;
+  });
+}
 
-  const countEl = document.createElement('p');
-  countEl.className = 'fmpr-results-count';
-  countEl.textContent = `${totalCount} part${totalCount !== 1 ? 's' : ''} found`;
-  fragment.appendChild(countEl);
+function buildResultsList(applications, filterState, vehicle, countEl, listEl) {
+  const filtered = getFilteredApps(applications, filterState);
+  const count = filtered.length;
+  countEl.textContent = `${count} Part Result${count !== 1 ? 's' : ''}`;
+  listEl.innerHTML = '';
+  filtered.forEach((app) => {
+    listEl.appendChild(buildListRow(app, vehicle.year, vehicle.make, vehicle.model));
+  });
+}
 
-  data.category_tree.categories.forEach((cat) => {
-    const section = document.createElement('section');
-    section.className = 'fmpr-category';
+function buildFacetPanel(data, filterState, onFilterChange) {
+  const aside = document.createElement('aside');
+  aside.className = 'fmpr-facets';
 
-    const catHeading = document.createElement('h2');
-    catHeading.className = 'fmpr-category-heading';
-    catHeading.textContent = cat.value.toUpperCase();
-    section.appendChild(catHeading);
+  const header = document.createElement('div');
+  header.className = 'fmpr-facets-header';
+  const headerLabel = document.createElement('p');
+  headerLabel.className = 'fmpr-facets-label';
+  headerLabel.textContent = 'Filter Results';
+  const clearBtn = document.createElement('button');
+  clearBtn.className = 'fmpr-clear-filters';
+  clearBtn.textContent = 'Clear Filters';
+  header.append(headerLabel, clearBtn);
 
-    cat.sub_categories.forEach((sub) => {
-      const subDiv = document.createElement('div');
-      subDiv.className = 'fmpr-subcategory';
-
-      const subHeading = document.createElement('h3');
-      subHeading.className = 'fmpr-subcategory-heading';
-      subHeading.textContent = sub.value;
-      subDiv.appendChild(subHeading);
-
-      sub.part_types.forEach((pt) => {
-        const ptDiv = document.createElement('div');
-        ptDiv.className = 'fmpr-part-type';
-
-        const ptHeading = document.createElement('h4');
-        ptHeading.className = 'fmpr-part-type-heading';
-        ptHeading.textContent = pt.value;
-        ptDiv.appendChild(ptHeading);
-
-        const apps = appMap.get(cat.value)?.get(sub.value)?.get(pt.value) || [];
-        if (apps.length) {
-          const ul = document.createElement('ul');
-          ul.className = 'fmpr-card-list';
-          apps.forEach((app) => ul.appendChild(buildCard(app, whereToBuyUrl)));
-          ptDiv.appendChild(ul);
-        }
-
-        subDiv.appendChild(ptDiv);
-      });
-
-      section.appendChild(subDiv);
+  const categories = data.category_tree?.categories || [];
+  const partTypeSet = new Set();
+  categories.forEach((cat) => {
+    cat.sub_categories?.forEach((sub) => {
+      sub.part_types?.forEach((pt) => partTypeSet.add(pt.value));
     });
-
-    fragment.appendChild(section);
   });
 
-  return fragment;
+  function buildAccordion(label, items, stateSet) {
+    const group = document.createElement('div');
+    group.className = 'fmpr-facet-group';
+
+    const toggle = document.createElement('button');
+    toggle.className = 'fmpr-facet-toggle';
+    toggle.type = 'button';
+    const toggleText = document.createElement('span');
+    toggleText.textContent = label;
+    const toggleIcon = document.createElement('span');
+    toggleIcon.className = 'fmpr-facet-icon';
+    toggleIcon.textContent = '+';
+    toggle.append(toggleText, toggleIcon);
+
+    const list = document.createElement('ul');
+    list.className = 'fmpr-facet-list';
+    list.hidden = true;
+
+    items.forEach((value) => {
+      const item = document.createElement('li');
+      item.className = 'fmpr-facet-item';
+      const itemLabel = document.createElement('label');
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.value = value;
+      checkbox.addEventListener('change', () => {
+        if (checkbox.checked) {
+          stateSet.add(value);
+        } else {
+          stateSet.delete(value);
+        }
+        onFilterChange();
+      });
+      itemLabel.append(checkbox, document.createTextNode(` ${value}`));
+      item.appendChild(itemLabel);
+      list.appendChild(item);
+    });
+
+    toggle.addEventListener('click', () => {
+      const isHidden = list.hidden;
+      list.hidden = !isHidden;
+      toggleIcon.textContent = isHidden ? '−' : '+';
+    });
+
+    group.append(toggle, list);
+    return group;
+  }
+
+  const catAccordion = buildAccordion(
+    'Product Category',
+    categories.map((c) => c.value),
+    filterState.categories,
+  );
+  const ptAccordion = buildAccordion(
+    'Part Types / Positions',
+    [...partTypeSet],
+    filterState.partTypes,
+  );
+
+  clearBtn.addEventListener('click', () => {
+    filterState.categories.clear();
+    filterState.partTypes.clear();
+    aside.querySelectorAll('input[type="checkbox"]').forEach((cb) => { cb.checked = false; });
+    onFilterChange();
+  });
+
+  aside.append(header, catAccordion, ptAccordion);
+  return aside;
 }
 
 async function fetchPartsList(params) {
@@ -153,7 +220,7 @@ function parseConfig(block) {
 }
 
 export default async function decorate(block) {
-  const { whereToBuyUrl } = parseConfig(block);
+  parseConfig(block);
   const sp = new URLSearchParams(window.location.search);
   const yearId = sp.get('yearId');
   const makeId = sp.get('makeId');
@@ -172,6 +239,12 @@ export default async function decorate(block) {
   metaEl.className = 'fmpr-vehicle-meta';
   metaEl.textContent = getVehicleGroupLabel(vehicleGroupId);
   vehicleHeader.append(titleEl, metaEl);
+
+  const contentWrapper = document.createElement('div');
+  contentWrapper.className = 'fmpr-content-wrapper';
+
+  const mainEl = document.createElement('div');
+  mainEl.className = 'fmpr-main';
 
   const loadingEl = document.createElement('div');
   loadingEl.className = 'fmpr-loading';
@@ -203,8 +276,11 @@ export default async function decorate(block) {
   resultsEl.className = 'fmpr-results';
   resultsEl.hidden = true;
 
+  mainEl.append(loadingEl, errorEl, emptyEl, resultsEl);
+  contentWrapper.appendChild(mainEl);
+
   block.innerHTML = '';
-  block.append(vehicleHeader, loadingEl, errorEl, emptyEl, resultsEl);
+  block.append(vehicleHeader, contentWrapper);
 
   if (!yearId || !makeId || !modelId) {
     loadingEl.hidden = true;
@@ -218,12 +294,15 @@ export default async function decorate(block) {
   retryBtn.textContent = 'Try Again';
   errorEl.appendChild(retryBtn);
 
+  const filterState = { categories: new Set(), partTypes: new Set() };
+
   async function loadResults() {
     loadingEl.hidden = false;
     errorEl.hidden = true;
     emptyEl.hidden = true;
     resultsEl.hidden = true;
     resultsEl.innerHTML = '';
+
     try {
       const data = await fetchPartsList({
         year_id: yearId,
@@ -231,13 +310,32 @@ export default async function decorate(block) {
         model_id: modelId,
         vehicle_group_ids: vehicleGroupId,
       });
+
       loadingEl.hidden = true;
-      if (!data.application_list?.applications?.length) {
+      const applications = data.application_list?.applications || [];
+
+      if (!applications.length) {
         emptyEl.hidden = false;
-      } else {
-        resultsEl.appendChild(buildResultsTree(data, whereToBuyUrl));
-        resultsEl.hidden = false;
+        return;
       }
+
+      const countEl = document.createElement('h4');
+      countEl.className = 'fmpr-results-count';
+
+      const listEl = document.createElement('ul');
+      listEl.className = 'fmpr-list';
+
+      const vehicle = { year: yearLabel, make: makeLabel, model: modelLabel };
+      buildResultsList(applications, filterState, vehicle, countEl, listEl);
+
+      resultsEl.append(countEl, listEl);
+      resultsEl.hidden = false;
+
+      const facetPanel = buildFacetPanel(data, filterState, () => {
+        buildResultsList(applications, filterState, vehicle, countEl, listEl);
+      });
+
+      contentWrapper.insertBefore(facetPanel, mainEl);
     } catch {
       loadingEl.hidden = true;
       errorMsg.textContent = 'Failed to load parts. Please try again.';
