@@ -60,13 +60,13 @@ function buildTabSection(app, yearLabel, makeLabel, modelLabel) {
   featuresPanel.dataset.panel = 'features';
 
   const product = document.createElement('p');
-  product.textContent = `Product: ${app.part_name}`;
+  product.innerHTML = `<strong>Product:</strong> ${app.part_name}`;
 
   const position = document.createElement('p');
-  position.textContent = `Position: ${app.position?.value || ''}`;
+  position.innerHTML = `<strong>Position:</strong> ${app.position?.value || ''}`;
 
   const appQty = document.createElement('p');
-  appQty.textContent = `Application Qty: ${app.quantity_per_application ?? app.qty ?? ''}`;
+  appQty.innerHTML = `<strong>Application Qty:</strong> ${app.quantity_per_application ?? app.qty ?? ''}`;
 
   const fits = document.createElement('p');
   fits.className = 'fmpr-row-fits';
@@ -75,9 +75,34 @@ function buildTabSection(app, yearLabel, makeLabel, modelLabel) {
   fitsCheck.setAttribute('aria-hidden', 'true');
   const fitsLabel = document.createElement('span');
   fitsLabel.textContent = `${yearLabel}, ${makeLabel}, ${modelLabel}`.toUpperCase();
-  fits.append('Fits: ', fitsCheck, fitsLabel);
+  const fitsStrong = document.createElement('strong');
+  fitsStrong.textContent = 'Fits:';
+  fits.append(fitsStrong, ' ', fitsCheck, fitsLabel);
 
   featuresPanel.append(product, position, appQty, fits);
+
+  if (app.additional_fit_criteria) {
+    const hint = document.createElement('p');
+    hint.className = 'fmpr-criteria-hint';
+    hint.textContent = 'Please refer to Additional Fit Criteria for a more precise match';
+    featuresPanel.appendChild(hint);
+
+    const criteriaBox = document.createElement('div');
+    criteriaBox.className = 'fmpr-criteria-box';
+    const criteriaHead = document.createElement('p');
+    criteriaHead.className = 'fmpr-criteria-heading';
+    const warningIcon = document.createElement('span');
+    warningIcon.className = 'fmpr-criteria-icon';
+    warningIcon.setAttribute('aria-hidden', 'true');
+    const criteriaTitle = document.createElement('strong');
+    criteriaTitle.textContent = 'Additional Fit Criteria:';
+    criteriaHead.append(warningIcon, criteriaTitle);
+    const criteriaValue = document.createElement('p');
+    criteriaValue.className = 'fmpr-criteria-value';
+    criteriaValue.textContent = app.additional_fit_criteria;
+    criteriaBox.append(criteriaHead, criteriaValue);
+    featuresPanel.appendChild(criteriaBox);
+  }
 
   tabsContainer.append(nav, featuresPanel);
 

@@ -239,11 +239,11 @@
   display: flex;
   gap: 1.75rem;
   padding: 1.5rem 0;
-  border-bottom: 1px solid var(--light-color);
+  border-bottom: 1px solid #bbb;
 }
 
 .find-my-part-results-us .fmpr-row:first-child {
-  border-top: 1px solid var(--light-color);
+  border-top: 1px solid #bbb;
 }
 
 /* Image */
@@ -290,7 +290,8 @@
 }
 
 .find-my-part-results-us .fmpr-row-part-name a {
-  color: var(--text-color);
+  color: var(--moog-blue);
+  font-style: italic;
   text-decoration: none;
 }
 
@@ -360,58 +361,77 @@
 }
 
 .find-my-part-results-us .fmpr-row-fits {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
   margin-top: 0.375rem;
+}
+
+.find-my-part-results-us .fmpr-row-fits-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.125rem;
+  height: 1.125rem;
+  background-color: #2e7d32;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .find-my-part-results-us .fmpr-row-fits-icon::before {
   content: "✓";
-  color: #2e7d32;
-  font-weight: 700;
-  margin-right: 0.25rem;
+  color: #fff;
+  font-size: 0.625rem;
+  font-weight: 900;
+  line-height: 1;
 }
 
 /* Tabs */
 .find-my-part-results-us .fmpr-tabs {
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
 }
 
 .find-my-part-results-us .fmpr-tabs-nav {
   display: flex;
   list-style: none;
-  margin: 0 0 0.75rem;
+  margin: 0;
   padding: 0;
-  border-bottom: 2px solid var(--light-color);
   gap: 0.25rem;
 }
 
 .find-my-part-results-us .fmpr-tab-btn {
-  padding: 0.375rem 0.875rem;
+  padding: 0.5rem 1.125rem;
   background-color: var(--light-color);
+  border: 1px solid #ccc;
+  border-bottom: none;
   font-family: var(--body-font-family);
-  font-size: var(--body-font-size-s);
+  font-size: var(--body-font-size-xs);
   font-weight: 700;
   text-transform: uppercase;
   color: var(--text-color);
   cursor: pointer;
   user-select: none;
-  border-bottom: 2px solid transparent;
-  margin-bottom: -2px;
+  position: relative;
+  bottom: -1px;
 }
 
 .find-my-part-results-us .fmpr-tab-btn:hover {
-  background-color: var(--moog-blue);
-  color: #fff;
+  color: var(--moog-blue);
 }
 
 .find-my-part-results-us .fmpr-tab-btn-active {
-  background-color: var(--moog-blue);
-  color: #fff;
-  border-bottom-color: var(--moog-blue);
+  background-color: #fff;
+  color: var(--moog-blue);
+  border-color: #ccc;
+  z-index: 1;
 }
 
 .find-my-part-results-us .fmpr-tab-panel {
+  border: 1px solid #ccc;
+  padding: 1rem 1.25rem;
+  background-color: #fff;
   font-size: var(--body-font-size-m);
-  line-height: 1.6;
+  line-height: 1.8;
   color: var(--text-color);
 }
 
@@ -420,7 +440,42 @@
 }
 
 .find-my-part-results-us .fmpr-tab-panel p {
-  margin: 0.25rem 0;
+  margin: 0.2rem 0;
+}
+
+/* Additional Fit Criteria */
+.find-my-part-results-us .fmpr-criteria-hint {
+  font-size: var(--body-font-size-xs);
+  color: var(--dark-color);
+  margin: 0.375rem 0 0.75rem !important;
+  opacity: 0.75;
+}
+
+.find-my-part-results-us .fmpr-criteria-box {
+  background-color: #f0f0f0;
+  padding: 0.75rem 1rem;
+  margin-top: 0.5rem;
+}
+
+.find-my-part-results-us .fmpr-criteria-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.25rem !important;
+  font-size: var(--body-font-size-s);
+}
+
+.find-my-part-results-us .fmpr-criteria-icon::before {
+  content: "⚠";
+  color: #c00;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.find-my-part-results-us .fmpr-criteria-value {
+  font-size: var(--body-font-size-s);
+  color: var(--moog-blue);
+  margin: 0 !important;
 }
 
 /* Technical tab documents */
