@@ -1,0 +1,14 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts/steering/complete-pre-assembled-steering-linkage.html",
+  "path": "parts/steering/complete-pre-assembled-steering-linkage",
+  "timestamp": "2026-06-28T17:21:30.895Z",
+  "title": "Complete Steering Assemblies & Tie Rod Assembly | MOOG Parts",
+  "template": "parts-product",
+  "blocks": [
+    "hero-overlay",
+    "columns-split",
+    "cards-benefits",
+    "widget"
+  ]
+}

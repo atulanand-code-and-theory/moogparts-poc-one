@@ -1,0 +1,14 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts/steering/idler-arms.html",
+  "path": "parts/steering/idler-arms",
+  "timestamp": "2026-06-28T17:20:20.662Z",
+  "title": "Idler Arms & Steering Idler Arms | MOOG Parts",
+  "template": "parts-product",
+  "blocks": [
+    "hero-overlay",
+    "columns-split",
+    "cards-benefits",
+    "widget"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts/suspension/ball-joints.html",
+  "path": "parts/suspension/ball-joints",
+  "timestamp": "2026-06-28T17:22:43.407Z",
+  "title": "Upper & Lower Ball Joints | MOOG Parts",
+  "template": "parts-product",
+  "blocks": [
+    "hero-overlay",
+    "widget"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts/driveline/universal-joints.html",
+  "path": "parts/driveline/universal-joints",
+  "timestamp": "2026-06-28T17:19:24.615Z",
+  "title": "Universal Joints & Precision U Joints | MOOG Parts",
+  "template": "parts-category",
+  "blocks": [
+    "hero-overlay",
+    "cards-article",
+    "cards-article",
+    "cards-article",
+    "cards-article",
+    "widget"
+  ]
+}

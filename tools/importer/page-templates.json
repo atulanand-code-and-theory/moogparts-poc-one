@@ -271,7 +271,10 @@
         {
           "url": "https://www.moogparts.com/technical/diagnostic-center.html",
           "sections": [
-            { "sectionSignature": "header-hero+fmmp-title+touts", "nodeMapId": "rc1" }
+            {
+              "sectionSignature": "header-hero+fmmp-title+touts",
+              "nodeMapId": "rc1"
+            }
           ]
         }
       ],
@@ -295,7 +298,10 @@
         {
           "id": "section-1",
           "name": "Page title / hero header",
-          "selector": [".header-hero", ".header-simple"],
+          "selector": [
+            ".header-hero",
+            ".header-simple"
+          ],
           "style": null,
           "blocks": [
             "hero-overlay"
@@ -328,13 +334,19 @@
         {
           "url": "https://www.moogparts.com/technical/diagnostic-center/car-crossover.html",
           "sections": [
-            { "sectionSignature": "diagnostic-center-widget", "nodeMapId": "rc1" }
+            {
+              "sectionSignature": "diagnostic-center-widget",
+              "nodeMapId": "rc1"
+            }
           ]
         },
         {
           "url": "https://www.moogparts.com/installation-guide-search.html",
           "sections": [
-            { "sectionSignature": "documents-autocomplete-widget", "nodeMapId": "rc1" }
+            {
+              "sectionSignature": "documents-autocomplete-widget",
+              "nodeMapId": "rc1"
+            }
           ]
         }
       ],
@@ -359,12 +371,18 @@
         {
           "id": "section-1",
           "name": "Interactive widget tool",
-          "selector": [".search-files", ".diagnostic-center", ".documents-autocomplete"],
+          "selector": [
+            ".search-files",
+            ".diagnostic-center",
+            ".documents-autocomplete"
+          ],
           "style": null,
           "blocks": [
             "widget"
           ],
-          "defaultContent": [".header-simple"]
+          "defaultContent": [
+            ".header-simple"
+          ]
         },
         {
           "id": "section-2",
@@ -428,13 +446,30 @@
       "representativeUrl": "https://www.moogparts.com/technical/something-big-moog-app.html",
       "urls": [
         "https://www.moogparts.com/technical/training/know-your-parts.html",
-        "https://www.moogparts.com/technical/something-big-moog-app.html"
+        "https://www.moogparts.com/technical/something-big-moog-app.html",
+        "https://www.moogparts.com/parts-matter/How-to-Tell-If-You-Have-a-Bad-Universal-Joint.html",
+        "https://www.moogparts.com/parts-matter/Signs-of-a-Failing-Control-Arm.html",
+        "https://www.moogparts.com/parts-matter/Symptoms-of-Bad-Sway-Bar-Links.html",
+        "https://www.moogparts.com/parts-matter/What-Are-U-Joints.html",
+        "https://www.moogparts.com/parts-matter/What-is-a-CV-Axle.html",
+        "https://www.moogparts.com/parts-matter/Whats-Inside-a-Socket-Style-Part.html",
+        "https://www.moogparts.com/parts-matter/adjusting-your-car-alignment.html",
+        "https://www.moogparts.com/parts-matter/car-alignment.html",
+        "https://www.moogparts.com/parts-matter/signs-you-need-an-alignment.html",
+        "https://www.moogparts.com/technologies/videos/cover-plate-belleville-washer.html",
+        "https://www.moogparts.com/technologies/videos/greasable-design.html",
+        "https://www.moogparts.com/technologies/videos/gusher-bearing.html",
+        "https://www.moogparts.com/technologies/videos/heat-treated-stud.html",
+        "https://www.moogparts.com/moognews/solid-sway-bar-kits-release.html"
       ],
       "coverageGaps": [
         {
           "url": "https://www.moogparts.com/technical/training/know-your-parts.html",
           "sections": [
-            { "sectionSignature": "tout-intro+article-with-video", "nodeMapId": "rc1" }
+            {
+              "sectionSignature": "tout-intro+article-with-video",
+              "nodeMapId": "rc1"
+            }
           ]
         }
       ],
@@ -476,7 +511,10 @@
           "selector": ".fmmp-title",
           "style": null,
           "blocks": [],
-          "defaultContent": [".fmmp-title", ".article"]
+          "defaultContent": [
+            ".fmmp-title",
+            ".article"
+          ]
         },
         {
           "id": "section-3",
@@ -495,6 +533,472 @@
           "style": null,
           "blocks": [
             "widget"
+          ],
+          "defaultContent": []
+        }
+      ]
+    },
+    {
+      "name": "parts-category",
+      "representativeUrl": "https://www.moogparts.com/parts/steering.html",
+      "urls": [
+        "https://www.moogparts.com/parts/driveline.html",
+        "https://www.moogparts.com/parts/driveline/universal-joints.html",
+        "https://www.moogparts.com/parts/steering.html",
+        "https://www.moogparts.com/parts/suspension.html",
+        "https://www.moogparts.com/parts/suspension/alignment-parts.html",
+        "https://www.moogparts.com/parts/suspension/vehicle-bushings.html",
+        "https://www.moogparts.com/parts/wheel-end.html",
+        "https://www.moogparts.com/parts/wheel-end/hub-assemblies.html"
+      ],
+      "coverageGaps": [],
+      "description": "Parts category landing pages: foreground hero banner (MOOG <CATEGORY>), a grid of product-type cards (image + title + short description + View Product), and a YMM (year/make/model) part-finder widget.",
+      "blocks": [
+        {
+          "name": "hero-overlay",
+          "instances": [
+            ".header-foreground",
+            ".header-hero"
+          ]
+        },
+        {
+          "name": "cards-article",
+          "instances": [
+            ".main-par .tout"
+          ]
+        },
+        {
+          "name": "widget",
+          "instances": [
+            ".ymm-search"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1",
+          "name": "Category hero banner",
+          "selector": [
+            ".header-foreground",
+            ".header-hero"
+          ],
+          "style": null,
+          "blocks": [
+            "hero-overlay"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2",
+          "name": "Product-type card grid",
+          "selector": ".main-par .tout",
+          "style": null,
+          "blocks": [
+            "cards-article"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-3",
+          "name": "YMM part finder",
+          "selector": ".ymm-search",
+          "style": null,
+          "blocks": [
+            "widget"
+          ],
+          "defaultContent": []
+        }
+      ]
+    },
+    {
+      "name": "parts-product",
+      "representativeUrl": "https://www.moogparts.com/parts/steering/idler-arms.html",
+      "urls": [
+        "https://www.moogparts.com/parts/steering/idler-arms.html",
+        "https://www.moogparts.com/parts/driveline/constant-velocity-axles.html",
+        "https://www.moogparts.com/parts/driveline/couplers.html",
+        "https://www.moogparts.com/parts/driveline/pto-ag.html",
+        "https://www.moogparts.com/parts/driveline/universal-joints/anti-galvanic-universal-joints.html",
+        "https://www.moogparts.com/parts/driveline/universal-joints/heavy-duty-universal-joints.html",
+        "https://www.moogparts.com/parts/driveline/universal-joints/premium-universal-joints.html",
+        "https://www.moogparts.com/parts/driveline/universal-joints/super-strength-universal-joints.html",
+        "https://www.moogparts.com/parts/steering/center-drag-link.html",
+        "https://www.moogparts.com/parts/steering/complete-pre-assembled-steering-linkage.html",
+        "https://www.moogparts.com/parts/steering/pitman-arms.html",
+        "https://www.moogparts.com/parts/steering/steering-stabilizers.html",
+        "https://www.moogparts.com/parts/steering/tie-rod-ends.html",
+        "https://www.moogparts.com/parts/suspension/alignment-parts/adjustable-ball-joints.html",
+        "https://www.moogparts.com/parts/suspension/alignment-parts/adjustable-bushings.html",
+        "https://www.moogparts.com/parts/suspension/alignment-parts/adjustment-cams-and-cam-bolts.html",
+        "https://www.moogparts.com/parts/suspension/alignment-parts/cam-plate-adjusting-kits.html",
+        "https://www.moogparts.com/parts/suspension/alignment-parts/control-arm-shafts-and-control-arm-mounts.html",
+        "https://www.moogparts.com/parts/suspension/alignment-parts/rear-contact-shims.html",
+        "https://www.moogparts.com/parts/suspension/ball-joints.html",
+        "https://www.moogparts.com/parts/suspension/coil-springs.html",
+        "https://www.moogparts.com/parts/suspension/moog-control-arms.html",
+        "https://www.moogparts.com/parts/suspension/solid-sway-bar-kits.html",
+        "https://www.moogparts.com/parts/suspension/sway-bar-links.html",
+        "https://www.moogparts.com/parts/suspension/vehicle-bushings/bushings.html",
+        "https://www.moogparts.com/parts/suspension/vehicle-bushings/sway-bar-bushings.html",
+        "https://www.moogparts.com/parts/wheel-end/complete-knuckle-assemblies.html",
+        "https://www.moogparts.com/parts/wheel-end/hub-assemblies/coated-hub-assemblies.html",
+        "https://www.moogparts.com/parts/wheel-end/hub-assemblies/high-utilization-hub-assemblies.html",
+        "https://www.moogparts.com/parts/wheel-end/hub-assemblies/premium-hub-assemblies.html"
+      ],
+      "coverageGaps": [],
+      "description": "Parts product-detail pages: foreground hero banner (MOOG <PRODUCT>), a feature section (headline + product image + bulleted benefits + Get it Installed/Buy CTAs), a Quick-Look Benefits grid, and a YMM part-finder widget.",
+      "blocks": [
+        {
+          "name": "hero-overlay",
+          "instances": [
+            ".header-foreground",
+            ".header-hero"
+          ]
+        },
+        {
+          "name": "columns-split",
+          "instances": [
+            ".product-feature"
+          ]
+        },
+        {
+          "name": "cards-benefits",
+          "instances": [
+            ".product-benefits"
+          ]
+        },
+        {
+          "name": "widget",
+          "instances": [
+            ".ymm-search"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1",
+          "name": "Product hero banner",
+          "selector": [
+            ".header-foreground",
+            ".header-hero"
+          ],
+          "style": null,
+          "blocks": [
+            "hero-overlay"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2",
+          "name": "Product feature row",
+          "selector": ".product-feature",
+          "style": null,
+          "blocks": [
+            "columns-split"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-3",
+          "name": "Quick-Look Benefits",
+          "selector": ".product-benefits",
+          "style": null,
+          "blocks": [
+            "cards-benefits"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-4",
+          "name": "YMM part finder",
+          "selector": ".ymm-search",
+          "style": null,
+          "blocks": [
+            "widget"
+          ],
+          "defaultContent": []
+        }
+      ]
+    },
+    {
+      "name": "parts-matter-index",
+      "representativeUrl": "https://www.moogparts.com/parts-matter.html",
+      "urls": [
+        "https://www.moogparts.com/parts-matter.html"
+      ],
+      "coverageGaps": [],
+      "description": "Chassis System 101 (Parts Matter) index: title hero, a featured-article banner, an article-teaser card grid (Read More) with View More, plus Find My Part and Where to Buy widgets.",
+      "blocks": [
+        {
+          "name": "hero-overlay",
+          "instances": [
+            ".header-hero",
+            ".header-simple"
+          ]
+        },
+        {
+          "name": "columns-split",
+          "instances": [
+            ".tout"
+          ]
+        },
+        {
+          "name": "cards-article",
+          "instances": [
+            ".ledes"
+          ]
+        },
+        {
+          "name": "widget",
+          "instances": [
+            ".driv-part-finder-main",
+            ".where-to-buy-link"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1",
+          "name": "Title hero",
+          "selector": [
+            ".header-hero",
+            ".header-simple"
+          ],
+          "style": null,
+          "blocks": [
+            "hero-overlay"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2",
+          "name": "Featured article",
+          "selector": ".tout",
+          "style": null,
+          "blocks": [
+            "columns-split"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-3",
+          "name": "Article card grid",
+          "selector": ".ledes",
+          "style": "grey",
+          "blocks": [
+            "cards-article"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-4",
+          "name": "Find My Part finder",
+          "selector": ".driv-part-finder-main",
+          "style": "light",
+          "blocks": [
+            "widget"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-5",
+          "name": "Where to Buy locator",
+          "selector": ".where-to-buy-link",
+          "style": null,
+          "blocks": [
+            "widget"
+          ],
+          "defaultContent": []
+        }
+      ]
+    },
+    {
+      "name": "standalone",
+      "representativeUrl": "https://www.moogparts.com/about.html",
+      "urls": [
+        "https://www.moogparts.com/about.html",
+        "https://www.moogparts.com/contact.html",
+        "https://www.moogparts.com/email.html",
+        "https://www.moogparts.com/find-my-part.html",
+        "https://www.moogparts.com/installation-guide-search.html",
+        "https://www.moogparts.com/light-commercial-vehicle.html",
+        "https://www.moogparts.com/where-to-buy.html"
+      ],
+      "coverageGaps": [],
+      "description": "Standalone one-off pages: About, Contact, Email signup, Find My Part, Installation Guide Search, Light Commercial Vehicle, Where to Buy. Heterogeneous mix of widget tools (part finder, ZIP locator, doc search, email form) and content/hero sections. Block detection is per-page; selectors that do not match a given page are skipped.",
+      "blocks": [
+        {
+          "name": "hero-overlay",
+          "instances": [
+            ".header-hero"
+          ]
+        },
+        {
+          "name": "widget",
+          "instances": [
+            ".driv-part-finder-main",
+            ".where-to-buy-search",
+            ".where-to-buy-link",
+            ".documents-autocomplete",
+            ".ymm-search"
+          ]
+        },
+        {
+          "name": "columns-split",
+          "instances": [
+            ".main-par .responsivegrid:has(> div > .fmmp-plaintext .text-content):nth-of-type(1)"
+          ]
+        },
+        {
+          "name": "cards-article",
+          "instances": [
+            ".timeline",
+            ".cross-sell",
+            ".carousel-container"
+          ]
+        },
+        {
+          "name": "cards-benefits",
+          "instances": [
+            ".main-par .responsivegrid:has(.text-content) + .responsivegrid img"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1",
+          "name": "Page hero/title",
+          "selector": [
+            ".header-hero",
+            ".header-simple"
+          ],
+          "style": null,
+          "blocks": [
+            "hero-overlay"
+          ],
+          "defaultContent": [
+            ".header-simple"
+          ]
+        },
+        {
+          "id": "section-2",
+          "name": "Body content",
+          "selector": ".article-par .text-content",
+          "style": null,
+          "blocks": [],
+          "defaultContent": [
+            ".article-par .text-content",
+            ".text-content"
+          ]
+        },
+        {
+          "id": "section-3",
+          "name": "Card grid (timeline/cross-sell/carousel)",
+          "selector": [
+            ".timeline",
+            ".cross-sell",
+            ".carousel-container"
+          ],
+          "style": null,
+          "blocks": [
+            "cards-article"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-4",
+          "name": "Interactive widget",
+          "selector": [
+            ".driv-part-finder-main",
+            ".where-to-buy-search",
+            ".where-to-buy-link",
+            ".documents-autocomplete"
+          ],
+          "style": null,
+          "blocks": [
+            "widget"
+          ],
+          "defaultContent": []
+        }
+      ]
+    },
+    {
+      "name": "legal",
+      "representativeUrl": "https://www.moogparts.com/legal/warranty.html",
+      "urls": [
+        "https://www.moogparts.com/legal.html",
+        "https://www.moogparts.com/legal/anti-human-trafficking.html",
+        "https://www.moogparts.com/legal/privacy-policy.html",
+        "https://www.moogparts.com/legal/social-rules.html",
+        "https://www.moogparts.com/legal/terms-conditions.html",
+        "https://www.moogparts.com/legal/warranty.html"
+      ],
+      "coverageGaps": [],
+      "description": "Legal pages: H1 title + long-form plain text body (paragraphs, occasional links/lists). Pure default content, no blocks.",
+      "blocks": [],
+      "sections": [
+        {
+          "id": "section-1",
+          "name": "Legal body",
+          "selector": [
+            "#page-content",
+            ".text-content",
+            ".article-par"
+          ],
+          "style": null,
+          "blocks": [],
+          "defaultContent": [
+            "#page-content"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "news-index",
+      "representativeUrl": "https://www.moogparts.com/moognews.html",
+      "urls": [
+        "https://www.moogparts.com/moognews.html"
+      ],
+      "coverageGaps": [],
+      "description": "MOOG News index: H1 title, a featured-news promo, and an article-teaser card grid (date + title + excerpt + Read More) with View More.",
+      "blocks": [
+        {
+          "name": "hero-overlay",
+          "instances": [
+            ".header-hero",
+            ".header-simple"
+          ]
+        },
+        {
+          "name": "cards-article",
+          "instances": [
+            ".ledes"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1",
+          "name": "News title",
+          "selector": [
+            ".header-hero",
+            ".header-simple"
+          ],
+          "style": null,
+          "blocks": [
+            "hero-overlay"
+          ],
+          "defaultContent": [
+            ".header-simple"
+          ]
+        },
+        {
+          "id": "section-2",
+          "name": "News article grid",
+          "selector": ".ledes",
+          "style": "grey",
+          "blocks": [
+            "cards-article"
           ],
           "defaultContent": []
         }

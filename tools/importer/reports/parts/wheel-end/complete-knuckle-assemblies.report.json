@@ -1,0 +1,14 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts/wheel-end/complete-knuckle-assemblies.html",
+  "path": "parts/wheel-end/complete-knuckle-assemblies",
+  "timestamp": "2026-06-28T17:23:37.417Z",
+  "title": "Complete Steering Knuckle & Hub Assemblies | MOOG Parts",
+  "template": "parts-product",
+  "blocks": [
+    "hero-overlay",
+    "columns-split",
+    "cards-benefits",
+    "widget"
+  ]
+}

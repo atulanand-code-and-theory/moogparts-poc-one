@@ -1,0 +1,14 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts/steering/center-drag-link.html",
+  "path": "parts/steering/center-drag-link",
+  "timestamp": "2026-06-28T17:21:24.285Z",
+  "title": "Center Steering Drag Link | MOOG Parts",
+  "template": "parts-product",
+  "blocks": [
+    "hero-overlay",
+    "columns-split",
+    "cards-benefits",
+    "widget"
+  ]
+}

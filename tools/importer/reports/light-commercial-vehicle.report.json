@@ -1,0 +1,31 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/light-commercial-vehicle.html",
+  "path": "light-commercial-vehicle",
+  "timestamp": "2026-06-28T17:50:01.100Z",
+  "title": "Light Commercial Vehicle | MOOG Parts",
+  "template": "standalone",
+  "blocks": [
+    "hero-overlay",
+    "widget",
+    "widget",
+    "widget",
+    "columns-split",
+    "columns-split",
+    "cards-article",
+    "cards-article",
+    "cards-article",
+    "cards-article",
+    "cards-benefits",
+    "cards-benefits",
+    "cards-benefits",
+    "cards-benefits",
+    "cards-benefits",
+    "cards-benefits",
+    "cards-benefits",
+    "cards-benefits",
+    "cards-benefits",
+    "cards-benefits",
+    "cards-benefits"
+  ]
+}

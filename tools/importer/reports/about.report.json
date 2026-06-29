@@ -1,0 +1,11 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/about.html",
+  "path": "about",
+  "timestamp": "2026-06-28T17:49:20.218Z",
+  "title": "About Us | MOOG Parts",
+  "template": "standalone",
+  "blocks": [
+    "cards-article"
+  ]
+}

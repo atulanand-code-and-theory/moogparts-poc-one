@@ -1,0 +1,19 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts/suspension.html",
+  "path": "parts/suspension",
+  "timestamp": "2026-06-28T17:19:39.346Z",
+  "title": "Suspension Parts & Components | MOOG Parts",
+  "template": "parts-category",
+  "blocks": [
+    "hero-overlay",
+    "cards-article",
+    "cards-article",
+    "cards-article",
+    "cards-article",
+    "cards-article",
+    "cards-article",
+    "cards-article",
+    "widget"
+  ]
+}

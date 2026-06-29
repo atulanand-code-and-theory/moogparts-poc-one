@@ -1,0 +1,18 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts/suspension/alignment-parts.html",
+  "path": "parts/suspension/alignment-parts",
+  "timestamp": "2026-06-28T17:19:45.145Z",
+  "title": "Wheel Alignment Parts | MOOG Parts",
+  "template": "parts-category",
+  "blocks": [
+    "hero-overlay",
+    "cards-article",
+    "cards-article",
+    "cards-article",
+    "cards-article",
+    "cards-article",
+    "cards-article",
+    "widget"
+  ]
+}

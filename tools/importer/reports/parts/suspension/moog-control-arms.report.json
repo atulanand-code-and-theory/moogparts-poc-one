@@ -1,0 +1,13 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts/suspension/moog-control-arms.html",
+  "path": "parts/suspension/moog-control-arms",
+  "timestamp": "2026-06-28T17:22:57.182Z",
+  "title": "Upper Control Arms & Lower Control Arms | MOOG Parts",
+  "template": "parts-product",
+  "blocks": [
+    "hero-overlay",
+    "columns-split",
+    "widget"
+  ]
+}

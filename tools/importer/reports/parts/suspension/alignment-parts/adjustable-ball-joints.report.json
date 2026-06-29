@@ -1,0 +1,14 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts/suspension/alignment-parts/adjustable-ball-joints.html",
+  "path": "parts/suspension/alignment-parts/adjustable-ball-joints",
+  "timestamp": "2026-06-28T17:22:00.361Z",
+  "title": "Adjustable Ball Joints & Upper Ball Joints | MOOG Parts",
+  "template": "parts-product",
+  "blocks": [
+    "hero-overlay",
+    "columns-split",
+    "cards-benefits",
+    "widget"
+  ]
+}

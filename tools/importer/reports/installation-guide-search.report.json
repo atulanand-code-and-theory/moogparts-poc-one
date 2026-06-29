@@ -1,0 +1,11 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/installation-guide-search.html",
+  "path": "installation-guide-search",
+  "timestamp": "2026-06-28T17:49:51.606Z",
+  "title": "Installation Guide Search",
+  "template": "standalone",
+  "blocks": [
+    "widget"
+  ]
+}

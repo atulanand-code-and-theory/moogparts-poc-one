@@ -1,0 +1,12 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts/suspension/solid-sway-bar-kits.html",
+  "path": "parts/suspension/solid-sway-bar-kits",
+  "timestamp": "2026-06-28T17:23:06.212Z",
+  "title": "Solid Sway Bar Kits | MOOG Parts",
+  "template": "parts-product",
+  "blocks": [
+    "columns-split",
+    "widget"
+  ]
+}

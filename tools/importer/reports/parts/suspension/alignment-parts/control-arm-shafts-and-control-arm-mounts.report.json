@@ -1,0 +1,14 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts/suspension/alignment-parts/control-arm-shafts-and-control-arm-mounts.html",
+  "path": "parts/suspension/alignment-parts/control-arm-shafts-and-control-arm-mounts",
+  "timestamp": "2026-06-28T17:22:29.392Z",
+  "title": "Control Arm Mounts & Shafts | MOOG Parts",
+  "template": "parts-product",
+  "blocks": [
+    "hero-overlay",
+    "columns-split",
+    "cards-benefits",
+    "widget"
+  ]
+}

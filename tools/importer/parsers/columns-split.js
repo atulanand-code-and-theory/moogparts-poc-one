@@ -16,9 +16,17 @@
  *   - https://www.moogparts.com/technical/training/know-your-parts.html (.tout)
  *     — a SINGLE `.tout` intro on the content-article gap page. The same
  *       consolidation logic handles the 1-tout case (group of one).
+ *   - https://www.moogparts.com/parts/steering/idler-arms.html (.product-feature)
+ *     — parts-product feature section: a `.product-feature-title` headline (h2,
+ *       section default content, lifted out) followed by one or more
+ *       `.product-feature-base` rows, each a side-by-side image | text split
+ *       (h3 + bulleted benefits <ul> + "Get it Installed" / "Buy in Store" CTAs).
+ *       The "Buy Now" button opens a retailer toolbox of online-store links;
+ *       those retailer anchors are runtime UI chrome and are NOT collected.
  * Generated: 2026-06-27. Extended: 2026-06-28 (technologies `.tout` support;
  *   technical-landing 1..N touts with interleaved `.block-separator` dividers;
- *   content-article single `.tout` intro).
+ *   content-article single `.tout` intro; parts-product `.product-feature`
+ *   image|text feature rows).
  *
  * Columns library convention: first row = block name; each subsequent row has
  * the same number of columns. Here every content row is a 2-column split
@@ -92,7 +100,80 @@ function parseTout(element, { document }) {
   return true;
 }
 
+/**
+ * parts-product `.product-feature` layout: a section headline (h2 in
+ * `.product-feature-title`, treated as section default content and lifted out)
+ * plus one or more `.product-feature-base` rows. Each base row is a 2-column
+ * split: the showcase image | a text cell (h3 heading + bulleted benefits list
+ * + "Get it Installed" / "Buy in Store" CTAs). The "Buy Now" retailer toolbox
+ * (`.buy-online-toolbox`) is runtime store-redirect UI and is excluded.
+ */
+function parseProductFeature(element, { document }) {
+  // Section headline — authored default content, not a column row.
+  const headline = element.querySelector('.product-feature-title h1, .product-feature-title h2, .product-feature-title h3');
+
+  // One base row per feature; fall back to the element itself if unwrapped.
+  let bases = Array.from(element.querySelectorAll('.product-feature-base'));
+  if (bases.length === 0) bases = [element];
+
+  const cells = [];
+  bases.forEach((base) => {
+    // Image column — the showcase product image.
+    const img = base.querySelector('.product-feature-image img, .image img, img');
+
+    // Text column — heading + benefits list + CTA links, sourced from the
+    // content wrapper to avoid pulling in the image markup.
+    const content = base.querySelector('.product-feature-content') || base;
+    const textCell = [];
+
+    const heading = content.querySelector('h1, h2, h3, h4, h5, h6');
+    if (hasText(heading)) textCell.push(heading);
+
+    // Bulleted benefits list (preserve the <ul> with its <li>s).
+    content.querySelectorAll('ul, ol').forEach((list) => {
+      if (hasText(list)) textCell.push(list);
+    });
+
+    // Stray paragraphs (some pages use <p> instead of/with a list).
+    content.querySelectorAll(':scope > p').forEach((p) => {
+      if (hasText(p)) textCell.push(p);
+    });
+
+    // CTA links — the visible "Get it Installed" / "Buy in Store" anchors.
+    // Exclude the retailer toolbox links revealed by the "Buy Now" control.
+    content.querySelectorAll('a.cta-link, .ctas a[href]').forEach((a) => {
+      if (a.closest('.buy-online-toolbox')) return;
+      if (!hasText(a) && !a.querySelector('img, picture')) return;
+      if (textCell.some((node) => node.contains && node.contains(a))) return;
+      textCell.push(a);
+    });
+
+    if (img || textCell.length) {
+      cells.push([img || '', textCell.length ? textCell : '']);
+    }
+  });
+
+  if (cells.length === 0) {
+    element.replaceWith(...element.childNodes);
+    return true;
+  }
+
+  const block = WebImporter.Blocks.createBlock(document, { name: 'columns-split', cells });
+  if (hasText(headline)) {
+    const h2 = document.createElement('h2');
+    h2.textContent = headline.textContent.trim();
+    element.parentNode.insertBefore(h2, element);
+  }
+  element.replaceWith(block);
+  return true;
+}
+
 export default function parse(element, { document }) {
+  // --- parts-product `.product-feature` image|text feature rows ---
+  if (element.classList.contains('product-feature') || element.querySelector('.product-feature-base, .product-feature-content')) {
+    if (parseProductFeature(element, { document })) return;
+  }
+
   // --- technologies.html `.tout` promo rows ---
   if (element.classList.contains('tout')) {
     if (parseTout(element, { document })) return;

@@ -9,8 +9,23 @@
  *       .search-files            → "search-files"            (bulletin PDF search/listing)
  *       .diagnostic-center       → "diagnostic-center"       (symptom selector)
  *       .documents-autocomplete  → "documents-autocomplete"  (install-guide part-# search)
+ *   - parts-category / parts-product pages (.ymm-search → "part-finder"): the
+ *       Year/Make/Model part finder. It is functionally the same year/make/model
+ *       lookup as the homepage `.driv-part-finder-main`, and the only shipped
+ *       widget asset is `/widgets/part-finder.*`, so `.ymm-search` reuses the
+ *       "part-finder" widget rather than introducing a non-existent asset.
+ *   - standalone pages:
+ *       .where-to-buy-search    → "where-to-buy"  (full ZIP/store locator on
+ *                                  https://www.moogparts.com/where-to-buy.html;
+ *                                  same widget asset as `.where-to-buy-link`)
+ *       .documents-autocomplete → "documents-autocomplete"  (install-guide
+ *                                  part-# search on
+ *                                  https://www.moogparts.com/installation-guide-search.html)
+ *       .driv-part-finder-main  → "part-finder"   (find-my-part.html)
  * Generated: 2026-06-27. Extended: 2026-06-28 (parts/technologies support;
- *   technical-tool search-files / diagnostic-center / documents-autocomplete).
+ *   technical-tool search-files / diagnostic-center / documents-autocomplete;
+ *   parts-category/parts-product `.ymm-search` year/make/model finder;
+ *   standalone `.where-to-buy-search` ZIP/store locator).
  *
  * The local `blocks/widget` block embeds an interactive widget/app and
  * self-resolves its sub-name + CSS/JS from a single <a href> that points
@@ -35,7 +50,12 @@
 // name from the href filename, so this name must match a file in `/widgets/`.
 const WIDGET_NAME_BY_CLASS = [
   { className: 'driv-part-finder-main', name: 'part-finder' },
+  { className: 'ymm-search', name: 'part-finder' },
+  // Both the parts-page ZIP locator (`.where-to-buy-link`) and the standalone
+  // where-to-buy page's full search widget (`.where-to-buy-search`) resolve to
+  // the same `/widgets/where-to-buy.*` asset.
   { className: 'where-to-buy-link', name: 'where-to-buy' },
+  { className: 'where-to-buy-search', name: 'where-to-buy' },
   { className: 'search-files', name: 'search-files' },
   { className: 'diagnostic-center', name: 'diagnostic-center' },
   { className: 'documents-autocomplete', name: 'documents-autocomplete' },

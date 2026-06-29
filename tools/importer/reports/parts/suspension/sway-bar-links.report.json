@@ -1,0 +1,14 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts/suspension/sway-bar-links.html",
+  "path": "parts/suspension/sway-bar-links",
+  "timestamp": "2026-06-28T17:23:12.572Z",
+  "title": "Sway Bar Links & Stabilizer Links | MOOG Parts",
+  "template": "parts-product",
+  "blocks": [
+    "hero-overlay",
+    "columns-split",
+    "cards-benefits",
+    "widget"
+  ]
+}

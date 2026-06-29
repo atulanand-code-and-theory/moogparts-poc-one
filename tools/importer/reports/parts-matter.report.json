@@ -1,0 +1,16 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts-matter.html",
+  "path": "parts-matter",
+  "timestamp": "2026-06-28T17:29:56.231Z",
+  "title": "Aftermarket Auto Parts Tips & Articles | MOOG Parts",
+  "template": "parts-matter-index",
+  "blocks": [
+    "hero-overlay",
+    "columns-split",
+    "cards-article",
+    "widget",
+    "widget",
+    "widget"
+  ]
+}

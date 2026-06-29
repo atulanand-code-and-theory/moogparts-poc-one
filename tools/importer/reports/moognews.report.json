@@ -1,0 +1,12 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/moognews.html",
+  "path": "moognews",
+  "timestamp": "2026-06-28T17:52:25.392Z",
+  "title": "Automotive News | MOOG Parts",
+  "template": "news-index",
+  "blocks": [
+    "hero-overlay",
+    "cards-article"
+  ]
+}

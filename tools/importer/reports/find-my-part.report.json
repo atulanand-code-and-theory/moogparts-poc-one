@@ -1,0 +1,13 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/find-my-part.html",
+  "path": "find-my-part",
+  "timestamp": "2026-06-28T17:49:43.765Z",
+  "title": "Online Auto Parts Finder & Car Parts Catalog | MOOG Parts",
+  "template": "standalone",
+  "blocks": [
+    "widget",
+    "widget",
+    "widget"
+  ]
+}

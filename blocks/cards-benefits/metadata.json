@@ -1,0 +1,43 @@
+{
+  "variantName": "cards-benefits",
+  "baseBlock": "cards",
+  "version": "1.0.0",
+  "created": "2026-06-28T17:00:00.000Z",
+  "sourceContext": {
+    "originUrl": "https://www.moogparts.com/parts/steering/idler-arms.html",
+    "originPage": "parts-product detail page (Quick-Look Benefits section)",
+    "blockPosition": "middle"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "compact",
+    "purpose": "benefits",
+    "imagePattern": "noimg"
+  },
+  "contentPattern": {
+    "structure": "short label + one-line description (text only, no image, no link)",
+    "buttonCount": 0,
+    "imageCount": 0,
+    "cardCount": 4
+  },
+  "reuseGuidance": {
+    "suitableFor": [
+      "Quick-Look Benefits / feature-highlight grids that are text only",
+      "short label + one-line description items in an even multi-column row",
+      "icon-less benefit/feature callout grids on a light background"
+    ],
+    "notSuitableFor": [
+      "cards with images or thumbnails (use cards-article)",
+      "image-tile category navigation (use cards-category)",
+      "single side-by-side image + text feature rows (use columns-split)"
+    ]
+  },
+  "usage": {
+    "pagesUsing": [
+      "/parts/steering/idler-arms",
+      "/light-commercial-vehicle"
+    ],
+    "reuseCount": 2,
+    "lastUsed": "2026-06-28T17:41:14.272748+00:00"
+  }
+}

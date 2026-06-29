@@ -1,0 +1,14 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts/steering/pitman-arms.html",
+  "path": "parts/steering/pitman-arms",
+  "timestamp": "2026-06-28T17:21:37.457Z",
+  "title": "Pitman Arms | MOOG Parts",
+  "template": "parts-product",
+  "blocks": [
+    "hero-overlay",
+    "columns-split",
+    "cards-benefits",
+    "widget"
+  ]
+}

@@ -49,24 +49,45 @@ export default function parse(element, { document }) {
   const bgContainer = element.querySelector('.header-hero-background')
     || element.querySelector('[class*="background"]')
     || element.querySelector(':scope > .has-bg, :scope > div > .has-bg');
+  // A real background <img> must NOT be a lazy-load placeholder (the source
+  // ships `0.gif` / `.cq-image-placeholder` until hydration) and must NOT be
+  // the foreground product art (which lives in `.foreground-image-mobile` /
+  // `.header-foreground-image`).
+  const isUsableBgImg = (img) => (
+    img
+    && !img.closest('.foreground-image-mobile, .header-foreground-image')
+    && !img.classList.contains('cq-image-placeholder')
+    && !/\/0\.gif(\?|$)/i.test(img.getAttribute('src') || '')
+  );
+
   let bgImage = null;
   if (bgContainer) {
-    // For `.has-bg` (parts), the banner background is its DIRECT child <img>;
-    // a deeper <img> belongs to the mobile foreground product art, so prefer a
-    // direct-child image first, then fall back to any descendant image.
-    bgImage = bgContainer.querySelector(':scope > img') || bgContainer.querySelector('img');
+    // For `.has-bg` (parts), the banner background is its DIRECT child <img>
+    // when present; a deeper <img> belongs to the mobile foreground product
+    // art, so prefer a usable direct-child image, then a usable descendant.
+    const directImg = bgContainer.querySelector(':scope > img');
+    if (isUsableBgImg(directImg)) {
+      bgImage = directImg;
+    } else {
+      const descendantImg = Array.from(bgContainer.querySelectorAll('img'))
+        .find((img) => isUsableBgImg(img));
+      if (descendantImg) bgImage = descendantImg;
+    }
     if (!bgImage) {
       const pic = bgContainer.querySelector('picture');
-      if (pic) bgImage = pic;
+      if (pic && !pic.closest('.foreground-image-mobile, .header-foreground-image')) {
+        bgImage = pic;
+      }
     }
-    // CSS background-image fallback -> synthesize an <img>. Keep the raw URL
-    // from the inline style (which may be absolute or root-relative); the
-    // importer resolves relative paths against the page URL downstream. The
-    // validator does NOT pass `url` into the parser context, so we must not
-    // depend on it here.
+    // CSS background-image fallback -> synthesize an <img>. On the live parts
+    // pages `.has-bg` carries the banner as an inline `background-image: url()`
+    // (the only <img>s are foreground product placeholders, excluded above), so
+    // this is the primary background source there. Keep the raw URL from the
+    // inline style (absolute or root-relative); the importer resolves relative
+    // paths against the page URL downstream. Skip CSS gradients / no-url styles.
     if (!bgImage) {
       const style = bgContainer.getAttribute('style') || '';
-      const m = style.match(/url\((['"]?)(.*?)\1\)/i);
+      const m = style.match(/background(?:-image)?\s*:\s*[^;]*url\((['"]?)(.*?)\1\)/i);
       if (m && m[2]) {
         const img = document.createElement('img');
         img.setAttribute('src', m[2]);

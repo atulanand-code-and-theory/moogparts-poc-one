@@ -6,12 +6,14 @@
  *
  * Removes non-authorable site chrome and third-party widgets from MOOG Parts
  * (AEM Classic) pages so the import contains only page-level authorable
- * content. Selectors are shared across the homepage, parts-landing, and
- * technologies templates (identical global chrome on all three).
+ * content. Selectors are shared across the homepage, parts-landing,
+ * technologies, parts-category, and parts-product templates (identical global
+ * chrome on all of them).
  *
  * Selectors verified against the captured DOM of all migrated pages
- * (migration-work/cleaned.html = technologies; migration-work/_parts-landing/
- * cleaned.html = parts-landing; homepage previously verified):
+ * (migration-work/cleaned.html = parts-product /parts/steering/idler-arms.html
+ * at time of this pass; earlier passes verified technologies, parts-landing and
+ * homepage against the same global-chrome selectors below):
  *   - .skip-navigation              skip link
  *   - .body-frame-side-content      off-canvas mobile nav drawer
  *   - .body-frame-global-content / .global-mobile-nav / .region-and-language
@@ -25,6 +27,28 @@
  *                                   (incl. the leading empty placeholder on tech-tips)
  *   - .block-separator              presentational divider rules between touts
  *                                   (technical-landing); not authorable content
+ *
+ * Parts-specific chrome (parts-category / parts-product), verified against
+ * migration-work/cleaned.html = /parts/steering/idler-arms.html:
+ *   - .buy-online-toolbox           retailer "Buy Now" popup nested in the
+ *                                   product-feature CTAs (line 954). JS-driven
+ *                                   overlay of retailer links (Advance Auto,
+ *                                   O'Reilly, Pep Boys) toggled by the "Buy Now"
+ *                                   button; not authorable. Left in, it leaks the
+ *                                   retailer links into the columns-split block.
+ *                                   The authorable "Get it Installed" / "Buy in
+ *                                   Store" CTA links and the "Buy Now" button
+ *                                   text are preserved.
+ *   - .random-tip                   "Tech Tips" random-tip teaser widget rendered
+ *                                   after the YMM finder (lines 1074-1094). JS-
+ *                                   populated (spinner + ng-binding placeholders),
+ *                                   not part of any mapped section; leaks a stray
+ *                                   "Tech Tips" heading + View Tech Tips button.
+ *                                   Also present on parts-category pages.
+ *   NOTE: the .ymm-search internal "Loading..." spinners are inside the widget
+ *   block placeholder handled by the widget parser, so they are not removed
+ *   here. cq-image-placeholder is an AEM class on REAL product images
+ *   (authorable) and is deliberately NOT targeted.
  *
  * YouTube video embeds inside .article (content-article / know-your-parts):
  *   The global iframe strip below would silently drop authorable video content.
@@ -115,6 +139,15 @@ export default function transform(hookName, element, payload) {
       // Presentational divider rules between touts (technical-landing) - not
       // authorable content, drop so they don't become stray default content.
       '.block-separator',
+      // Parts-specific chrome (parts-category / parts-product), verified in
+      // /parts/steering/idler-arms.html cleaned.html:
+      //   - retailer "Buy Now" popup nested in product-feature CTAs; leaks
+      //     retailer links into the columns-split block (authorable "Get it
+      //     Installed" / "Buy in Store" CTAs + "Buy Now" button text kept).
+      //   - "Tech Tips" random-tip teaser widget after the YMM finder; JS-
+      //     driven, not in any mapped section, leaks a stray heading + button.
+      '.buy-online-toolbox',
+      '.random-tip',
       // Third-party / safe-to-strip elements
       '#rufous-sandbox',
       'iframe',

@@ -1,0 +1,14 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts/suspension/alignment-parts/adjustment-cams-and-cam-bolts.html",
+  "path": "parts/suspension/alignment-parts/adjustment-cams-and-cam-bolts",
+  "timestamp": "2026-06-28T17:22:14.337Z",
+  "title": "Alignment Camber Adjustment Bolt | MOOG Parts",
+  "template": "parts-product",
+  "blocks": [
+    "hero-overlay",
+    "columns-split",
+    "cards-benefits",
+    "widget"
+  ]
+}

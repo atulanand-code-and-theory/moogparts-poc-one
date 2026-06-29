@@ -1,0 +1,14 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts/driveline/universal-joints/heavy-duty-universal-joints.html",
+  "path": "parts/driveline/universal-joints/heavy-duty-universal-joints",
+  "timestamp": "2026-06-28T17:20:58.064Z",
+  "title": "Heavy Duty U Joints | MOOG Parts",
+  "template": "parts-product",
+  "blocks": [
+    "hero-overlay",
+    "columns-split",
+    "cards-benefits",
+    "widget"
+  ]
+}

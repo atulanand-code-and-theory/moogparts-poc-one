@@ -1,0 +1,13 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts/suspension/vehicle-bushings/sway-bar-bushings.html",
+  "path": "parts/suspension/vehicle-bushings/sway-bar-bushings",
+  "timestamp": "2026-06-28T17:23:28.246Z",
+  "title": "Problem Solver Sway Bar Bushings & Sway Bar Links | MOOG Parts",
+  "template": "parts-product",
+  "blocks": [
+    "hero-overlay",
+    "columns-split",
+    "cards-benefits"
+  ]
+}

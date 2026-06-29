@@ -1,0 +1,14 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts/wheel-end.html",
+  "path": "parts/wheel-end",
+  "timestamp": "2026-06-28T17:19:59.475Z",
+  "title": "Wheel End Replacement Parts & Front End Parts | MOOG Parts",
+  "template": "parts-category",
+  "blocks": [
+    "hero-overlay",
+    "cards-article",
+    "cards-article",
+    "widget"
+  ]
+}

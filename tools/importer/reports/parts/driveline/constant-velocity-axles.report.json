@@ -1,0 +1,11 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts/driveline/constant-velocity-axles.html",
+  "path": "parts/driveline/constant-velocity-axles",
+  "timestamp": "2026-06-28T17:20:29.061Z",
+  "title": "Constant Velocity Axles",
+  "template": "parts-product",
+  "blocks": [
+    "hero-overlay"
+  ]
+}

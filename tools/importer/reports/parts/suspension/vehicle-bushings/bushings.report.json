@@ -1,0 +1,13 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts/suspension/vehicle-bushings/bushings.html",
+  "path": "parts/suspension/vehicle-bushings/bushings",
+  "timestamp": "2026-06-28T17:23:21.131Z",
+  "title": "Car & Automotive Bushings | MOOG Parts",
+  "template": "parts-product",
+  "blocks": [
+    "hero-overlay",
+    "columns-split",
+    "cards-benefits"
+  ]
+}

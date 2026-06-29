@@ -1,0 +1,16 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/email.html",
+  "path": "email",
+  "timestamp": "2026-06-28T17:49:36.909Z",
+  "title": "MOOG Parts | Steering, Suspension & Drivetrain Parts",
+  "template": "standalone",
+  "blocks": [
+    "hero-overlay",
+    "hero-overlay",
+    "widget",
+    "widget",
+    "widget",
+    "columns-split"
+  ]
+}

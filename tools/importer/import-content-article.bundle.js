@@ -46,16 +46,25 @@ var CustomImportScript = (() => {
   var hasText = (el) => normalizeText(el.textContent).length > 0;
   function parse(element, { document }) {
     const bgContainer = element.querySelector(".header-hero-background") || element.querySelector('[class*="background"]') || element.querySelector(":scope > .has-bg, :scope > div > .has-bg");
+    const isUsableBgImg = (img) => img && !img.closest(".foreground-image-mobile, .header-foreground-image") && !img.classList.contains("cq-image-placeholder") && !/\/0\.gif(\?|$)/i.test(img.getAttribute("src") || "");
     let bgImage = null;
     if (bgContainer) {
-      bgImage = bgContainer.querySelector(":scope > img") || bgContainer.querySelector("img");
+      const directImg = bgContainer.querySelector(":scope > img");
+      if (isUsableBgImg(directImg)) {
+        bgImage = directImg;
+      } else {
+        const descendantImg = Array.from(bgContainer.querySelectorAll("img")).find((img) => isUsableBgImg(img));
+        if (descendantImg) bgImage = descendantImg;
+      }
       if (!bgImage) {
         const pic = bgContainer.querySelector("picture");
-        if (pic) bgImage = pic;
+        if (pic && !pic.closest(".foreground-image-mobile, .header-foreground-image")) {
+          bgImage = pic;
+        }
       }
       if (!bgImage) {
         const style = bgContainer.getAttribute("style") || "";
-        const m = style.match(/url\((['"]?)(.*?)\1\)/i);
+        const m = style.match(/background(?:-image)?\s*:\s*[^;]*url\((['"]?)(.*?)\1\)/i);
         if (m && m[2]) {
           const img = document.createElement("img");
           img.setAttribute("src", m[2]);
@@ -127,7 +136,50 @@ var CustomImportScript = (() => {
     groupTouts.slice(1).forEach((t) => t.remove());
     return true;
   }
+  function parseProductFeature(element, { document }) {
+    const headline = element.querySelector(".product-feature-title h1, .product-feature-title h2, .product-feature-title h3");
+    let bases = Array.from(element.querySelectorAll(".product-feature-base"));
+    if (bases.length === 0) bases = [element];
+    const cells = [];
+    bases.forEach((base) => {
+      const img = base.querySelector(".product-feature-image img, .image img, img");
+      const content = base.querySelector(".product-feature-content") || base;
+      const textCell = [];
+      const heading = content.querySelector("h1, h2, h3, h4, h5, h6");
+      if (hasText2(heading)) textCell.push(heading);
+      content.querySelectorAll("ul, ol").forEach((list) => {
+        if (hasText2(list)) textCell.push(list);
+      });
+      content.querySelectorAll(":scope > p").forEach((p) => {
+        if (hasText2(p)) textCell.push(p);
+      });
+      content.querySelectorAll("a.cta-link, .ctas a[href]").forEach((a) => {
+        if (a.closest(".buy-online-toolbox")) return;
+        if (!hasText2(a) && !a.querySelector("img, picture")) return;
+        if (textCell.some((node) => node.contains && node.contains(a))) return;
+        textCell.push(a);
+      });
+      if (img || textCell.length) {
+        cells.push([img || "", textCell.length ? textCell : ""]);
+      }
+    });
+    if (cells.length === 0) {
+      element.replaceWith(...element.childNodes);
+      return true;
+    }
+    const block = WebImporter.Blocks.createBlock(document, { name: "columns-split", cells });
+    if (hasText2(headline)) {
+      const h2 = document.createElement("h2");
+      h2.textContent = headline.textContent.trim();
+      element.parentNode.insertBefore(h2, element);
+    }
+    element.replaceWith(block);
+    return true;
+  }
   function parse2(element, { document }) {
+    if (element.classList.contains("product-feature") || element.querySelector(".product-feature-base, .product-feature-content")) {
+      if (parseProductFeature(element, { document })) return;
+    }
     if (element.classList.contains("tout")) {
       if (parseTout(element, { document })) return;
     }
@@ -169,7 +221,12 @@ var CustomImportScript = (() => {
   // tools/importer/parsers/widget.js
   var WIDGET_NAME_BY_CLASS = [
     { className: "driv-part-finder-main", name: "part-finder" },
+    { className: "ymm-search", name: "part-finder" },
+    // Both the parts-page ZIP locator (`.where-to-buy-link`) and the standalone
+    // where-to-buy page's full search widget (`.where-to-buy-search`) resolve to
+    // the same `/widgets/where-to-buy.*` asset.
     { className: "where-to-buy-link", name: "where-to-buy" },
+    { className: "where-to-buy-search", name: "where-to-buy" },
     { className: "search-files", name: "search-files" },
     { className: "diagnostic-center", name: "diagnostic-center" },
     { className: "documents-autocomplete", name: "documents-autocomplete" }
@@ -252,6 +309,15 @@ var CustomImportScript = (() => {
         // Presentational divider rules between touts (technical-landing) - not
         // authorable content, drop so they don't become stray default content.
         ".block-separator",
+        // Parts-specific chrome (parts-category / parts-product), verified in
+        // /parts/steering/idler-arms.html cleaned.html:
+        //   - retailer "Buy Now" popup nested in product-feature CTAs; leaks
+        //     retailer links into the columns-split block (authorable "Get it
+        //     Installed" / "Buy in Store" CTAs + "Buy Now" button text kept).
+        //   - "Tech Tips" random-tip teaser widget after the YMM finder; JS-
+        //     driven, not in any mapped section, leaks a stray heading + button.
+        ".buy-online-toolbox",
+        ".random-tip",
         // Third-party / safe-to-strip elements
         "#rufous-sandbox",
         "iframe",
@@ -328,7 +394,21 @@ var CustomImportScript = (() => {
     "description": "Long-form content/article pages: headings, body copy, comparison images, embedded video/category tables and a closing Where-to-Buy locator. Used by Know Your Parts and the Independent Testing Results page.",
     "urls": [
       "https://www.moogparts.com/technical/training/know-your-parts.html",
-      "https://www.moogparts.com/technical/something-big-moog-app.html"
+      "https://www.moogparts.com/technical/something-big-moog-app.html",
+      "https://www.moogparts.com/parts-matter/How-to-Tell-If-You-Have-a-Bad-Universal-Joint.html",
+      "https://www.moogparts.com/parts-matter/Signs-of-a-Failing-Control-Arm.html",
+      "https://www.moogparts.com/parts-matter/Symptoms-of-Bad-Sway-Bar-Links.html",
+      "https://www.moogparts.com/parts-matter/What-Are-U-Joints.html",
+      "https://www.moogparts.com/parts-matter/What-is-a-CV-Axle.html",
+      "https://www.moogparts.com/parts-matter/Whats-Inside-a-Socket-Style-Part.html",
+      "https://www.moogparts.com/parts-matter/adjusting-your-car-alignment.html",
+      "https://www.moogparts.com/parts-matter/car-alignment.html",
+      "https://www.moogparts.com/parts-matter/signs-you-need-an-alignment.html",
+      "https://www.moogparts.com/technologies/videos/cover-plate-belleville-washer.html",
+      "https://www.moogparts.com/technologies/videos/greasable-design.html",
+      "https://www.moogparts.com/technologies/videos/gusher-bearing.html",
+      "https://www.moogparts.com/technologies/videos/heat-treated-stud.html",
+      "https://www.moogparts.com/moognews/solid-sway-bar-kits-release.html"
     ],
     "blocks": [
       {
@@ -405,9 +485,9 @@ var CustomImportScript = (() => {
   ];
   function executeTransformers(hookName, element, payload) {
     const enhancedPayload = __spreadProps(__spreadValues({}, payload), { template: PAGE_TEMPLATE });
-    transformers.forEach((transformerFn) => {
+    transformers.forEach((fn) => {
       try {
-        transformerFn.call(null, hookName, element, enhancedPayload);
+        fn.call(null, hookName, element, enhancedPayload);
       } catch (e) {
         console.error(`Transformer failed at ${hookName}:`, e);
       }

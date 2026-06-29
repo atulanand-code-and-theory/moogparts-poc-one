@@ -1,0 +1,14 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts/suspension/vehicle-bushings.html",
+  "path": "parts/suspension/vehicle-bushings",
+  "timestamp": "2026-06-28T17:19:52.766Z",
+  "title": "Polyurethane & Neoprene Rubber Suspension Bushings | MOOG Parts",
+  "template": "parts-category",
+  "blocks": [
+    "hero-overlay",
+    "cards-article",
+    "cards-article",
+    "widget"
+  ]
+}

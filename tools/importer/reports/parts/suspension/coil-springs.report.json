@@ -1,0 +1,14 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts/suspension/coil-springs.html",
+  "path": "parts/suspension/coil-springs",
+  "timestamp": "2026-06-28T17:22:50.089Z",
+  "title": "Coil Springs & Suspension Springs | MOOG Parts",
+  "template": "parts-product",
+  "blocks": [
+    "hero-overlay",
+    "columns-split",
+    "cards-benefits",
+    "widget"
+  ]
+}

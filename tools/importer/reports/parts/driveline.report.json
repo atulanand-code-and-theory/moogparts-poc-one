@@ -1,0 +1,15 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts/driveline.html",
+  "path": "parts/driveline",
+  "timestamp": "2026-06-28T17:19:17.472Z",
+  "title": "Auto Driveline, Driveshaft, & Drivetrain Parts | MOOG Parts",
+  "template": "parts-category",
+  "blocks": [
+    "hero-overlay",
+    "cards-article",
+    "cards-article",
+    "cards-article",
+    "widget"
+  ]
+}

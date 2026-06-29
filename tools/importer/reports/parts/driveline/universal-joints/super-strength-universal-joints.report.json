@@ -1,0 +1,14 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts/driveline/universal-joints/super-strength-universal-joints.html",
+  "path": "parts/driveline/universal-joints/super-strength-universal-joints",
+  "timestamp": "2026-06-28T17:21:17.287Z",
+  "title": "Super Strength Truck & Auto Driveline U Joints | MOOG Parts",
+  "template": "parts-product",
+  "blocks": [
+    "hero-overlay",
+    "columns-split",
+    "cards-benefits",
+    "widget"
+  ]
+}

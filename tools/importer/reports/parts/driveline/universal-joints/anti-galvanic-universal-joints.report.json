@@ -1,0 +1,14 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts/driveline/universal-joints/anti-galvanic-universal-joints.html",
+  "path": "parts/driveline/universal-joints/anti-galvanic-universal-joints",
+  "timestamp": "2026-06-28T17:20:49.865Z",
+  "title": "Aluminium Anti-Galvanic U Joints & Yokes | MOOG Parts",
+  "template": "parts-product",
+  "blocks": [
+    "hero-overlay",
+    "columns-split",
+    "cards-benefits",
+    "widget"
+  ]
+}

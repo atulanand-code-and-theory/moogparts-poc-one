@@ -1,0 +1,14 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts/driveline/pto-ag.html",
+  "path": "parts/driveline/pto-ag",
+  "timestamp": "2026-06-28T17:20:42.630Z",
+  "title": "PTO U Joints & Agricultural U Joints | MOOG Parts",
+  "template": "parts-product",
+  "blocks": [
+    "hero-overlay",
+    "columns-split",
+    "cards-benefits",
+    "widget"
+  ]
+}

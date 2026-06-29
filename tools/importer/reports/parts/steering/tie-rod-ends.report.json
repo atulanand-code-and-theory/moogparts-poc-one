@@ -1,0 +1,12 @@
+{
+  "status": "success",
+  "url": "https://www.moogparts.com/parts/steering/tie-rod-ends.html",
+  "path": "parts/steering/tie-rod-ends",
+  "timestamp": "2026-06-28T17:21:53.509Z",
+  "title": "Tie Rod Ends & Outer Tie Rod Ends | MOOG Parts",
+  "template": "parts-product",
+  "blocks": [
+    "hero-overlay",
+    "widget"
+  ]
+}
