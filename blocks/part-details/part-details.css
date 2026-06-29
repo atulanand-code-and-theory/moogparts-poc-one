@@ -1,0 +1,235 @@
+.part-details {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+/* Loading */
+.part-details .pd-loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 48px 0;
+}
+
+.part-details .pd-loading[hidden],
+.part-details .pd-error[hidden] {
+  display: none;
+}
+
+.part-details .pd-spinner {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 3px solid #ddd;
+  border-top-color: #333;
+  border-radius: 50%;
+  animation: pd-spin 0.8s linear infinite;
+}
+
+@keyframes pd-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Error */
+.part-details .pd-error {
+  padding: 24px 0;
+}
+
+.part-details .pd-retry-btn {
+  margin-top: 12px;
+  padding: 8px 20px;
+  cursor: pointer;
+  background: #000;
+  color: #fff;
+  border: none;
+  font-size: 14px;
+}
+
+/* Layout */
+.part-details .pd-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (width >= 900px) {
+  .part-details .pd-layout {
+    grid-template-columns: 1fr 1.2fr;
+    align-items: start;
+  }
+
+  .part-details .pd-tabs {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Gallery */
+.part-details .pd-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.part-details .pd-main-image {
+  width: 100%;
+  max-width: 460px;
+  aspect-ratio: 1;
+  object-fit: contain;
+  border: 1px solid #eee;
+  padding: 8px;
+}
+
+.part-details .pd-thumbnails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.part-details .pd-thumbnail {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border: 2px solid #eee;
+  padding: 4px;
+  cursor: pointer;
+}
+
+.part-details .pd-thumbnail-active {
+  border-color: #333;
+}
+
+/* Info */
+.part-details .pd-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.part-details .pd-brand-name {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #666;
+  margin: 0;
+}
+
+.part-details .pd-part-name {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.2;
+}
+
+@media (width >= 900px) {
+  .part-details .pd-part-name {
+    font-size: 32px;
+  }
+}
+
+.part-details .pd-part-number {
+  margin: 0;
+  font-size: 14px;
+  color: #444;
+}
+
+.part-details .pd-description {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.part-details .pd-features {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.part-details .pd-features li {
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+/* Tabs */
+.part-details .pd-tabs {
+  border-top: 2px solid #eee;
+  padding-top: 24px;
+}
+
+.part-details .pd-tab-nav {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid #eee;
+  margin-bottom: 24px;
+}
+
+.part-details .pd-tab-btn {
+  padding: 10px 24px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  color: #666;
+}
+
+.part-details .pd-tab-btn-active {
+  border-bottom-color: #c00;
+  color: #000;
+}
+
+/* Specs table */
+.part-details .pd-specs-wrapper,
+.part-details .pd-apps-wrapper {
+  overflow-x: auto;
+}
+
+.part-details .pd-specs-table,
+.part-details .pd-apps-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.part-details .pd-specs-table td {
+  padding: 10px 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.part-details .pd-apps-group-title {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin: 0 0 12px;
+  color: #333;
+}
+
+.part-details .pd-apps-table th,
+.part-details .pd-apps-table td {
+  padding: 10px 16px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.part-details .pd-specs-table td:first-child {
+  font-weight: 600;
+  width: 50%;
+  color: #333;
+}
+
+.part-details .pd-apps-table th {
+  font-weight: 700;
+  background: #f5f5f5;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.part-details .pd-apps-table tr:hover td {
+  background: #fafafa;
+}
