@@ -198,10 +198,18 @@ export default async function decorate(block) {
     const makeId = makeSelect.value;
     const modelId = modelSelect.value;
     if (!yearId || !makeId || !modelId) return;
+    const vehicleGroupId = appTypeSelect.value;
+    const yearLabel = yearSelect.options[yearSelect.selectedIndex].textContent;
+    const makeLabel = makeSelect.options[makeSelect.selectedIndex].textContent;
+    const modelLabel = modelSelect.options[modelSelect.selectedIndex].textContent;
     const url = new URL(vehicleUrl, window.location.origin);
     url.searchParams.set('yearId', yearId);
     url.searchParams.set('makeId', makeId);
     url.searchParams.set('modelId', modelId);
+    url.searchParams.set('vehicleGroupId', vehicleGroupId);
+    url.searchParams.set('yearLabel', yearLabel);
+    url.searchParams.set('makeLabel', makeLabel);
+    url.searchParams.set('modelLabel', modelLabel);
     window.location.href = url.toString();
   });
 

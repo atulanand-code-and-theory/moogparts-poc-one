@@ -1,0 +1,255 @@
+.find-my-part-results-us .fmpr-vehicle-header {
+  background-color: var(--moog-blue);
+  color: #fff;
+  padding: 2rem 1.5rem;
+}
+
+.find-my-part-results-us .fmpr-vehicle-title {
+  font-family: var(--heading-font-family);
+  font-size: var(--heading-font-size-l);
+  color: #fff;
+  margin: 0 0 0.25rem;
+  text-transform: uppercase;
+}
+
+.find-my-part-results-us .fmpr-vehicle-meta {
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-xs);
+  color: #fff;
+  margin: 0;
+  opacity: 0.8;
+}
+
+/* State visibility */
+.find-my-part-results-us .fmpr-loading[hidden],
+.find-my-part-results-us .fmpr-error[hidden],
+.find-my-part-results-us .fmpr-empty[hidden],
+.find-my-part-results-us .fmpr-results[hidden] {
+  display: none;
+}
+
+/* Loading */
+.find-my-part-results-us .fmpr-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 3rem 1.5rem;
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-xs);
+  color: var(--dark-color);
+}
+
+.find-my-part-results-us .fmpr-spinner {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid var(--light-color);
+  border-top-color: var(--moog-blue);
+  border-radius: 50%;
+  animation: fmpr-spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes fmpr-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error / Empty */
+.find-my-part-results-us .fmpr-error,
+.find-my-part-results-us .fmpr-empty {
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+.find-my-part-results-us .fmpr-error-message,
+.find-my-part-results-us .fmpr-empty-message {
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s);
+  color: var(--dark-color);
+  margin: 0 0 1.5rem;
+}
+
+.find-my-part-results-us .fmpr-retry-btn {
+  background-color: var(--moog-blue);
+  color: #fff;
+  border: none;
+  padding: 0.625rem 1.5rem;
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.find-my-part-results-us .fmpr-retry-btn:hover {
+  background-color: var(--link-hover-color);
+}
+
+/* Results container */
+.find-my-part-results-us .fmpr-results {
+  padding: 1.5rem;
+}
+
+.find-my-part-results-us .fmpr-results-count {
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-xs);
+  color: var(--dark-color);
+  font-style: italic;
+  margin: 0 0 2rem;
+}
+
+/* Category headings */
+.find-my-part-results-us .fmpr-category {
+  margin-bottom: 3rem;
+}
+
+.find-my-part-results-us .fmpr-category-heading {
+  font-family: var(--heading-font-family);
+  font-size: var(--heading-font-size-l);
+  color: var(--moog-blue);
+  text-transform: uppercase;
+  margin: 0 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--moog-blue);
+}
+
+.find-my-part-results-us .fmpr-subcategory {
+  margin-bottom: 2rem;
+}
+
+.find-my-part-results-us .fmpr-subcategory-heading {
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s);
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0 0 1rem;
+}
+
+.find-my-part-results-us .fmpr-part-type {
+  margin-bottom: 1.5rem;
+}
+
+.find-my-part-results-us .fmpr-part-type-heading {
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-xs);
+  color: var(--dark-color);
+  font-style: italic;
+  font-weight: normal;
+  margin: 0 0 1rem;
+}
+
+/* Card grid */
+.find-my-part-results-us .fmpr-card-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (width >= 600px) {
+  .find-my-part-results-us .fmpr-card-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (width >= 900px) {
+  .find-my-part-results-us .fmpr-card-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (width >= 1200px) {
+  .find-my-part-results-us .fmpr-card-list {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Card */
+.find-my-part-results-us .fmpr-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--light-color);
+  background-color: #fff;
+}
+
+.find-my-part-results-us .fmpr-card-image {
+  aspect-ratio: 1 / 1;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.find-my-part-results-us .fmpr-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.find-my-part-results-us .fmpr-card-image-placeholder {
+  background-color: var(--light-color);
+}
+
+.find-my-part-results-us .fmpr-card-body {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.find-my-part-results-us .fmpr-card-part-number {
+  font-family: monospace;
+  font-size: var(--body-font-size-xs);
+  font-weight: 700;
+  color: var(--moog-blue);
+  margin: 0 0 0.5rem;
+}
+
+.find-my-part-results-us .fmpr-card-part-name {
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-xs);
+  color: var(--text-color);
+  margin: 0 0 0.5rem;
+}
+
+.find-my-part-results-us .fmpr-card-position {
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-xs);
+  color: var(--dark-color);
+  font-style: italic;
+  margin: 0 0 0.25rem;
+}
+
+.find-my-part-results-us .fmpr-card-brand {
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-xs);
+  color: var(--dark-color);
+  margin: 0 0 1rem;
+  opacity: 0.7;
+}
+
+.find-my-part-results-us .fmpr-card-cta {
+  display: block;
+  margin-top: auto;
+  padding: 0.5rem 1rem;
+  background-color: var(--moog-blue);
+  color: #fff;
+  font-family: var(--body-font-family);
+  font-weight: 700;
+  font-size: var(--body-font-size-xs);
+  text-decoration: none;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.find-my-part-results-us .fmpr-card-cta:hover {
+  background-color: var(--link-hover-color);
+  color: #fff;
+  text-decoration: none;
+}
