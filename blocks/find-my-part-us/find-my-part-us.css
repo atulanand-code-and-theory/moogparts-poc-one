@@ -1,0 +1,203 @@
+.find-my-part-us {
+  padding: 3rem 1rem;
+  text-align: center;
+}
+
+.find-my-part-us .find-my-part-us-header {
+  margin-bottom: 2.5rem;
+}
+
+.find-my-part-us .find-my-part-us-header h2 {
+  font-family: var(--heading-font-family);
+  font-size: var(--heading-font-size-xl);
+  color: var(--moog-blue);
+  margin: 0 0 0.5rem;
+  text-transform: uppercase;
+}
+
+.find-my-part-us .find-my-part-us-header p {
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-xs);
+  color: var(--dark-color);
+  margin: 0;
+}
+
+/* Body: two-column layout */
+.find-my-part-us .find-my-part-us-body {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.find-my-part-us .find-my-part-us-divider {
+  display: none;
+}
+
+@media (width >= 900px) {
+  .find-my-part-us .find-my-part-us-body {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0;
+  }
+
+  .find-my-part-us .find-my-part-us-vehicle {
+    flex: 1;
+    padding-right: 3rem;
+  }
+
+  .find-my-part-us .find-my-part-us-divider {
+    display: block;
+    width: 1px;
+    background-color: #333;
+    align-self: stretch;
+    flex-shrink: 0;
+  }
+
+  .find-my-part-us .find-my-part-us-part-number {
+    flex: 1;
+    padding-left: 3rem;
+  }
+}
+
+/* Section headings */
+.find-my-part-us .find-my-part-us-vehicle h3,
+.find-my-part-us .find-my-part-us-part-number h3 {
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s);
+  font-weight: 700;
+  color: var(--moog-blue);
+  margin: 0 0 0.75rem;
+}
+
+/* Vehicle form */
+.find-my-part-us .find-my-part-us-vehicle-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.find-my-part-us .find-my-part-us-select-group[hidden],
+.find-my-part-us .find-my-part-us-find-btn[hidden] {
+  display: none;
+}
+
+/* Select group */
+.find-my-part-us .find-my-part-us-select-group {
+  display: flex;
+  align-items: stretch;
+  border: 2px solid var(--moog-blue);
+  background-color: #f0f0f0;
+  overflow: hidden;
+}
+
+.find-my-part-us .find-my-part-us-select-group select {
+  flex: 1;
+  appearance: none;
+  background: transparent;
+  border: none;
+  padding: 0.75rem 1rem;
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-xs);
+  font-style: italic;
+  color: var(--moog-blue);
+  cursor: pointer;
+  outline: none;
+  min-width: 0;
+}
+
+.find-my-part-us .find-my-part-us-select-group select:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.find-my-part-us .find-my-part-us-select-group select option {
+  font-style: normal;
+  color: var(--text-color);
+}
+
+/* Chevron badge */
+.find-my-part-us .find-my-part-us-chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  flex-shrink: 0;
+  background-color: var(--moog-blue);
+  color: white;
+  font-size: 12px;
+  pointer-events: none;
+}
+
+.find-my-part-us .find-my-part-us-chevron::after {
+  content: '▼';
+}
+
+/* Find My Part button */
+.find-my-part-us .find-my-part-us-find-btn {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--moog-blue);
+  color: white;
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-xs);
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.find-my-part-us .find-my-part-us-find-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.find-my-part-us .find-my-part-us-find-btn:not(:disabled):hover {
+  background-color: var(--link-hover-color);
+}
+
+/* Part number input group */
+.find-my-part-us .find-my-part-us-input-group {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid #ccc;
+  overflow: hidden;
+}
+
+.find-my-part-us .find-my-part-us-input-group input[type='text'] {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background-color: #f0f0f0;
+  border: none;
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-xs);
+  color: var(--dark-color);
+  outline: none;
+  min-width: 0;
+}
+
+.find-my-part-us .find-my-part-us-input-group input[type='text']::placeholder {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #999;
+}
+
+.find-my-part-us .find-my-part-us-input-group button[type='submit'] {
+  padding: 0.75rem 1.25rem;
+  background-color: var(--moog-blue);
+  color: white;
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-xs);
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.find-my-part-us .find-my-part-us-input-group button[type='submit']:hover {
+  background-color: var(--link-hover-color);
+}
