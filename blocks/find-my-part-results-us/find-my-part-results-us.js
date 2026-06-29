@@ -58,7 +58,6 @@ function buildListRow(app, yearLabel, makeLabel, modelLabel) {
 
   const featuresBody = document.createElement('div');
   featuresBody.className = 'fmpr-row-features-body';
-  featuresBody.hidden = true;
 
   const product = document.createElement('p');
   product.textContent = `Product: ${app.part_name}`;
@@ -81,9 +80,7 @@ function buildListRow(app, yearLabel, makeLabel, modelLabel) {
   featuresBody.append(product, position, appQty, fits);
 
   toggleItem.addEventListener('click', () => {
-    const expanded = !featuresBody.hidden;
-    featuresBody.hidden = expanded;
-    toggleItem.classList.toggle('fmpr-row-features-toggle--open', !expanded);
+    featuresBody.hidden = !featuresBody.hidden;
   });
 
   featuresWrapper.append(toggleList, featuresBody);
