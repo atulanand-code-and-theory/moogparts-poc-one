@@ -138,13 +138,9 @@ function buildFacetPanel(data, filterState, onFilterChange) {
   clearBtn.textContent = 'Clear Filters';
   header.append(headerLabel, clearBtn);
 
-  const categories = data.category_tree?.categories || [];
-  const partTypeSet = new Set();
-  categories.forEach((cat) => {
-    cat.sub_categories?.forEach((sub) => {
-      sub.part_types?.forEach((pt) => partTypeSet.add(pt.value));
-    });
-  });
+  const applications = data.application_list?.applications || [];
+  const categorySet = new Set(applications.map((app) => app.category.category_value));
+  const partTypeSet = new Set(applications.map((app) => app.category.part_type_value));
 
   function buildAccordion(label, items, stateSet) {
     const group = document.createElement('div');
@@ -196,7 +192,7 @@ function buildFacetPanel(data, filterState, onFilterChange) {
 
   const catAccordion = buildAccordion(
     'Product Category',
-    categories.map((c) => c.value),
+    [...categorySet],
     filterState.categories,
   );
   const ptAccordion = buildAccordion(
