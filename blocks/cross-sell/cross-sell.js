@@ -1,6 +1,21 @@
 const MOOG_BASE = 'https://www.moogparts.com';
-const DEFAULT_API_URL = `${MOOG_BASE}/content/loc-na/loc-us/fmmp-moog/en_US/find-my-part/find-my-part-results/jcr:content/main-par/cross_sell.by-tags?nocache=true&q=all`;
+const WORKER_BASE = 'https://moogparts-catalog-api.atul-code-auth0.workers.dev';
+const DEFAULT_API_URL = `${WORKER_BASE}/cross-sell?q=all`;
 const MAX_ITEMS = 2;
+
+function normalizeToWorker(raw) {
+  try {
+    const u = new URL(raw);
+    if (u.hostname === 'www.moogparts.com' && u.pathname.includes('cross_sell')) {
+      const worker = new URL(`${WORKER_BASE}/cross-sell`);
+      u.searchParams.forEach((v, k) => {
+        if (k !== 'nocache' && k !== 'no_cache') worker.searchParams.set(k, v);
+      });
+      return worker.toString();
+    }
+  } catch { /* not a full URL, return as-is */ }
+  return raw;
+}
 
 function resolveImageUrl(path) {
   if (!path) return null;
@@ -45,9 +60,9 @@ function buildItem(item) {
 }
 
 export default async function decorate(block) {
-  const configUrl = block.querySelector('a')?.href
-    || block.textContent?.trim()
-    || DEFAULT_API_URL;
+  const configUrl = normalizeToWorker(
+    block.querySelector('a')?.href || block.textContent?.trim() || DEFAULT_API_URL,
+  );
 
   block.innerHTML = '';
 

@@ -1,4 +1,5 @@
-const API_BASE = 'https://www.moogparts.com/driv/partfinder';
+const WORKER_BASE = 'https://moogparts-catalog-api.atul-code-auth0.workers.dev';
+const API_BASE = `${WORKER_BASE}/catalog`;
 const MOOG_ASSET_BASE = 'https://www.moogparts.com';
 const API_PARAMS = { brand: 'moog', locale: 'en_US', country_code: 'US' };
 
@@ -14,7 +15,6 @@ function findDesc(descriptions, typeCode) {
 async function fetchPartDetails(partNumber, brandCode) {
   const params = {
     ...API_PARAMS,
-    no_cache: Date.now(),
     part_number: partNumber,
     brand_code: brandCode,
     brand_codes: brandCode,
