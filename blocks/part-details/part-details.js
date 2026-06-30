@@ -45,9 +45,16 @@ function buildGallery(primaries, thumbnails) {
     }))
     .filter((p) => p.mainUrl);
 
+  pairs.slice(1).forEach(({ mainUrl }) => {
+    const preloadImg = new Image();
+    preloadImg.decoding = 'async';
+    preloadImg.src = mainUrl;
+  });
+
   const mainImg = document.createElement('img');
   mainImg.className = 'pd-main-image';
   mainImg.alt = '';
+  mainImg.decoding = 'async';
   if (pairs[0]) mainImg.src = pairs[0].mainUrl;
 
   let currentIndex = 0;
@@ -55,9 +62,29 @@ function buildGallery(primaries, thumbnails) {
   const thumbEls = [];
 
   function activate(index) {
-    currentIndex = index;
-    mainImg.src = pairs[index].mainUrl;
-    thumbEls.forEach((t, i) => t.classList.toggle('pd-thumbnail-active', i === index));
+    if (!pairs.length) return;
+    currentIndex = (index + pairs.length) % pairs.length;
+    mainImg.src = pairs[currentIndex].mainUrl;
+    thumbEls.forEach((t, i) => {
+      const isActive = i === currentIndex;
+      t.classList.toggle('pd-thumbnail-active', isActive);
+      t.setAttribute('aria-current', isActive ? 'true' : 'false');
+      t.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
+  }
+
+  function showPrevious() {
+    activate(currentIndex - 1);
+  }
+
+  function showNext() {
+    activate(currentIndex + 1);
+  }
+
+  if (pairs.length > 1) {
+    mainImg.tabIndex = 0;
+    mainImg.setAttribute('role', 'button');
+    mainImg.setAttribute('aria-label', 'Show next product image');
   }
 
   const navEl = document.createElement('div');
@@ -68,7 +95,8 @@ function buildGallery(primaries, thumbnails) {
   prevBtn.className = 'pd-gallery-arrow';
   prevBtn.setAttribute('aria-label', 'Previous image');
   prevBtn.textContent = '◄';
-  prevBtn.addEventListener('click', () => activate((currentIndex - 1 + pairs.length) % pairs.length));
+  prevBtn.disabled = pairs.length <= 1;
+  prevBtn.dataset.galleryAction = 'previous';
 
   const thumbsEl = document.createElement('div');
   thumbsEl.className = 'pd-thumbnails';
@@ -79,8 +107,13 @@ function buildGallery(primaries, thumbnails) {
     thumb.alt = '';
     thumb.loading = 'lazy';
     thumb.className = 'pd-thumbnail';
+    thumb.tabIndex = 0;
+    thumb.setAttribute('role', 'button');
+    thumb.setAttribute('aria-label', `Show product image ${i + 1}`);
+    thumb.setAttribute('aria-current', i === 0 ? 'true' : 'false');
+    thumb.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+    thumb.dataset.galleryIndex = String(i);
     if (i === 0) thumb.classList.add('pd-thumbnail-active');
-    thumb.addEventListener('click', () => activate(i));
     thumbEls.push(thumb);
     thumbsEl.appendChild(thumb);
   });
@@ -90,7 +123,53 @@ function buildGallery(primaries, thumbnails) {
   nextBtn.className = 'pd-gallery-arrow';
   nextBtn.setAttribute('aria-label', 'Next image');
   nextBtn.textContent = '►';
-  nextBtn.addEventListener('click', () => activate((currentIndex + 1) % pairs.length));
+  nextBtn.disabled = pairs.length <= 1;
+  nextBtn.dataset.galleryAction = 'next';
+
+  gallery.addEventListener('click', (e) => {
+    const arrow = e.target.closest('.pd-gallery-arrow');
+    if (arrow && gallery.contains(arrow)) {
+      if (arrow.dataset.galleryAction === 'previous') showPrevious();
+      if (arrow.dataset.galleryAction === 'next') showNext();
+      return;
+    }
+
+    const thumb = e.target.closest('.pd-thumbnail');
+    if (thumb && gallery.contains(thumb)) {
+      activate(Number(thumb.dataset.galleryIndex));
+      return;
+    }
+
+    if (e.target.closest('.pd-main-image')) showNext();
+  });
+
+  gallery.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      showPrevious();
+      return;
+    }
+
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      showNext();
+      return;
+    }
+
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+
+    const thumb = e.target.closest('.pd-thumbnail');
+    if (thumb && gallery.contains(thumb)) {
+      e.preventDefault();
+      activate(Number(thumb.dataset.galleryIndex));
+      return;
+    }
+
+    if (e.target.closest('.pd-main-image')) {
+      e.preventDefault();
+      showNext();
+    }
+  });
 
   navEl.append(prevBtn, thumbsEl, nextBtn);
   gallery.append(mainImg, navEl);

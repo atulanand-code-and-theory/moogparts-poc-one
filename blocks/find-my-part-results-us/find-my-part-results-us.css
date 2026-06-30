@@ -1,15 +1,27 @@
+.find-my-part-results-us {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.find-my-part-results-us *,
+.find-my-part-results-us *::before,
+.find-my-part-results-us *::after {
+  box-sizing: inherit;
+}
+
 .find-my-part-results-us .fmpr-vehicle-header {
   background-color: var(--moog-dark-blue, #0a1f5c);
   color: #fff;
-  padding: 1rem 1.5rem;
+  padding: 1rem;
 }
 
 .find-my-part-results-us .fmpr-vehicle-title {
   font-family: var(--heading-font-family);
-  font-size: var(--heading-font-size-l);
+  font-size: 28px;
   color: #fff;
   margin: 0 0 0.25rem;
   text-transform: uppercase;
+  overflow-wrap: break-word;
 }
 
 .find-my-part-results-us .fmpr-vehicle-meta {
@@ -25,16 +37,25 @@
   display: flex;
   flex-direction: column;
   gap: 0;
+  min-width: 0;
 }
 
-@media (width >= 900px) {
+@media (width >= 1025px) {
+  .find-my-part-results-us .fmpr-vehicle-header {
+    padding: 1rem 1.5rem;
+  }
+
+  .find-my-part-results-us .fmpr-vehicle-title {
+    font-size: var(--heading-font-size-l);
+  }
+
   .find-my-part-results-us .fmpr-content-wrapper {
     flex-direction: row;
     align-items: flex-start;
   }
 
   .find-my-part-results-us .fmpr-facets {
-    width: 280px;
+    width: 329px;
     flex-shrink: 0;
     border-right: 1px solid var(--light-color);
   }
@@ -47,19 +68,21 @@
 
 @media (width >= 1200px) {
   .find-my-part-results-us .fmpr-facets {
-    width: 320px;
+    width: 369px;
   }
 }
 
 /* Facet sidebar */
 .find-my-part-results-us .fmpr-facets {
-  padding: 1.5rem;
+  padding: 1rem;
 }
 
 .find-my-part-results-us .fmpr-facets-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
   margin-bottom: 1.25rem;
 }
 
@@ -73,6 +96,7 @@
 }
 
 .find-my-part-results-us .fmpr-clear-filters {
+  min-height: 44px;
   background-color: var(--moog-blue);
   color: #fff;
   border: none;
@@ -96,6 +120,7 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  min-height: 44px;
   padding: 0.75rem 1rem;
   background-color: #fff;
   border: 1px solid var(--light-color);
@@ -138,6 +163,7 @@
   display: flex;
   align-items: center;
   gap: 0.625rem;
+  min-height: 44px;
   cursor: pointer;
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-s);
@@ -214,7 +240,7 @@
 
 /* Results area */
 .find-my-part-results-us .fmpr-results {
-  padding: 1.5rem 2rem;
+  padding: 1rem;
 }
 
 /* Results count heading — matches live site ~25px */
@@ -237,8 +263,10 @@
 /* Row */
 .find-my-part-results-us .fmpr-row {
   display: flex;
+  flex-direction: column;
   gap: 1.75rem;
-  padding: 1.5rem 0;
+  min-width: 0;
+  padding: 1.25rem 0;
   border-bottom: 1px solid #bbb;
 }
 
@@ -248,7 +276,7 @@
 
 /* Image */
 .find-my-part-results-us .fmpr-row-image {
-  width: 220px;
+  width: 100%;
   height: 160px;
   flex-shrink: 0;
   display: flex;
@@ -272,7 +300,7 @@
   flex: 1;
   min-width: 0;
   font-family: var(--body-font-family);
-  font-size: var(--body-font-size-m);
+  font-size: 18px;
   color: var(--text-color);
 }
 
@@ -283,7 +311,7 @@
 }
 
 .find-my-part-results-us .fmpr-row-part-name {
-  font-size: var(--body-font-size-m);
+  font-size: 18px;
   font-weight: 700;
   color: var(--text-color);
   margin: 0 0 0.75rem;
@@ -363,6 +391,7 @@
 .find-my-part-results-us .fmpr-row-fits {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.375rem;
   margin-top: 0.375rem;
 }
@@ -389,17 +418,23 @@
 /* Tabs */
 .find-my-part-results-us .fmpr-tabs {
   margin-top: 0.75rem;
+  min-width: 0;
 }
 
 .find-my-part-results-us .fmpr-tabs-nav {
   display: flex;
+  flex-wrap: wrap;
   list-style: none;
   margin: 0;
   padding: 0;
   gap: 0.25rem;
+  max-width: 100%;
+  overflow-x: visible;
 }
 
 .find-my-part-results-us .fmpr-tab-btn {
+  flex: 0 0 auto;
+  min-height: 44px;
   padding: 0.5rem 1.125rem;
   background-color: var(--light-color);
   border: 1px solid #ccc;
@@ -428,11 +463,12 @@
 
 .find-my-part-results-us .fmpr-tab-panel {
   border: 1px solid #ccc;
-  padding: 1rem 1.25rem;
+  padding: 1rem;
   background-color: #fff;
-  font-size: var(--body-font-size-m);
+  font-size: 18px;
   line-height: 1.8;
   color: var(--text-color);
+  overflow-wrap: break-word;
 }
 
 .find-my-part-results-us .fmpr-tab-panel[hidden] {
@@ -455,6 +491,7 @@
   background-color: #f0f0f0;
   padding: 0.75rem 1rem;
   margin-top: 0.5rem;
+  overflow-wrap: break-word;
 }
 
 .find-my-part-results-us .fmpr-criteria-heading {
@@ -489,3 +526,36 @@
   margin: 0 0 0.25rem;
 }
 
+@media (width >= 768px) {
+  .find-my-part-results-us .fmpr-vehicle-header,
+  .find-my-part-results-us .fmpr-facets,
+  .find-my-part-results-us .fmpr-results {
+    padding-inline: 1.5rem;
+  }
+
+  .find-my-part-results-us .fmpr-row {
+    flex-direction: row;
+  }
+
+  .find-my-part-results-us .fmpr-row-image {
+    width: 220px;
+  }
+
+  .find-my-part-results-us .fmpr-tab-panel {
+    padding: 1rem 1.25rem;
+  }
+}
+
+@media (width >= 1025px) {
+  .find-my-part-results-us .fmpr-facets {
+    padding: 1.5rem;
+  }
+
+  .find-my-part-results-us .fmpr-results {
+    padding: 1.5rem 2rem;
+  }
+
+  .find-my-part-results-us .fmpr-row {
+    padding: 1.5rem 0;
+  }
+}
