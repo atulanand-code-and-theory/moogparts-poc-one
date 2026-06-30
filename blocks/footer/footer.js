@@ -26,7 +26,6 @@ function repairLogos(footer) {
     const replacement = document.createElement('img');
     replacement.src = logo.src;
     replacement.alt = img.getAttribute('alt') || '';
-    replacement.loading = 'lazy';
     replacement.width = logo.width;
     replacement.height = logo.height;
     replacement.classList.add(logo.className);
