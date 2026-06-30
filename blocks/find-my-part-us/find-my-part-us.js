@@ -15,14 +15,169 @@ async function fetchCatalog(endpoint, extra) {
   return res.json();
 }
 
+function getSelectGroup(select) {
+  return select.closest('.find-my-part-us-select-group');
+}
+
+function getOptions(group) {
+  return [...group.querySelectorAll('[role="option"]:not([hidden])')];
+}
+
+function getAllOptions(group) {
+  return [...group.querySelectorAll('[role="option"]')];
+}
+
+function getActiveOption(group) {
+  return group.querySelector('[role="option"].is-active');
+}
+
+function setActiveOption(group, target, focusOption = true) {
+  const options = getOptions(group);
+  if (!options.length) return;
+
+  const currentOption = getActiveOption(group);
+  let nextIndex = options.indexOf(currentOption);
+
+  if (target === 'first') nextIndex = 0;
+  else if (target === 'last') nextIndex = options.length - 1;
+  else if (Number.isInteger(target)) nextIndex = target;
+
+  nextIndex = Math.max(0, Math.min(nextIndex, options.length - 1));
+
+  options.forEach((option, index) => {
+    const active = index === nextIndex;
+    option.classList.toggle('is-active', active);
+    option.tabIndex = active ? 0 : -1;
+  });
+
+  if (focusOption) options[nextIndex].focus();
+}
+
+function moveActiveOption(group, direction) {
+  const options = getOptions(group);
+  if (!options.length) return;
+
+  const currentIndex = options.indexOf(getActiveOption(group));
+  const nextIndex = currentIndex < 0 ? 0 : currentIndex + direction;
+  setActiveOption(group, nextIndex);
+}
+
+function filterSelectOptions(group, query, focusOption = false) {
+  const options = getAllOptions(group);
+  const noResults = group.querySelector('.find-my-part-us-no-results');
+  const normalizedQuery = query.trim().toLowerCase();
+  let visibleCount = 0;
+
+  options.forEach((option) => {
+    const matches = option.textContent.toLowerCase().includes(normalizedQuery);
+    option.hidden = !matches;
+    option.classList.remove('is-active');
+    option.tabIndex = -1;
+    if (matches) visibleCount += 1;
+  });
+
+  noResults.hidden = visibleCount > 0;
+  if (visibleCount > 0) setActiveOption(group, 'first', focusOption);
+}
+
+function closeSelectGroup(group) {
+  const select = group.querySelector('select');
+  const input = group.querySelector('.find-my-part-us-select-input');
+  const list = group.querySelector('.find-my-part-us-options');
+  const selectedOption = select.options[select.selectedIndex];
+  input.value = select.value && selectedOption ? selectedOption.textContent : '';
+  filterSelectOptions(group, '');
+  group.classList.remove('is-open');
+  input.setAttribute('aria-expanded', 'false');
+  list.hidden = true;
+}
+
+function closeOtherSelectGroups(group) {
+  document.querySelectorAll('.find-my-part-us-select-group.is-open').forEach((openGroup) => {
+    if (openGroup !== group) closeSelectGroup(openGroup);
+  });
+}
+
+function openSelectGroup(group, activeTarget = 'selected', focusOption = true) {
+  const select = group.querySelector('select');
+  const input = group.querySelector('.find-my-part-us-select-input');
+  const list = group.querySelector('.find-my-part-us-options');
+  filterSelectOptions(group, '');
+  const options = getOptions(group);
+  if (select.disabled || !options.length) return;
+
+  closeOtherSelectGroups(group);
+  group.classList.add('is-open');
+  input.setAttribute('aria-expanded', 'true');
+  list.hidden = false;
+
+  const selectedIndex = Math.max(
+    0,
+    options.findIndex((option) => option.dataset.value === select.value),
+  );
+  setActiveOption(group, activeTarget === 'selected' ? selectedIndex : activeTarget, focusOption);
+}
+
+function toggleSelectGroup(group) {
+  if (group.classList.contains('is-open')) closeSelectGroup(group);
+  else openSelectGroup(group);
+}
+
+function syncCustomSelect(select) {
+  const group = getSelectGroup(select);
+  const input = group.querySelector('.find-my-part-us-select-input');
+  const button = group.querySelector('.find-my-part-us-chevron');
+  const list = group.querySelector('.find-my-part-us-options');
+  const noResults = group.querySelector('.find-my-part-us-no-results');
+  const selectedOption = select.options[select.selectedIndex];
+  const { placeholder } = group.dataset;
+
+  input.disabled = select.disabled;
+  input.placeholder = placeholder;
+  input.value = select.value && selectedOption ? selectedOption.textContent : '';
+  button.disabled = select.disabled;
+  list.innerHTML = '';
+
+  [...select.options].slice(1).forEach((option) => {
+    const item = document.createElement('li');
+    item.className = 'find-my-part-us-option';
+    item.dataset.value = option.value;
+    item.id = `${select.id}-option-${option.value}`;
+    item.setAttribute('role', 'option');
+    item.tabIndex = -1;
+    item.textContent = option.textContent;
+    item.setAttribute('aria-selected', String(option.value === select.value));
+    list.appendChild(item);
+  });
+  list.appendChild(noResults);
+  filterSelectOptions(group, '');
+
+  if (select.disabled) closeSelectGroup(group);
+}
+
+function chooseCustomOption(select, optionValue) {
+  if (!optionValue || select.disabled) return;
+
+  const group = getSelectGroup(select);
+  select.value = optionValue;
+  syncCustomSelect(select);
+  closeSelectGroup(group);
+  group.querySelector('.find-my-part-us-select-input').focus();
+  select.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
 function buildSelectGroup(id, placeholder) {
   const group = document.createElement('div');
   group.className = 'find-my-part-us-select-group';
+  group.dataset.placeholder = placeholder;
 
   const select = document.createElement('select');
   select.id = id;
   select.setAttribute('aria-label', placeholder);
+  select.setAttribute('aria-hidden', 'true');
+  select.className = 'find-my-part-us-native-select';
   select.disabled = true;
+  select.tabIndex = -1;
 
   const defaultOption = document.createElement('option');
   defaultOption.value = '';
@@ -31,19 +186,121 @@ function buildSelectGroup(id, placeholder) {
   defaultOption.textContent = placeholder;
   select.appendChild(defaultOption);
 
-  const chevron = document.createElement('span');
+  const trigger = document.createElement('div');
+  trigger.className = 'find-my-part-us-select-trigger';
+
+  const input = document.createElement('input');
+  input.type = 'search';
+  input.className = 'find-my-part-us-select-input';
+  input.setAttribute('role', 'combobox');
+  input.setAttribute('aria-autocomplete', 'list');
+  input.setAttribute('aria-expanded', 'false');
+  input.setAttribute('aria-controls', `${id}-listbox`);
+  input.setAttribute('aria-haspopup', 'listbox');
+  input.setAttribute('aria-label', placeholder);
+  input.autocomplete = 'off';
+  input.placeholder = placeholder;
+  input.disabled = true;
+
+  const chevron = document.createElement('button');
+  chevron.type = 'button';
   chevron.className = 'find-my-part-us-chevron';
-  chevron.setAttribute('aria-hidden', 'true');
+  chevron.setAttribute('aria-label', `Open ${placeholder} options`);
+  chevron.disabled = true;
+
+  trigger.appendChild(input);
+  trigger.appendChild(chevron);
+
+  const list = document.createElement('ul');
+  list.id = `${id}-listbox`;
+  list.className = 'find-my-part-us-options';
+  list.setAttribute('role', 'listbox');
+  list.setAttribute('aria-label', placeholder);
+  list.hidden = true;
+
+  const noResults = document.createElement('li');
+  noResults.className = 'find-my-part-us-no-results';
+  noResults.textContent = 'No matching options';
+  noResults.hidden = true;
+  list.appendChild(noResults);
 
   group.appendChild(select);
-  group.appendChild(chevron);
+  group.appendChild(trigger);
+  group.appendChild(list);
+
+  input.addEventListener('focus', () => {
+    if (select.disabled) return;
+    openSelectGroup(group, 'selected', false);
+  });
+
+  input.addEventListener('input', () => {
+    if (select.disabled) return;
+    openSelectGroup(group, 'selected', false);
+    filterSelectOptions(group, input.value);
+  });
+
+  input.addEventListener('keydown', (e) => {
+    if (select.disabled) return;
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (group.classList.contains('is-open')) {
+        setActiveOption(group, e.key === 'ArrowUp' ? 'last' : 'first');
+      } else {
+        openSelectGroup(group, e.key === 'ArrowUp' ? 'last' : 'first');
+      }
+    } else if (e.key === 'Enter') {
+      const activeOption = getActiveOption(group);
+      if (activeOption) {
+        e.preventDefault();
+        chooseCustomOption(select, activeOption.dataset.value);
+      }
+    } else if (e.key === 'Escape') {
+      closeSelectGroup(group);
+    }
+  });
+
+  chevron.addEventListener('click', () => {
+    if (select.disabled) return;
+    input.focus();
+    toggleSelectGroup(group);
+  });
+
+  list.addEventListener('click', (e) => {
+    const option = e.target.closest('[role="option"]');
+    if (!option || !list.contains(option)) return;
+    chooseCustomOption(select, option.dataset.value);
+  });
+
+  list.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      moveActiveOption(group, e.key === 'ArrowDown' ? 1 : -1);
+    } else if (e.key === 'Home' || e.key === 'End') {
+      e.preventDefault();
+      setActiveOption(group, e.key === 'Home' ? 'first' : 'last');
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      const activeOption = getActiveOption(group);
+      if (activeOption) chooseCustomOption(select, activeOption.dataset.value);
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      closeSelectGroup(group);
+      input.focus();
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!group.contains(e.target)) closeSelectGroup(group);
+  });
+
   return group;
 }
 
 function populateSelect(select, items) {
-  const placeholder = select.options[0];
+  const [placeholder] = select.options;
   select.innerHTML = '';
   select.appendChild(placeholder);
+  placeholder.selected = true;
   items.forEach(({ id, value }) => {
     const option = document.createElement('option');
     option.value = id;
@@ -52,14 +309,17 @@ function populateSelect(select, items) {
   });
   select.disabled = false;
   select.value = '';
+  syncCustomSelect(select);
 }
 
 function resetSelect(select) {
-  const placeholder = select.options[0];
+  const [placeholder] = select.options;
   select.innerHTML = '';
   select.appendChild(placeholder);
+  placeholder.selected = true;
   select.disabled = true;
   select.value = '';
+  syncCustomSelect(select);
 }
 
 function parseConfig(block) {
