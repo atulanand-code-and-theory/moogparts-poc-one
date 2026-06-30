@@ -1,4 +1,3 @@
-// Update to your deployed Cloudflare Worker URL after running: npx wrangler deploy
 const WORKER_BASE = 'https://moogparts-catalog-api.atul-code-auth0.workers.dev';
 const API_BASE = `${WORKER_BASE}/catalog`;
 const API_PARAMS = { brand: 'moog', locale: 'en_US', country_code: 'US' };

@@ -23,29 +23,22 @@ async function proxyWithCache(originUrl, ctx) {
 
   const cached = await cache.match(cacheKey);
   if (cached) {
-    return new Response(cached.body, {
-      status: cached.status,
-      headers: { ...Object.fromEntries(cached.headers), ...CORS_HEADERS },
-    });
+    // new Headers() is case-insensitive; plain object spread would duplicate CORS headers as '*, *'
+    const headers = new Headers(cached.headers);
+    headers.set('X-Cache', 'HIT');
+    return new Response(cached.body, { status: cached.status, headers });
   }
 
   const upstream = await fetch(originUrl.toString());
-
   const headers = {
     ...CORS_HEADERS,
     'Content-Type': upstream.headers.get('Content-Type') || 'application/json',
+    'X-Cache': 'MISS',
+    ...(upstream.ok && { 'Cache-Control': `public, max-age=${CACHE_TTL}` }),
   };
 
-  if (upstream.ok) {
-    headers['Cache-Control'] = `public, max-age=${CACHE_TTL}`;
-  }
-
   const response = new Response(upstream.body, { status: upstream.status, headers });
-
-  if (upstream.ok) {
-    ctx.waitUntil(cache.put(cacheKey, response.clone()));
-  }
-
+  if (upstream.ok) ctx.waitUntil(cache.put(cacheKey, response.clone()));
   return response;
 }
 

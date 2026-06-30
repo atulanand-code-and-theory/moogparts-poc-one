@@ -5,9 +5,6 @@ account_id = "525642d028ea297dfb5bf68a0d3df229"
 
 # Deploy with: npx wrangler deploy
 #
-# After deploying, copy the workers.dev URL printed by wrangler and update
-# WORKER_BASE in all four blocks that reference it.
-#
 # For production, replace the workers.dev URL with a custom domain route:
 # [[routes]]
 # pattern = "api.moogparts.com/*"
