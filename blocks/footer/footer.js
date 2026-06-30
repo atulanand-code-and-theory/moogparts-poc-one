@@ -32,16 +32,12 @@ function repairLogos(footer) {
 }
 
 /**
- * Fetches the footer fragment markup, trying the local preview path first and
- * falling back to the authored document path for DA/EDS production.
+ * Fetches the footer fragment markup from the authored document path.
  * @param {string} footerPath Path to the footer document without the .plain.html suffix
  * @returns {Promise<string>} The fragment HTML, or an empty string on failure
  */
 async function fetchFooterFragment(footerPath) {
-  let resp = await fetch('/content/footer.plain.html');
-  if (!resp.ok) {
-    resp = await fetch(`${footerPath}.plain.html`);
-  }
+  const resp = await fetch(`${footerPath}.plain.html`);
   if (!resp.ok) return '';
   return resp.text();
 }

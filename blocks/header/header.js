@@ -43,8 +43,7 @@ function closeAllMegamenus(nav) {
 
 function updatePageScrollLock(nav) {
   const mobileMenuOpen = !isDesktop.matches && nav.getAttribute('aria-expanded') === 'true';
-  const localeOpen = !!nav.querySelector('.nav-locale[aria-expanded="true"]');
-  document.body.style.overflowY = mobileMenuOpen || localeOpen ? 'hidden' : '';
+  document.body.style.overflowY = mobileMenuOpen ? 'hidden' : '';
 }
 
 function closeLocale(nav) {
@@ -374,26 +373,11 @@ function decorateSections(navSections, nav, mobileExtras) {
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
-  // load nav as fragment — prefer the portable /content/nav.plain.html, fall back to navMeta
+  // load nav as fragment
   const navMeta = getMetadata('nav');
   const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
-  let fragment;
-  try {
-    const resp = await fetch('/content/nav.plain.html');
-    if (resp.ok) {
-      const html = await resp.text();
-      const tmp = document.createElement('div');
-      tmp.innerHTML = html;
-      cleanNavFragment(tmp);
-      fragment = tmp;
-    }
-  } catch (e) {
-    fragment = null;
-  }
-  if (!fragment) {
-    fragment = await loadFragment(navPath);
-    if (fragment) cleanNavFragment(fragment);
-  }
+  const fragment = await loadFragment(navPath);
+  if (fragment) cleanNavFragment(fragment);
 
   // decorate nav DOM
   block.textContent = '';
