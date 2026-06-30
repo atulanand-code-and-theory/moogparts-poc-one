@@ -1,5 +1,7 @@
 const MOOG_BASE = 'https://www.moogparts.com';
-const DEFAULT_API_URL = `${MOOG_BASE}/content/loc-na/loc-us/fmmp-moog/en_US/find-my-part/find-my-part-results/jcr:content/main-par/cross_sell.by-tags?nocache=true&q=all`;
+// Update to your deployed Cloudflare Worker URL after running: npx wrangler deploy
+const WORKER_BASE = 'https://moogparts-catalog-api.atul-code-auth0.workers.dev';
+const DEFAULT_API_URL = `${WORKER_BASE}/cross-sell?q=all`;
 const MAX_ITEMS = 2;
 
 function resolveImageUrl(path) {

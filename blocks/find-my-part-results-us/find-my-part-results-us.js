@@ -1,4 +1,6 @@
-const API_BASE = 'https://www.moogparts.com/driv/partfinder';
+// Update to your deployed Cloudflare Worker URL after running: npx wrangler deploy
+const WORKER_BASE = 'https://moogparts-catalog-api.atul-code-auth0.workers.dev';
+const API_BASE = `${WORKER_BASE}/catalog`;
 const MOOG_ASSET_BASE = 'https://www.moogparts.com';
 const API_PARAMS = { brand: 'moog', locale: 'en_US', country_code: 'US' };
 const APPLICATION_TYPES = [
@@ -304,7 +306,7 @@ function buildFacetPanel(data, filterState, onFilterChange) {
 
 async function fetchPartsList(params) {
   const url = new URL(`${API_BASE}/api.catalog.partslist`);
-  Object.entries({ ...API_PARAMS, no_cache: Date.now(), ...params })
+  Object.entries({ ...API_PARAMS, ...params })
     .forEach(([k, v]) => url.searchParams.set(k, v));
   const res = await fetch(url.toString());
   if (!res.ok) throw new Error(`Parts list API failed: ${res.status}`);
