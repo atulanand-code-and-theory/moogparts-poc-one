@@ -228,7 +228,7 @@ function buildSelectGroup(id, placeholder) {
   group.appendChild(list);
 
   input.addEventListener('focus', () => {
-    if (select.disabled) return;
+    if (select.disabled || group.classList.contains('is-open')) return;
     openSelectGroup(group, 'selected', false);
   });
 
@@ -258,10 +258,14 @@ function buildSelectGroup(id, placeholder) {
     }
   });
 
+  chevron.addEventListener('mousedown', (e) => {
+    e.preventDefault(); // prevent button from stealing focus on mouse click
+  });
+
   chevron.addEventListener('click', () => {
     if (select.disabled) return;
-    input.focus();
     toggleSelectGroup(group);
+    input.focus();
   });
 
   list.addEventListener('click', (e) => {

@@ -23,13 +23,21 @@ async function proxyWithCache(originUrl, ctx) {
 
   const cached = await cache.match(cacheKey);
   if (cached) {
+    console.log(`CACHE HIT  ${originUrl.toString()}`);
     // new Headers() is case-insensitive; plain object spread would duplicate CORS headers as '*, *'
     const headers = new Headers(cached.headers);
     headers.set('X-Cache', 'HIT');
     return new Response(cached.body, { status: cached.status, headers });
   }
 
+  console.log(`CACHE MISS ${originUrl.toString()}`);
   const upstream = await fetch(originUrl.toString());
+  console.log(`UPSTREAM   ${upstream.status} ${originUrl.pathname}`);
+
+  if (!upstream.ok) {
+    console.error(`UPSTREAM ERROR ${upstream.status} ${originUrl.toString()}`);
+  }
+
   const headers = {
     ...CORS_HEADERS,
     'Content-Type': upstream.headers.get('Content-Type') || 'application/json',
@@ -51,6 +59,7 @@ export default {
     }
 
     if (request.method !== 'GET') {
+      console.warn(`REJECTED ${request.method} ${url.pathname}`);
       return new Response('Method Not Allowed', { status: 405, headers: CORS_HEADERS });
     }
 
@@ -63,6 +72,7 @@ export default {
     } else if (url.pathname === '/cross-sell') {
       originUrl = buildOriginUrl(CROSS_SELL_ORIGIN, url.searchParams);
     } else {
+      console.warn(`NOT FOUND ${url.pathname}`);
       return new Response('Not Found', { status: 404 });
     }
 
