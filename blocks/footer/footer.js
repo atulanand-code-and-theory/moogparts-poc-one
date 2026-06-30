@@ -3,8 +3,12 @@ import { getMetadata } from '../../scripts/aem.js';
 // Brand logos are stored as committed assets so they render independently of the
 // content backend, which does not serve the footer's original image references.
 const FOOTER_LOGOS = [
-  { match: 'moog', src: '/icons/moog-logo.png', className: 'footer-logo-moog' },
-  { match: 'driv', src: '/icons/driv-logo.png', className: 'footer-logo-driv' },
+  {
+    match: 'moog', src: '/icons/moog-logo.png', className: 'footer-logo-moog', width: 824, height: 180,
+  },
+  {
+    match: 'driv', src: '/icons/driv-logo.png', className: 'footer-logo-driv', width: 100, height: 65,
+  },
 ];
 
 /**
@@ -23,6 +27,8 @@ function repairLogos(footer) {
     replacement.src = logo.src;
     replacement.alt = img.getAttribute('alt') || '';
     replacement.loading = 'lazy';
+    replacement.width = logo.width;
+    replacement.height = logo.height;
     replacement.classList.add(logo.className);
 
     const newPicture = document.createElement('picture');
@@ -103,7 +109,7 @@ export default async function decorate(block) {
   // so it appears consistently without baking it into each page's content.
   const mailingList = document.createElement('div');
   mailingList.className = 'footer-mailing-list';
-  mailingList.innerHTML = '<h5>Join our MOOG Mailing List</h5>'
+  mailingList.innerHTML = '<h2>Join our MOOG Mailing List</h2>'
     + '<a class="button" href="/email">Join Mailing List</a>';
   block.append(mailingList);
 

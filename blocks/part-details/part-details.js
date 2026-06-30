@@ -55,6 +55,7 @@ function buildGallery(primaries, thumbnails) {
   mainImg.className = 'pd-main-image';
   mainImg.alt = '';
   mainImg.decoding = 'async';
+  mainImg.fetchPriority = 'high';
   if (pairs[0]) mainImg.src = pairs[0].mainUrl;
 
   let currentIndex = 0;
@@ -81,10 +82,14 @@ function buildGallery(primaries, thumbnails) {
     activate(currentIndex + 1);
   }
 
+  let galleryMainEl = mainImg;
   if (pairs.length > 1) {
-    mainImg.tabIndex = 0;
-    mainImg.setAttribute('role', 'button');
-    mainImg.setAttribute('aria-label', 'Show next product image');
+    const mainImgBtn = document.createElement('button');
+    mainImgBtn.type = 'button';
+    mainImgBtn.className = 'pd-main-image-btn';
+    mainImgBtn.setAttribute('aria-label', 'Show next product image');
+    mainImgBtn.append(mainImg);
+    galleryMainEl = mainImgBtn;
   }
 
   const navEl = document.createElement('div');
@@ -102,20 +107,24 @@ function buildGallery(primaries, thumbnails) {
   thumbsEl.className = 'pd-thumbnails';
 
   pairs.forEach(({ thumbUrl }, i) => {
+    const thumbBtn = document.createElement('button');
+    thumbBtn.type = 'button';
+    thumbBtn.className = 'pd-thumbnail-btn';
+    thumbBtn.setAttribute('aria-label', `Show product image ${i + 1}`);
+    thumbBtn.setAttribute('aria-current', i === 0 ? 'true' : 'false');
+    thumbBtn.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+    thumbBtn.dataset.galleryIndex = String(i);
+    if (i === 0) thumbBtn.classList.add('pd-thumbnail-active');
+
     const thumb = document.createElement('img');
     thumb.src = thumbUrl;
     thumb.alt = '';
     thumb.loading = 'lazy';
     thumb.className = 'pd-thumbnail';
-    thumb.tabIndex = 0;
-    thumb.setAttribute('role', 'button');
-    thumb.setAttribute('aria-label', `Show product image ${i + 1}`);
-    thumb.setAttribute('aria-current', i === 0 ? 'true' : 'false');
-    thumb.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
-    thumb.dataset.galleryIndex = String(i);
-    if (i === 0) thumb.classList.add('pd-thumbnail-active');
-    thumbEls.push(thumb);
-    thumbsEl.appendChild(thumb);
+
+    thumbBtn.append(thumb);
+    thumbEls.push(thumbBtn);
+    thumbsEl.appendChild(thumbBtn);
   });
 
   const nextBtn = document.createElement('button');
@@ -134,13 +143,13 @@ function buildGallery(primaries, thumbnails) {
       return;
     }
 
-    const thumb = e.target.closest('.pd-thumbnail');
-    if (thumb && gallery.contains(thumb)) {
-      activate(Number(thumb.dataset.galleryIndex));
+    const thumbBtn = e.target.closest('.pd-thumbnail-btn');
+    if (thumbBtn && gallery.contains(thumbBtn)) {
+      activate(Number(thumbBtn.dataset.galleryIndex));
       return;
     }
 
-    if (e.target.closest('.pd-main-image')) showNext();
+    if (e.target.closest('.pd-main-image') || e.target.closest('.pd-main-image-btn')) showNext();
   });
 
   gallery.addEventListener('keydown', (e) => {
@@ -158,21 +167,21 @@ function buildGallery(primaries, thumbnails) {
 
     if (e.key !== 'Enter' && e.key !== ' ') return;
 
-    const thumb = e.target.closest('.pd-thumbnail');
-    if (thumb && gallery.contains(thumb)) {
+    const thumbBtn = e.target.closest('.pd-thumbnail-btn');
+    if (thumbBtn && gallery.contains(thumbBtn)) {
       e.preventDefault();
-      activate(Number(thumb.dataset.galleryIndex));
+      activate(Number(thumbBtn.dataset.galleryIndex));
       return;
     }
 
-    if (e.target.closest('.pd-main-image')) {
+    if (e.target.closest('.pd-main-image') || e.target.closest('.pd-main-image-btn')) {
       e.preventDefault();
       showNext();
     }
   });
 
   navEl.append(prevBtn, thumbsEl, nextBtn);
-  gallery.append(mainImg, navEl);
+  gallery.append(galleryMainEl, navEl);
   return gallery;
 }
 

@@ -102,6 +102,20 @@
   max-width: 460px;
 }
 
+.part-details .pd-main-image-btn {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.part-details .pd-main-image-btn:focus-visible {
+  outline: 2px solid #333;
+  outline-offset: 2px;
+}
+
 .part-details .pd-main-image {
   display: block;
   width: 100%;
@@ -110,16 +124,6 @@
   object-fit: contain;
   border: 1px solid #eee;
   padding: 8px;
-}
-
-.part-details .pd-main-image[role="button"],
-.part-details .pd-thumbnail[role="button"] {
-  cursor: pointer;
-}
-
-.part-details .pd-main-image:focus-visible {
-  outline: 2px solid #333;
-  outline-offset: 2px;
 }
 
 .part-details .pd-gallery-nav {
@@ -163,23 +167,33 @@
   overflow-x: auto;
 }
 
-.part-details .pd-thumbnail {
+.part-details .pd-thumbnail-btn {
   flex: 0 0 64px;
   width: 64px;
   height: 64px;
-  object-fit: contain;
+  background: none;
   border: 2px solid #eee;
   padding: 4px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.part-details .pd-thumbnail:focus-visible {
+.part-details .pd-thumbnail-btn:focus-visible {
   outline: 2px solid #333;
   outline-offset: 2px;
 }
 
-.part-details .pd-thumbnail-active {
+.part-details .pd-thumbnail-btn.pd-thumbnail-active {
   border-color: #333;
+}
+
+.part-details .pd-thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 /* Info */

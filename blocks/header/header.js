@@ -27,6 +27,8 @@ function repairBrandLogo(navBrand) {
   const replacement = document.createElement('img');
   replacement.src = NAV_LOGO_SRC;
   replacement.alt = img.getAttribute('alt') || 'MOOG Logo';
+  replacement.width = 824;
+  replacement.height = 180;
 
   if (picture) {
     const newPicture = document.createElement('picture');
